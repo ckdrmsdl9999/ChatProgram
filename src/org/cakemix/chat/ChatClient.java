@@ -30,7 +30,7 @@ public final class ChatClient {
         // All the ugly Swing stuff is hidden in ChatFrame so it doesn't clutter the KryoNet example code.
         chatFrame = new ChatFrame(host);
 
-        
+
 
         setChatListeners();
         chatFrame.setVisible(true);
@@ -39,7 +39,13 @@ public final class ChatClient {
 
     }
 
-    protected void setChatListeners(){
+    protected void requestNameChange(String name) {
+        RegisterName registerName = new RegisterName();
+        registerName.name = name;
+        client.sendTCP(registerName);
+    }
+
+    protected void setChatListeners() {
         //this is called when new connection button is clicked
         chatFrame.createNewConnection(new Runnable() {
             public void run() {
@@ -72,7 +78,7 @@ public final class ChatClient {
             }
         });
     }
-    
+
     protected void connect() {
         // We'll do the connect on a new thread so the ChatFrame can show a progress bar.
         // Connecting to localhost is usually so fast you won't see the progress bar.
@@ -159,5 +165,7 @@ public final class ChatClient {
                 });
             }
         });
+
+
     }
 }

@@ -9,6 +9,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.MenuBar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -28,12 +29,19 @@ public class ChatFrame extends JFrame {
         JTextField sendText;
         JButton sendButton, newConnection, toggleList;
         JList nameList;
+        
+        public JMenuBar menu;
+        JMenu file, view;
+        
 
         public ChatFrame(String host) {
             super("Chat Client");
+            // set default close
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             setLocationRelativeTo(null);
 
+            buildMenu();
+            
             Container contentPane = getContentPane();
             cardLayout = new CardLayout();
             contentPane.setLayout(cardLayout);
@@ -48,6 +56,7 @@ public class ChatFrame extends JFrame {
             }
             {
                 buildUI(contentPane);
+                setJMenuBar(menu);
                 //super pack cus we want the window to fit the gubbins
                 super.pack();
             }
@@ -60,7 +69,7 @@ public class ChatFrame extends JFrame {
                 }
             });
         }
-
+        
         /*
          * override for pack
          * does not resize the window ;)
@@ -72,6 +81,18 @@ public class ChatFrame extends JFrame {
             setSize(newSize);
         }
 
+        private void buildMenu(){
+            
+            menu= new JMenuBar();
+            
+            file = new JMenu("File");
+            JMenuItem menuI = new JMenuItem("Test");
+            file.add(menuI);
+            menuI = new JMenuItem("Test2");
+            file.add(menuI);
+            menu.add(file);
+        }
+        
         private void buildUI(Container contentPane) {
             //create a panel to chuck everything on
             JPanel panel = new JPanel(new BorderLayout());
@@ -91,16 +112,10 @@ public class ChatFrame extends JFrame {
                 // messages
                 JScrollPane messagePane = new JScrollPane(
                         messageList = new JTextPane());
-                //set prefered and min sizes
-                // aparently a bit of a no no...
-                //messagePane.setPreferredSize(new Dimension(640, 480));
-                //messagePane.setMinimumSize(new Dimension(320, 240));
 
                 // user list
                 final JScrollPane usersPane = new JScrollPane(nameList = new JList());
-                //set prefered width of user list
-                //usersPane.setPreferredSize(new Dimension(64, 64));
-//                usersPane.setMinimumSize(new Dimension(320, 240));
+                
                 //set list porperties
                 nameList.setModel(new DefaultListModel());
                 DefaultListSelectionModel disableSelections = new DefaultListSelectionModel() {
@@ -230,10 +245,7 @@ public class ChatFrame extends JFrame {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    //update list rather than text frame
-//                    DefaultListModel model = (DefaultListModel) messageList.getModel();
-//                    model.addElement(message);
-//                    messageList.ensureIndexIsVisible(model.size() - 1);
+                    
                     Document doc = messageList.getDocument();
                     try {
                         if (doc.getLength() > 0) {

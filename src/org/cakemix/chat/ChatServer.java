@@ -42,7 +42,18 @@ public class ChatServer {
                 if (object instanceof RegisterName) {
                     // Ignore the object if a client has already registered a name. This is
                     // impossible with our client, but a hacker could send messages at any time.
+                    
+                    //scratch above, use this to change the name
                     if (connection.name != null) {
+                        // Ignore the object if the name is invalid.
+                        String name = ((RegisterName) object).name;
+                        if (name == null) {
+                            return;
+                        }
+                        name = name.trim();
+                        if (name.length() == 0) {
+                            return;
+                        }
                         return;
                     }
                     // Ignore the object if the name is invalid.
@@ -59,6 +70,10 @@ public class ChatServer {
                     // Send a "connected" message to everyone except the new client.
                     ChatMessage chatMessage = new ChatMessage();
                     chatMessage.text = name + " connected.";
+                    // log the message in the server list
+                    DefaultListModel model = (DefaultListModel) messageList.getModel();
+                    model.addElement(chatMessage.text);
+                    messageList.ensureIndexIsVisible(model.size() - 1);
                     server.sendToAllExceptTCP(connection.getID(), chatMessage);
                     // Send everyone a new list of connection names.
                     updateNames();
@@ -82,9 +97,11 @@ public class ChatServer {
                     }
                     // Prepend the connection's name and send to everyone.
                     chatMessage.text = connection.name + ": " + message;
+                    //log the message in the server list
                     DefaultListModel model = (DefaultListModel) messageList.getModel();
                     model.addElement(chatMessage.text);
                     messageList.ensureIndexIsVisible(model.size() - 1);
+                    // send the message to clients
                     server.sendToAllTCP(chatMessage);
                     return;
                 }
