@@ -1,15 +1,6 @@
 package org.cakemix.chat;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.MenuBar;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -24,15 +15,14 @@ public class ChatFrame extends JFrame {
 
         CardLayout cardLayout;
         JProgressBar progressBar;
-        //JList messageList; Comented out to try JTextFrame
         JTextPane messageList;
         JTextField sendText;
         JButton sendButton, newConnection, toggleList;
         JList nameList;
-        
+
         public JMenuBar menu;
         JMenu file, view;
-        
+
 
         public ChatFrame(String host) {
             super("Chat Client");
@@ -41,7 +31,7 @@ public class ChatFrame extends JFrame {
             setLocationRelativeTo(null);
 
             buildMenu();
-            
+
             Container contentPane = getContentPane();
             cardLayout = new CardLayout();
             contentPane.setLayout(cardLayout);
@@ -60,7 +50,7 @@ public class ChatFrame extends JFrame {
                 //super pack cus we want the window to fit the gubbins
                 super.pack();
             }
-            
+
             // when enter is pressed in the send text box
             // send the text by doing the send button click
             sendText.addActionListener(new ActionListener() {
@@ -69,7 +59,7 @@ public class ChatFrame extends JFrame {
                 }
             });
         }
-        
+
         /*
          * override for pack
          * does not resize the window ;)
@@ -82,17 +72,23 @@ public class ChatFrame extends JFrame {
         }
 
         private void buildMenu(){
-            
+
             menu= new JMenuBar();
-            
+
             file = new JMenu("File");
-            JMenuItem menuI = new JMenuItem("Test");
+            JMenuItem menuI = new JMenuItem("Connect");
             file.add(menuI);
+            file.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                }
+            });
             menuI = new JMenuItem("Test2");
             file.add(menuI);
             menu.add(file);
         }
-        
+
         private void buildUI(Container contentPane) {
             //create a panel to chuck everything on
             JPanel panel = new JPanel(new BorderLayout());
@@ -115,7 +111,7 @@ public class ChatFrame extends JFrame {
 
                 // user list
                 final JScrollPane usersPane = new JScrollPane(nameList = new JList());
-                
+
                 //set list porperties
                 nameList.setModel(new DefaultListModel());
                 DefaultListSelectionModel disableSelections = new DefaultListSelectionModel() {
@@ -163,11 +159,11 @@ public class ChatFrame extends JFrame {
                         .addComponent(sendText)
                         .addComponent(sendButton)));
                 layout.setVerticalGroup(layout.createSequentialGroup()
-                        //buttons at top (change this for a menu)                        
+                        //buttons at top (change this for a menu)
                         .addGroup(layout.createParallelGroup()
                         .addComponent(newConnection)
                         .addComponent(toggleList))
-                        //main focus (left list && right chat)                        
+                        //main focus (left list && right chat)
                         .addGroup(layout.createParallelGroup()
                         .addComponent(messagePane)
                         .addComponent(usersPane))
@@ -224,9 +220,9 @@ public class ChatFrame extends JFrame {
         }
 
         public void setNames(final String[] names) {
-            // This listener is run on the client's update thread, 
+            // This listener is run on the client's update thread,
             // which was started by client.start().
-            // We must be careful to only interact with Swing 
+            // We must be careful to only interact with Swing
             // components on the Swing event thread.
             EventQueue.invokeLater(new Runnable() {
                 @Override
@@ -245,7 +241,7 @@ public class ChatFrame extends JFrame {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    
+
                     Document doc = messageList.getDocument();
                     try {
                         if (doc.getLength() > 0) {
