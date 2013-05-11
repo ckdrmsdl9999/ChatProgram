@@ -8,6 +8,7 @@ import java.awt.event.WindowEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
+import javax.swing.event.MenuListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
@@ -22,6 +23,7 @@ public class ChatFrame extends JFrame {
 
         public JMenuBar menu;
         JMenu file, view;
+        ActionListener newConn;
 
 
         public ChatFrame(String host) {
@@ -77,16 +79,40 @@ public class ChatFrame extends JFrame {
 
             file = new JMenu("File");
             JMenuItem menuI = new JMenuItem("Connect");
-            file.add(menuI);
-            file.addActionListener(new ActionListener() {
+
+            menuI.addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent ae) {
+                    newConnection.doClick();
                 }
             });
-            menuI = new JMenuItem("Test2");
             file.add(menuI);
+            menuI = new JMenuItem("Exit");
+            menuI.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                   dispose();
+                }
+            });
+            file.add(menuI);
+
             menu.add(file);
+
+            view = new JMenu("View");
+            menuI = new JMenuItem("Hide Userlist");
+            menuI.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    toggleList.doClick();
+                }
+            });
+
+            view.add(menuI);
+
+            menu.add(view);
         }
 
         private void buildUI(Container contentPane) {
@@ -123,9 +149,6 @@ public class ChatFrame extends JFrame {
                 // create the funky buttons
                 newConnection = new JButton("New Connection");
                 toggleList = new JButton("Hide Userlist");
-
-
-
                 //set action for toggleList
                 toggleList.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent evt) {

@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import org.cakemix.chat.Network.ChatMessage;
@@ -20,6 +19,11 @@ public class ChatServer {
 
     Server server;
     JList messageList;
+    ChatMessage welcome = new ChatMessage("Welcome to the Server,"
+            + "type /help to get a list of commands.");
+    String help = "/help - Print this help page." + '\n'
+            + "/roll [num] - Roll [num] d10 dice" + '\n'
+            + "/{me or em} <action> - Sends <action> as emotive text";
 
     public ChatServer() throws IOException {
         server = new Server() {
@@ -42,7 +46,7 @@ public class ChatServer {
                 if (object instanceof RegisterName) {
                     // Ignore the object if a client has already registered a name. This is
                     // impossible with our client, but a hacker could send messages at any time.
-                    
+
                     //scratch above, use this to change the name
                     if (connection.name != null) {
                         // Ignore the object if the name is invalid.
@@ -75,6 +79,7 @@ public class ChatServer {
                     model.addElement(chatMessage.text);
                     messageList.ensureIndexIsVisible(model.size() - 1);
                     server.sendToAllExceptTCP(connection.getID(), chatMessage);
+                    server.sendToTCP(connection.getID(), welcome);
                     // Send everyone a new list of connection names.
                     updateNames();
                     return;
@@ -94,6 +99,42 @@ public class ChatServer {
                     message = message.trim();
                     if (message.length() == 0) {
                         return;
+                    }
+                    // Implement Regex
+
+                    if (message.charAt(0) == '/') {
+
+                        chatMessage = regex(message);
+                        switch (chatMessage.sendTo) {
+                            case (ChatMessage.ALL):
+                                chatMessage.text = connection.name + ": "
+                                        + chatMessage.text;
+                                //log the message in the server list
+                                DefaultListModel model = (DefaultListModel) messageList.getModel();
+                                model.addElement(chatMessage.text);
+                                messageList.ensureIndexIsVisible(model.size() - 1);
+                                // send the message to clients
+                                server.sendToAllTCP(chatMessage);
+                                return;
+                            case (ChatMessage.EMOTE):
+                                chatMessage.text = connection.name + " "
+                                        + chatMessage.text;
+                                //log the message in the server list
+                                model = (DefaultListModel) messageList.getModel();
+                                model.addElement(chatMessage.text);
+                                messageList.ensureIndexIsVisible(model.size() - 1);
+                                // send the message to clients
+                                server.sendToAllTCP(chatMessage);
+                                return;
+                            case (ChatMessage.SENDER):
+                                // log the command output
+                                model = (DefaultListModel) messageList.getModel();
+                                model.addElement(connection.name + "::" + chatMessage.text);
+                                // send output to user
+                                server.sendToTCP(connection.getID(), chatMessage);
+                                return;
+                        }
+
                     }
                     // Prepend the connection's name and send to everyone.
                     chatMessage.text = connection.name + ": " + message;
@@ -148,6 +189,50 @@ public class ChatServer {
         UpdateNames updateNames = new UpdateNames();
         updateNames.names = (String[]) names.toArray(new String[names.size()]);
         server.sendToAllTCP(updateNames);
+    }
+
+    protected ChatMessage regex(String message) {
+        // create a new chatmessage to return
+        ChatMessage chatMessage = new ChatMessage();
+
+        // convert everything to lower case
+        // remove the /
+        // split the string into its componant parts
+        String[] command = message.toLowerCase().substring(1).split(" ");
+        if (command[0].equals("roll")) {
+            // Since everyone needs to see rolls
+            chatMessage.sendTo = ChatMessage.ALL;
+
+            // check if they filled out the command right
+            // and check that they are not tring to roll
+            // an invalid number of dice
+            if (command.length > 1 && Integer.parseInt(command[1]) > 0) {
+                // implement a random roll system
+                // put it through a for loop (0 >> command[1])
+                // formulate output
+                chatMessage.text = "Not yet implemented (ROLL)";
+                return chatMessage;
+            }
+
+            // if they fuck up, give them command instructions
+            chatMessage.sendTo = ChatMessage.SENDER;
+            chatMessage.text = "/roll [num] - Roll [num] d10 dice";
+        }
+        // emote
+        if (command[0].equals("me") || command[0].equals("em")) {
+            // Since everyone needs to see emotes
+            chatMessage.sendTo = ChatMessage.EMOTE;
+            // cut out the command
+            // and return the rest of the string
+            chatMessage.text = message.substring(3);
+            return chatMessage;
+        }
+
+        // return the user their helpful message
+        chatMessage.sendTo = ChatMessage.SENDER;
+        chatMessage.text = help;
+
+        return chatMessage;
     }
 
     // This holds per connection state.

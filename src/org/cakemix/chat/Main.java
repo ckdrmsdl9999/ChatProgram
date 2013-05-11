@@ -19,6 +19,12 @@ public class Main {
             if (args[0].equals("Server")) {
                 try {
                     new ChatServer();
+                    new ChatClient();
+                } catch (IOException e) {
+                }
+            } else if (args[0].equals("ServerOnly")) {
+                try {
+                    new ChatServer();
                 } catch (IOException e) {
                 }
             } else {
