@@ -159,7 +159,7 @@ public class ChatServer {
                 }
             }
         });
-        server.bind(Network.port);
+        server.bind(5000);
         server.start();
 
         // Open a window to provide an easy way to stop the server.

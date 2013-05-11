@@ -6,17 +6,19 @@ import javax.swing.JOptionPane;
 
 // This class is a convenient place to keep things common to both the client and server.
 public class Network {
-        static public final int port = 54555;
 
-        // This registers objects that are going to be sent over the network.
-        static public void register (EndPoint endPoint) {
-                Kryo kryo = endPoint.getKryo();
-                kryo.register(RegisterName.class);
-                kryo.register(String[].class);
-                kryo.register(UpdateNames.class);
-                kryo.register(ChatMessage.class);
-        }
-static public String[] getConnectionDetails() {
+    static public final int port = 5000;
+
+    // This registers objects that are going to be sent over the network.
+    static public void register(EndPoint endPoint) {
+        Kryo kryo = endPoint.getKryo();
+        kryo.register(RegisterName.class);
+        kryo.register(String[].class);
+        kryo.register(UpdateNames.class);
+        kryo.register(ChatMessage.class);
+    }
+
+    static public String[] getConnectionDetails() {
         // Request the host from the user.
         String[] output = new String[3];
 
@@ -49,21 +51,29 @@ static public String[] getConnectionDetails() {
         return output;
     }
 
-        static public class RegisterName {
-                public String name;
+    static public class RegisterName {
+
+        public String name;
+    }
+
+    static public class UpdateNames {
+
+        public String[] names;
+    }
+
+    static public class ChatMessage {
+
+        public static final int ALL = 0;
+        public static final int SENDER = 1;
+        public static final int EMOTE = 2;
+        public String text;
+        public int sendTo = ALL;
+
+        public ChatMessage() {
         }
 
-        static public class UpdateNames {
-                public String[] names;
+        public ChatMessage(String text) {
+            this.text = text;
         }
-
-        static public class ChatMessage {
-                public static final int ALL = 0;
-                public static final int SENDER = 1;
-                public static final int EMOTE = 2;
-                public String text;
-                public int sendTo = ALL;
-                public ChatMessage(){}
-                public ChatMessage(String text){this.text=text;}
-        }
+    }
 }

@@ -19,7 +19,7 @@ public class Main {
             if (args[0].equals("Server")) {
                 try {
                     new ChatServer();
-                    new ChatClient();
+                    new ChatFrameRedux();
                 } catch (IOException e) {
                 }
             } else if (args[0].equals("ServerOnly")) {
@@ -28,10 +28,10 @@ public class Main {
                 } catch (IOException e) {
                 }
             } else {
-                new ChatClient();
+                new ChatFrameRedux();
             }
         } else {
-            new ChatClient();
+            new ChatFrameRedux();
         }
     }
 }

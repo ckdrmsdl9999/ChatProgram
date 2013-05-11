@@ -25,11 +25,11 @@ public final class ChatClient {
 
         //popup get connection details
         // sets host and name
-        String[] temp = Network.getConnectionDetails();
+//        String[] temp = Network.getConnectionDetails();
 
-        host = temp[0];
-        port = temp[1];
-        name = temp[2];
+//        host = temp[0];
+//        port = temp[1];
+//        name = temp[2];
 
         // All the ugly Swing stuff is hidden in ChatFrame so it doesn't clutter the KryoNet example code.
         chatFrame = new ChatFrame(host);
