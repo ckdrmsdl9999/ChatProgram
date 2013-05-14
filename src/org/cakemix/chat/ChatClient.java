@@ -6,9 +6,8 @@ import com.esotericsoftware.kryonet.Listener;
 import java.awt.*;
 import java.io.IOException;
 import javax.swing.*;
-import org.cakemix.chat.Network.ChatMessage;
-import org.cakemix.chat.Network.RegisterName;
-import org.cakemix.chat.Network.UpdateNames;
+import org.cakemix.*;
+import org.cakemix.Network.*;
 
 public final class ChatClient {
 

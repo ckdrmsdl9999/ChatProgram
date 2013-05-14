@@ -1,13 +1,14 @@
-package org.cakemix.chat;
+package org.cakemix;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 import javax.swing.JOptionPane;
+import javax.swing.text.Style;
 
 // This class is a convenient place to keep things common to both the client and server.
 public class Network {
 
-    static public final int port = 5000;
+    public static final int port = 5000;
 
     // This registers objects that are going to be sent over the network.
     static public void register(EndPoint endPoint) {
@@ -53,12 +54,12 @@ public class Network {
 
     static public class RegisterName {
 
-        public String name;
+        public String name, displayName;
     }
 
     static public class UpdateNames {
 
-        public String[] names;
+        public String[] names,displays;
     }
 
     static public class ChatMessage {
@@ -66,6 +67,7 @@ public class Network {
         public static final int ALL = 0;
         public static final int SENDER = 1;
         public static final int EMOTE = 2;
+        public static final int ALIAS = 3;
         public String text;
         public int sendTo = ALL;
 

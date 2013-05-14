@@ -6,15 +6,16 @@ import com.esotericsoftware.kryonet.Listener;
 import java.awt.*;
 import java.io.IOException;
 import javax.swing.*;
-import org.cakemix.chat.Network.ChatMessage;
-import org.cakemix.chat.Network.RegisterName;
-import org.cakemix.chat.Network.UpdateNames;
+import org.cakemix.*;
+import org.cakemix.Network.*;
 
 public final class ChatClientRedux {
 
     Client client;
     String host, port;
     String name;
+
+    ChatFrameRedux chatFrame;
 
     public ChatClientRedux(){}
 
@@ -25,8 +26,10 @@ public final class ChatClientRedux {
         port = connectionDetails[1];
         name = connectionDetails[2];
 
+        this.chatFrame = chatFrame;
+
         //setup the client settings
-        setupClient(client, chatFrame);
+        setupClient(client);
 
         connect();
 
@@ -41,7 +44,8 @@ public final class ChatClientRedux {
 
     protected void requestNameChange(String name) {
         RegisterName registerName = new RegisterName();
-        registerName.name = name;
+        registerName.name = this.name;
+        registerName.displayName = name;
         client.sendTCP(registerName);
     }
 
@@ -64,7 +68,7 @@ public final class ChatClientRedux {
      *
      * Setup a kryo client
      */
-    protected void setupClient(final Client client, final ChatFrameRedux chatFrame) {
+    protected void setupClient(final Client client/*, final ChatFrameRedux chatFrame*/) {
         client.start();
 
         // For consistency, the classes to be sent over the network are

@@ -12,6 +12,9 @@ import javax.swing.*;
 import javax.swing.event.MenuListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+import javax.swing.text.StyledDocument;
+import javax.swing.text.html.HTMLEditorKit;
+import org.cakemix.*;
 
 public class ChatFrameRedux extends JFrame implements ActionListener {
 
@@ -24,6 +27,7 @@ public class ChatFrameRedux extends JFrame implements ActionListener {
     JButton sendButton, newConnection, toggleList;
     JMenuBar menu;
     JMenu file, view;
+    StyledDocument doc;
     // Kryo Client
     ChatClientRedux chatClient;
 
@@ -102,34 +106,29 @@ public class ChatFrameRedux extends JFrame implements ActionListener {
     }
 
     private void buildUI(Container contentPane) {
-        //create a panel to chuck everything on
-        JPanel panel = new JPanel(new BorderLayout());
-        //add panel to the main frame
-        contentPane.add(panel);
-        // create the panel to hold the top componants
-        JPanel topPanel = new JPanel();
-        // create the layout for the panel
-        GroupLayout layout = new GroupLayout(topPanel);
+
+        GroupLayout layout = new GroupLayout(contentPane);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
         // tell the panel to use the layout
-        topPanel.setLayout(layout);
+        contentPane.setLayout(layout);
 
         // create the panes
         // messages
         messagePane = new JScrollPane(
                 messageList = new JTextPane());
+        doc= messageList.getStyledDocument();
 
         // user list
         userPane = new JScrollPane(userList = new JList());
 
         //set list porperties
         userList.setModel(new DefaultListModel());
-        DefaultListSelectionModel disableSelections = new DefaultListSelectionModel() {
-            public void setSelectionInterval(int index0, int index1) {
-            }
-        };
-        userList.setSelectionModel(disableSelections);
+//        DefaultListSelectionModel disableSelections = new DefaultListSelectionModel() {
+//            public void setSelectionInterval(int index0, int index1) {
+//            }
+//        };
+//        userList.setSelectionModel(disableSelections);
 
         // create the funky buttons
         newConnection = new JButton("New Connection");
@@ -191,8 +190,6 @@ public class ChatFrameRedux extends JFrame implements ActionListener {
                 .addComponent(sendText)
                 .addComponent(sendButton)));
 
-        // add the panel to the main panel
-        panel.add(topPanel);
 
     }
     //</editor-fold>
@@ -306,7 +303,7 @@ public class ChatFrameRedux extends JFrame implements ActionListener {
             @Override
             public void run() {
 
-                Document doc = messageList.getDocument();
+
                 try {
                     if (doc.getLength() > 0) {
                         doc.insertString(doc.getLength(), '\n' + message, null);

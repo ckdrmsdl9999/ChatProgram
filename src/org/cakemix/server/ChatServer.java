@@ -1,4 +1,4 @@
-package org.cakemix.chat;
+package org.cakemix.server;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -11,9 +11,8 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-import org.cakemix.chat.Network.ChatMessage;
-import org.cakemix.chat.Network.RegisterName;
-import org.cakemix.chat.Network.UpdateNames;
+import org.cakemix.*;
+import org.cakemix.Network.*;
 
 public class ChatServer {
 
@@ -36,7 +35,7 @@ public class ChatServer {
 
         // For consistency, the classes to be sent over the network are
         // registered by the same method for both the client and server.
-        Network.register(server);
+        org.cakemix.Network.register(server);
 
         server.addListener(new Listener() {
             public void received(Connection c, Object object) {
@@ -159,7 +158,7 @@ public class ChatServer {
                 }
             }
         });
-        server.bind(5000);
+        server.bind(org.cakemix.Network.port);
         server.start();
 
         // Open a window to provide an easy way to stop the server.
@@ -181,13 +180,16 @@ public class ChatServer {
         // Collect the names for each connection.
         Connection[] connections = server.getConnections();
         ArrayList names = new ArrayList(connections.length);
+        ArrayList displays = new ArrayList(connections.length);
         for (int i = connections.length - 1; i >= 0; i--) {
             ChatConnection connection = (ChatConnection) connections[i];
             names.add(connection.name);
+            displays.add(connection.name);
         }
         // Send the names to everyone.
         UpdateNames updateNames = new UpdateNames();
         updateNames.names = (String[]) names.toArray(new String[names.size()]);
+        updateNames.displays = (String[]) displays.toArray(new String[displays.size()]);
         server.sendToAllTCP(updateNames);
     }
 
