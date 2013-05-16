@@ -6,6 +6,7 @@
  */
 package org.cakemix.client;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -15,10 +16,13 @@ import java.awt.event.ItemListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
-import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.StyledEditorKit;
 import org.cakemix.Network;
 import org.cakemix.Network.ChatMessage;
 import org.cakemix.Network.UpdateNames;
@@ -27,12 +31,14 @@ import org.cakemix.Network.UpdateNames;
  *
  * @author cakemix
  */
-public class ClientFrame extends JFrame implements ActionListener,ItemListener {
+public class ClientFrame extends JFrame implements ActionListener, ItemListener {
 
     // Where messages are displayed
     JTextPane messageList;
     // Document that holds the messages
     StyledDocument doc;
+    // Styles for the document
+    Style style;
     //Currently logged in users
     JList userList;
     // User inputted text
@@ -95,7 +101,8 @@ public class ClientFrame extends JFrame implements ActionListener,ItemListener {
         // Create the document to hold the messages
         doc = messageList.getStyledDocument();
         // Create the style to hold the document formatting
-        // TODO::
+        // TODO :: FIGURE THIS SHIT OUT >,<
+        // style = WTF
 
         // user list
         userPane = new JScrollPane(userList = new JList());
@@ -231,13 +238,43 @@ public class ClientFrame extends JFrame implements ActionListener,ItemListener {
 
 
                 try {
-                    if (doc.getLength() > 0) {
-                        doc.insertString(doc.getLength(), '\n' + message.text, null);
-                        doc.setLogicalStyle(doc.getLength(), null);
-                    } else {
-                        doc.insertString(doc.getLength(), message.text, null);
-                        doc.setLogicalStyle(doc.getLength(), null);
+                    // append a new line to the end of the message
+                    message.text += '\n';
+                    // Get the current document length
+                    // Used for styling
+                    int curLength = doc.getLength();
+                    //insert the message to the doccument
+                    doc.insertString(doc.getLength(), message.text, null);
+                    // add the style for the line
+                    // create the attribute set to be used
+                    SimpleAttributeSet attr = new SimpleAttributeSet();
+                    // Check the type of message
+                    switch (message.sendTo) {
+                        case ChatMessage.EMOTE:
+                            // set colour for the line
+                            StyleConstants.setForeground(attr, Color.gray);
+
+                            //add the style to the line
+                            doc.setCharacterAttributes(curLength,
+                                    doc.getLength() - curLength, attr, true);
+                            return;
+                        case ChatMessage.ANNOUNCE:
+                            // set the Colour
+                            StyleConstants.setForeground(attr, Color.magenta);
+                            // also set it to bold, so it stands out more
+                            StyleConstants.setBold(attr, true);
+                            doc.setCharacterAttributes(curLength,
+                                    doc.getLength() - curLength, attr, true);
+                            return;
+                        case ChatMessage.SENDER:
+                            // Set the text to bold
+                            // this is usually a help mesage, and needs to be visible
+                            StyleConstants.setBold(attr, true);
+                            doc.setCharacterAttributes(curLength,
+                                    doc.getLength() - curLength, attr, true);
+                            return;
                     }
+
                 } catch (BadLocationException ex) {
                     Logger.getLogger(ChatClient.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -313,9 +350,9 @@ public class ClientFrame extends JFrame implements ActionListener,ItemListener {
         // check what type of object is sent via ie.getItem()
         // then do as above based on output of that command
         Object object = ie.getItem();
-        if (object instanceof JCheckBoxMenuItem){
+        if (object instanceof JCheckBoxMenuItem) {
             JCheckBoxMenuItem menuChk = (JCheckBoxMenuItem) object;
-            switch (menuChk.getText()){
+            switch (menuChk.getText()) {
                 case "Show User List":
                     userPane.setVisible(menuChk.isSelected());
                     this.pack();

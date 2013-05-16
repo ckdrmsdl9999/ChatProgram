@@ -16,14 +16,25 @@ import org.cakemix.Network.*;
 
 public class ChatServer {
 
+    // The Kryonet Server at the heart
     Server server;
+    // The Visual log (move this)
     JList messageList;
+    // welcome message send to all users on connect
+    // Make this customisable in a settings file or menu or something
     ChatMessage welcome = new ChatMessage("Welcome to the Server,"
             + "type /help to get a list of commands.");
+    // Help message
+    // same as above
     String help = "/help - Print this help page." + '\n'
             + "/roll [num] - Roll [num] d10 dice" + '\n'
             + "/{me or em} <action> - Sends <action> as emotive text";
 
+    /*
+     * Most of the code here is just a copy pasta from the example
+     * It differes on the slash commands, and a few others at the moment
+     * Working on creating my own implementation
+     */
     public ChatServer() throws IOException {
         server = new Server() {
             protected Connection newConnection() {
@@ -73,6 +84,7 @@ public class ChatServer {
                     // Send a "connected" message to everyone except the new client.
                     ChatMessage chatMessage = new ChatMessage();
                     chatMessage.text = name + " connected.";
+                    chatMessage.sendTo = ChatMessage.ANNOUNCE;
                     // log the message in the server list
                     DefaultListModel model = (DefaultListModel) messageList.getModel();
                     model.addElement(chatMessage.text);
@@ -116,7 +128,7 @@ public class ChatServer {
                                 server.sendToAllTCP(chatMessage);
                                 return;
                             case (ChatMessage.EMOTE):
-                                chatMessage.text = connection.name + " "
+                                chatMessage.text = connection.name + ""
                                         + chatMessage.text;
                                 //log the message in the server list
                                 model = (DefaultListModel) messageList.getModel();
@@ -153,6 +165,12 @@ public class ChatServer {
                     // Announce to everyone that someone (with a registered name) has left.
                     ChatMessage chatMessage = new ChatMessage();
                     chatMessage.text = connection.name + " disconnected.";
+                    chatMessage.sendTo = ChatMessage.ANNOUNCE;
+                    // Log the message in the server list
+                    DefaultListModel model = (DefaultListModel) messageList.getModel();
+                    model.addElement(chatMessage.text);
+                    messageList.ensureIndexIsVisible(model.size() - 1);
+                    // Send to all clients
                     server.sendToAllTCP(chatMessage);
                     updateNames();
                 }
@@ -209,10 +227,28 @@ public class ChatServer {
             // and check that they are not tring to roll
             // an invalid number of dice
             if (command.length > 1 && Integer.parseInt(command[1]) > 0) {
-                // implement a random roll system
-                // put it through a for loop (0 >> command[1])
-                // formulate output
-                chatMessage.text = "Not yet implemented (ROLL)";
+                // roll the dice and and store the results
+                int[] result = roll(Integer.parseInt(command[1]), 10);
+                // set the success and rerolls
+                int success = 0, reroll = 0;
+                // start filling up the chat message
+                chatMessage.text = "rolled " + result.length + " d10's" + "{ ";
+                for (int i = 0; i < result.length; i++) {
+                    chatMessage.text += result[i] + " ";
+                    if (result[i] > 6) {
+                        success++;
+
+                    } else {
+                        if (result[i] == 0) {
+                            success++;
+                            reroll++;
+                        }
+                    }
+                }
+
+                // output success and rerolls
+                chatMessage.text += "}" +'\n' + "With "
+                        + success + " Successes and " + reroll + " rerolls";
                 return chatMessage;
             }
 
@@ -235,6 +271,28 @@ public class ChatServer {
         chatMessage.text = help;
 
         return chatMessage;
+    }
+
+    /*
+     * return the result of a dice roll
+     * @param dice number of dice to roll
+     * @param type number of sides on the dice
+     */
+    private int[] roll(int dice, int type) {
+        // create the result
+        int[] result = new int[dice];
+
+        //create the random number generator
+        java.util.Random rand = new java.util.Random();
+        //roll the dice
+        for (int i = 0; i < result.length; i++) {
+
+            result[i] = (int) (type * rand.nextFloat());
+            System.out.println(result[i]);
+        }
+
+        //return the result
+        return result;
     }
 
     // This holds per connection state.

@@ -2,7 +2,6 @@ package org.cakemix;
 
 import com.esotericsoftware.minlog.Log;
 import java.io.IOException;
-import org.cakemix.chat.ChatFrameRedux;
 import org.cakemix.server.ChatServer;
 import org.cakemix.client.ClientFrame;
 

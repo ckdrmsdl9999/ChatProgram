@@ -68,6 +68,7 @@ public class Network {
         public static final int SENDER = 1;
         public static final int EMOTE = 2;
         public static final int ALIAS = 3;
+        public static final int ANNOUNCE = 4;
         public String text;
         public int sendTo = ALL;
 

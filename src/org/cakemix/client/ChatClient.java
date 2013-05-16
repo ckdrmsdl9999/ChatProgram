@@ -10,7 +10,9 @@ import com.esotericsoftware.kryonet.Listener;
 import java.awt.EventQueue;
 import java.io.IOException;
 import org.cakemix.Network;
-import org.cakemix.Network.*;
+import org.cakemix.Network.ChatMessage;
+import org.cakemix.Network.RegisterName;
+import org.cakemix.Network.UpdateNames;
 
 /**
  *
@@ -90,12 +92,11 @@ public ChatClient(){}
         return client;
     }
 
-
     /*
      *
      * Setup a kryo client
      */
-    protected void setupClient(final Client client/*, final ChatFrameRedux chatFrame*/) {
+    private void setupClient(final Client client/*, final ChatFrameRedux chatFrame*/) {
         client.start();
 
         // For consistency, the classes to be sent over the network are
@@ -105,6 +106,7 @@ public ChatClient(){}
         //add network listeners
         client.addListener(new Listener() {
             // for connecting to a server
+            @Override
             public void connected(Connection connection) {
                 // create a register name packet
                 RegisterName registerName = new RegisterName();
@@ -116,6 +118,7 @@ public ChatClient(){}
             }
 
             // for packets received from the server
+            @Override
             public void received(Connection connection, Object object) {
 
                 if (object instanceof UpdateNames) {
@@ -131,8 +134,10 @@ public ChatClient(){}
                 }
             }
 
+            @Override
             public void disconnected(Connection connection) {
                 EventQueue.invokeLater(new Runnable() {
+                    @Override
                     public void run() {
                         // Closing the frame calls the close listener which will stop the client's update thread.
                         client.close();
