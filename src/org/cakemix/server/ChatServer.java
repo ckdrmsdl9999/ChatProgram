@@ -7,6 +7,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -29,6 +30,7 @@ public class ChatServer {
     String help = "/help - Print this help page." + '\n'
             + "/roll [num] - Roll [num] d10 dice" + '\n'
             + "/{me or em} <action> - Sends <action> as emotive text";
+    HashMap users;
 
     /*
      * Most of the code here is just a copy pasta from the example
@@ -44,6 +46,9 @@ public class ChatServer {
             }
         };
 
+        //create the hashmap to store user details
+        users = new HashMap();
+
         // For consistency, the classes to be sent over the network are
         // registered by the same method for both the client and server.
         org.cakemix.Network.register(server);
@@ -53,37 +58,66 @@ public class ChatServer {
                 // We know all connections for this server are actually ChatConnections.
                 ChatConnection connection = (ChatConnection) c;
 
-                if (object instanceof RegisterName) {
-                    // Ignore the object if a client has already registered a name. This is
-                    // impossible with our client, but a hacker could send messages at any time.
 
-                    //scratch above, use this to change the name
-                    if (connection.name != null) {
-                        // Ignore the object if the name is invalid.
-                        String name = ((RegisterName) object).name;
-                        if (name == null) {
-                            return;
-                        }
-                        name = name.trim();
-                        if (name.length() == 0) {
-                            return;
-                        }
-                        return;
-                    }
-                    // Ignore the object if the name is invalid.
+
+                if (object instanceof RegisterName) {
+                    // get the values from the object
                     String name = ((RegisterName) object).name;
-                    if (name == null) {
+                    String display = ((RegisterName) object).displayName;
+                    // trim the values
+                    name = name.trim();
+                    display = display.trim();
+
+                    // use this to change the name
+                    if (connection.name != null) {
+                        if (name != null && name.length() != 0
+                                && display != null && display.length() != 0) {
+                            if (connection.name.equals(name)) {
+                                if (!users.containsKey(name)) {
+                                    users.put(name, display);
+                                } else {
+                                    // remove the old value
+                                    users.remove(name);
+                                    // insert the new value
+                                    users.put(name, display);
+                                }
+                            }
+                            return;
+                        }
                         return;
                     }
-                    name = name.trim();
-                    if (name.length() == 0) {
+                    if (name == null && name.length() == 0) {
                         return;
                     }
                     // Store the name on the connection.
-                    connection.name = name;
+                    // Check that no one else is using the name
+                    if (!users.containsKey(name)) {
+                        connection.name = name;
+                        // check that the display name is valid
+                        if (display != null && display.length() != 0) {
+                            users.put(name, display);
+                        } else {
+                            users.put(name, name);
+                        }
+                    } else {
+                        // find a number that isnt in use
+                        // and apend that to the name
+                        int i = 1;
+                        while (users.containsKey(name + i)) {
+                            i++;
+                        }
+                        connection.name = name + i;
+                        // check that the display name is valid
+                        if (display != null && display.length() != 0) {
+                            users.put(name + i, display);
+                        } else {
+                            users.put(name + i, name);
+                        }
+                    }
+
                     // Send a "connected" message to everyone except the new client.
                     ChatMessage chatMessage = new ChatMessage();
-                    chatMessage.text = name + " connected.";
+                    chatMessage.text = connection.name + " connected.";
                     chatMessage.sendTo = ChatMessage.ANNOUNCE;
                     // log the message in the server list
                     DefaultListModel model = (DefaultListModel) messageList.getModel();
@@ -114,7 +148,6 @@ public class ChatServer {
                     // Implement Regex
 
                     if (message.charAt(0) == '/') {
-
                         chatMessage = regex(message);
                         switch (chatMessage.sendTo) {
                             case (ChatMessage.ALL):
@@ -144,8 +177,24 @@ public class ChatServer {
                                 // send output to user
                                 server.sendToTCP(connection.getID(), chatMessage);
                                 return;
-                        }
+                            case (ChatMessage.ALIAS):
+                                // change the display name
+                                if (connection.name != null && connection.name.length() != 0
+                                        && chatMessage.text != null && chatMessage.text.length() != 0) {
 
+                                    if (!users.containsKey(connection.name)) {
+                                        users.put(connection.name, chatMessage.text);
+                                    } else {
+                                        // remove the old value
+                                        users.remove(connection.name);
+                                        // insert the new value
+                                        users.put(connection.name, chatMessage.text);
+                                    }
+                                    updateNames();
+                                    return;
+                                }
+
+                        }
                     }
                     // Prepend the connection's name and send to everyone.
                     chatMessage.text = connection.name + ": " + message;
@@ -156,6 +205,7 @@ public class ChatServer {
                     // send the message to clients
                     server.sendToAllTCP(chatMessage);
                     return;
+
                 }
             }
 
@@ -202,7 +252,7 @@ public class ChatServer {
         for (int i = connections.length - 1; i >= 0; i--) {
             ChatConnection connection = (ChatConnection) connections[i];
             names.add(connection.name);
-            displays.add(connection.name);
+            displays.add(users.get(connection.name));
         }
         // Send the names to everyone.
         UpdateNames updateNames = new UpdateNames();
@@ -247,7 +297,7 @@ public class ChatServer {
                 }
 
                 // output success and rerolls
-                chatMessage.text += "}" +'\n' + "With "
+                chatMessage.text += "}" + '\n' + "With "
                         + success + " Successes and " + reroll + " rerolls";
                 return chatMessage;
             }
@@ -263,6 +313,11 @@ public class ChatServer {
             // cut out the command
             // and return the rest of the string
             chatMessage.text = message.substring(3);
+            return chatMessage;
+        }
+        if (command[0].equals("alias")) {
+            chatMessage.sendTo = ChatMessage.ALIAS;
+            chatMessage.text = message.substring(7);
             return chatMessage;
         }
 
@@ -286,9 +341,7 @@ public class ChatServer {
         java.util.Random rand = new java.util.Random();
         //roll the dice
         for (int i = 0; i < result.length; i++) {
-
             result[i] = (int) (type * rand.nextFloat());
-            System.out.println(result[i]);
         }
 
         //return the result

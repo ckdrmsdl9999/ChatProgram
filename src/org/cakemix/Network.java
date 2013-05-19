@@ -21,7 +21,7 @@ public class Network {
 
     static public String[] getConnectionDetails() {
         // Request the host from the user.
-        String[] output = new String[3];
+        String[] output = new String[2];
 
         String input = (String) JOptionPane.showInputDialog(null, "Server Address:",
                 "Connect to chat server", JOptionPane.QUESTION_MESSAGE,
@@ -32,14 +32,6 @@ public class Network {
         }
         output[0] = input.trim();
 
-        input = (String) JOptionPane.showInputDialog(null, "Server Port:",
-                "Connect to chat Server", JOptionPane.QUESTION_MESSAGE, null,
-                null, "5000");
-        if (input == null || input.trim().length() == 0) {
-            System.exit(1);
-        }
-        output[1] = input.trim();
-
         // Request the user's name.
         input = (String) JOptionPane.showInputDialog(null, "Display Name:",
                 "Connect to chat server", JOptionPane.QUESTION_MESSAGE, null,
@@ -47,7 +39,7 @@ public class Network {
         if (input == null || input.trim().length() == 0) {
             System.exit(1);
         }
-        output[2] = input.trim();
+        output[1] = input.trim();
 
         return output;
     }

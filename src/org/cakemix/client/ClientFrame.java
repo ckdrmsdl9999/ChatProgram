@@ -100,9 +100,6 @@ public class ClientFrame extends JFrame implements ActionListener, ItemListener 
         messageList.setEditable(false);
         // Create the document to hold the messages
         doc = messageList.getStyledDocument();
-        // Create the style to hold the document formatting
-        // TODO :: FIGURE THIS SHIT OUT >,<
-        // style = WTF
 
         // user list
         userPane = new JScrollPane(userList = new JList());
@@ -215,7 +212,6 @@ public class ClientFrame extends JFrame implements ActionListener, ItemListener 
                 DefaultListModel model = (DefaultListModel) userList.getModel();
                 model.removeAllElements();
                 for (int i = 0; i < updateNames.names.length; i++) {
-                    System.out.println("name " + updateNames.names[i] + updateNames.displays[i]);
                     if (updateNames.names[i] != null) {
                         model.addElement(updateNames.displays[i] + "("
                                 + updateNames.names[i] + ")");
@@ -306,6 +302,7 @@ public class ClientFrame extends JFrame implements ActionListener, ItemListener 
                 client.disconnect();
                 //setup a new one
                 client = new ChatClient(Network.getConnectionDetails(), this);
+
                 return;
 
 
@@ -342,7 +339,6 @@ public class ClientFrame extends JFrame implements ActionListener, ItemListener 
                         "Not supported yet." + '\n'
                         + "Client Frame Action Command <" + ae.getActionCommand() + ">");
         }
-
     }
 
     @Override

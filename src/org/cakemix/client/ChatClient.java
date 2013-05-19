@@ -24,7 +24,8 @@ public class ChatClient {
     Client client;
 
     // the connection details
-    String host,port,name;
+    String host,name;
+    int port;
 
     //the Client frame that this client is attached too
     ClientFrame frame;
@@ -37,8 +38,8 @@ public ChatClient(){}
 
         // Populate the connection details
         host = connectionDetails[0];
-        port = connectionDetails[1];
-        name = connectionDetails[2];
+        name = connectionDetails[1];
+        port = Network.port;
 
         // attach the frame
         this.frame = frame;
@@ -57,7 +58,7 @@ public ChatClient(){}
     protected void connect() {
         // connect to the server using details above
         try {
-            client.connect(5000, host, Integer.parseInt(port));
+            client.connect(5000, host, port);
             // Server communication after connection can go here, or in Listener#connected().
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -115,6 +116,7 @@ public ChatClient(){}
                 registerName.displayName = name;
                 // send the packet
                 client.sendTCP(registerName);
+
             }
 
             // for packets received from the server

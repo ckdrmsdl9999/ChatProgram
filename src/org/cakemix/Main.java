@@ -25,6 +25,7 @@ public class Main {
                 try {
                     new ChatServer();
                     new ClientFrame();
+                    new ClientFrame();
                 } catch (IOException e) {
                 }
             } else if (args[0].equals("ServerOnly")) {
