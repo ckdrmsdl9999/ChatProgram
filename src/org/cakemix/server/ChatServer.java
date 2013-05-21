@@ -29,7 +29,14 @@ public class ChatServer {
     // same as above
     String help = "/help - Print this help page." + '\n'
             + "/roll [num] - Roll [num] d10 dice" + '\n'
-            + "/{me or em} <action> - Sends <action> as emotive text";
+            + "/{me or em} <action> - Sends <action> as emotive text"
+            + "/alias <name> - Change Displayed Name to <name>";
+    // GM Help
+    // this gets ADDED to athe above in the case of a GM asking for help
+    String gmHelp = "GM Commands" + '\n'
+            + "--- To Be Implemented ---" + '\n'
+            + "Standard Commands" + '\n';
+
     HashMap users;
 
     /*
@@ -92,7 +99,10 @@ public class ChatServer {
                     // Store the name on the connection.
                     // Check that no one else is using the name
                     if (!users.containsKey(name)) {
+                        // Store the connections name
                         connection.name = name;
+                        // if this is the first connection, set it to gm
+                        connection.rank = ChatConnection.RANK_GM;
                         // check that the display name is valid
                         if (display != null && display.length() != 0) {
                             users.put(name, display);
@@ -145,10 +155,17 @@ public class ChatServer {
                     if (message.length() == 0) {
                         return;
                     }
-                    // Implement Regex
-
+                    // Check for command inpt
+                    // Then pass the command input to the regex
                     if (message.charAt(0) == '/') {
-                        chatMessage = regex(message);
+                        //check if the connection has GM rights
+                        if (connection.rank == ChatConnection.RANK_GM) {
+                            // Run the gm regex
+                            chatMessage = gmRegex(connection, message);
+                        } else {
+                            // Run the standard user regex
+                            chatMessage = regex(message);
+                        }
                         switch (chatMessage.sendTo) {
                             case (ChatMessage.ALL):
                                 chatMessage.text = connection.name + ": "
@@ -171,6 +188,12 @@ public class ChatServer {
                                 server.sendToAllTCP(chatMessage);
                                 return;
                             case (ChatMessage.SENDER):
+                                // Check if the GM is getting help
+                                if (chatMessage.text.equals(help) &&
+                                        connection.rank == ChatConnection.RANK_GM){
+                                    // if they are, send them gm help instead
+                                    chatMessage.text = gmHelp + chatMessage.text;
+                                }
                                 // log the command output
                                 model = (DefaultListModel) messageList.getModel();
                                 model.addElement(connection.name + "::" + chatMessage.text);
@@ -190,6 +213,7 @@ public class ChatServer {
                                         // insert the new value
                                         users.put(connection.name, chatMessage.text);
                                     }
+                                    // Update the name list on all clients
                                     updateNames();
                                     return;
                                 }
@@ -251,7 +275,10 @@ public class ChatServer {
         ArrayList displays = new ArrayList(connections.length);
         for (int i = connections.length - 1; i >= 0; i--) {
             ChatConnection connection = (ChatConnection) connections[i];
-            names.add(connection.name);
+            if (connection.rank == ChatConnection.RANK_GM){
+                names.add(connection.name + " (GM)");
+            }else{
+            names.add(connection.name);}
             displays.add(users.get(connection.name));
         }
         // Send the names to everyone.
@@ -259,6 +286,12 @@ public class ChatServer {
         updateNames.names = (String[]) names.toArray(new String[names.size()]);
         updateNames.displays = (String[]) displays.toArray(new String[displays.size()]);
         server.sendToAllTCP(updateNames);
+    }
+
+    protected ChatMessage gmRegex(ChatConnection connection, String message){
+
+        // if its not a gm command, fallback to standard regex
+        return regex(message);
     }
 
     protected ChatMessage regex(String message) {
@@ -312,13 +345,18 @@ public class ChatServer {
             chatMessage.sendTo = ChatMessage.EMOTE;
             // cut out the command
             // and return the rest of the string
-            chatMessage.text = message.substring(3);
+            chatMessage.text = message.substring(4);
             return chatMessage;
         }
         if (command[0].equals("alias")) {
-            chatMessage.sendTo = ChatMessage.ALIAS;
-            chatMessage.text = message.substring(7);
-            return chatMessage;
+            // Check that there is a name to alias to
+            if (message.length() > 7) {
+                // Set message type
+                chatMessage.sendTo = ChatMessage.ALIAS;
+                // set the message (will be used to change name)
+                chatMessage.text = message.substring(7);
+                return chatMessage;
+            }
         }
 
         // return the user their helpful message
@@ -350,7 +388,14 @@ public class ChatServer {
 
     // This holds per connection state.
     static class ChatConnection extends Connection {
+        // Add a name to the connection
 
         public String name;
+        // Add a rank to the connection
+        public int rank = RANK_STANDARD;
+        // Set up the static rank identifiers
+        public static final int RANK_LISTENER = 0;
+        public static final int RANK_STANDARD = 1;
+        public static final int RANK_GM = 2;
     }
 }
