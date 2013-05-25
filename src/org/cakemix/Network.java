@@ -3,7 +3,6 @@ package org.cakemix;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 import javax.swing.JOptionPane;
-import javax.swing.text.Style;
 
 // This class is a convenient place to keep things common to both the client and server.
 public class Network {
@@ -61,7 +60,11 @@ public class Network {
         public static final int EMOTE = 2;
         public static final int ALIAS = 3;
         public static final int ANNOUNCE = 4;
-        public String text;
+        public static final int DESCRIPTION = 5;
+        public static final int OFF_TOPIC = 6;
+        public static final int WHISPER = 7;
+
+        public String text, target = null;
         public int sendTo = ALL;
 
         public ChatMessage() {
@@ -69,6 +72,17 @@ public class Network {
 
         public ChatMessage(String text) {
             this.text = text;
+        }
+
+        public ChatMessage(String text, int sendTo){
+            this.text = text;
+            this.sendTo = sendTo;
+        }
+
+        public ChatMessage(String text, int sendTo, String target){
+            this.text = text;
+            this.sendTo = sendTo;
+            this.target = target;
         }
     }
 }

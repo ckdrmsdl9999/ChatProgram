@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.cakemix.server.ChatServer;
 import org.cakemix.client.ClientFrame;
 
-/*
+/**
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */

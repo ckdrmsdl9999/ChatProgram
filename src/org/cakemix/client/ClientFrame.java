@@ -31,7 +31,8 @@ import org.cakemix.Network.UpdateNames;
  *
  * @author cakemix
  */
-public class ClientFrame extends JFrame implements ActionListener, ItemListener {
+public class ClientFrame extends JFrame implements ActionListener,
+        ItemListener {
 
     // Where messages are displayed
     JTextPane messageList;
@@ -54,6 +55,7 @@ public class ClientFrame extends JFrame implements ActionListener, ItemListener 
         // set default close operation
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+        setLocation(100, 100);
 
         //create a network client
         client = new ChatClient();
@@ -71,7 +73,7 @@ public class ClientFrame extends JFrame implements ActionListener, ItemListener 
         setVisible(true);
     }
 
-    /*
+    /**
      * Override dispose so that it disconnects the client first
      */
     @Override
@@ -80,10 +82,10 @@ public class ClientFrame extends JFrame implements ActionListener, ItemListener 
         super.dispose();
     }
 
-    /*
+    /**
      * Create the form
      */
-    private void buildUI(Container contentPane) {
+    private void buildUI( Container contentPane ) {
 
         // Create the layout for the form
         GroupLayout layout = new GroupLayout(contentPane);
@@ -117,7 +119,7 @@ public class ClientFrame extends JFrame implements ActionListener, ItemListener 
         // tells it to act like the send button
         sendText.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed( ActionEvent e ) {
                 sendButton.doClick();
             }
         });
@@ -127,8 +129,8 @@ public class ClientFrame extends JFrame implements ActionListener, ItemListener 
         layout.setHorizontalGroup(layout.createParallelGroup()
                 //main focus (left list && right chat)
                 .addGroup(layout.createSequentialGroup()
-                .addComponent(userPane, 64, 96, 128)
-                .addComponent(messagePane, 64, 320, Short.MAX_VALUE))
+                .addComponent(userPane, 64, 128, 192)
+                .addComponent(messagePane, 64, 384, Short.MAX_VALUE))
                 //input at the bottom
                 .addGroup(layout.createSequentialGroup()
                 .addComponent(sendText)
@@ -136,15 +138,16 @@ public class ClientFrame extends JFrame implements ActionListener, ItemListener 
         layout.setVerticalGroup(layout.createSequentialGroup()
                 //main focus (left list && right chat)
                 .addGroup(layout.createParallelGroup()
-                .addComponent(messagePane, 64, 128, Short.MAX_VALUE)
+                .addComponent(messagePane, 64, 256, Short.MAX_VALUE)
                 .addComponent(userPane))
                 //input at the bottom
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+                .addGroup(layout.createParallelGroup(
+                GroupLayout.Alignment.TRAILING, false)
                 .addComponent(sendText)
                 .addComponent(sendButton)));
     }
 
-    /*
+    /**
      * Create the menu bar
      */
     private void buildMenu() {
@@ -198,10 +201,10 @@ public class ClientFrame extends JFrame implements ActionListener, ItemListener 
 
     }
 
-    /*
+    /**
      * Update the userlist
      */
-    public void setNames(final UpdateNames updateNames) {
+    public void setNames( final UpdateNames updateNames ) {
         // This listener is run on the client's update thread,
         // which was started by client.start().
         // We must be careful to only interact with Swing
@@ -211,8 +214,8 @@ public class ClientFrame extends JFrame implements ActionListener, ItemListener 
             public void run() {
                 DefaultListModel model = (DefaultListModel) userList.getModel();
                 model.removeAllElements();
-                for (int i = 0; i < updateNames.names.length; i++) {
-                    if (updateNames.names[i] != null) {
+                for ( int i = 0; i < updateNames.names.length; i++ ) {
+                    if ( updateNames.names[i] != null ) {
                         model.addElement(updateNames.displays[i] + "("
                                 + updateNames.names[i] + ")");
                     } else {
@@ -224,15 +227,13 @@ public class ClientFrame extends JFrame implements ActionListener, ItemListener 
         });
     }
 
-    /*
+    /**
      * Add a new message to the list
      */
-    public void addMessage(final ChatMessage message) {
+    public void addMessage( final ChatMessage message ) {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-
-
                 try {
                     // append a new line to the end of the message
                     message.text += '\n';
@@ -245,7 +246,7 @@ public class ClientFrame extends JFrame implements ActionListener, ItemListener 
                     // create the attribute set to be used
                     SimpleAttributeSet attr = new SimpleAttributeSet();
                     // Check the type of message
-                    switch (message.sendTo) {
+                    switch ( message.sendTo ) {
                         case ChatMessage.EMOTE:
                             // set colour for the line
                             StyleConstants.setForeground(attr, Color.gray);
@@ -269,17 +270,38 @@ public class ClientFrame extends JFrame implements ActionListener, ItemListener 
                             doc.setCharacterAttributes(curLength,
                                     doc.getLength() - curLength, attr, true);
                             return;
+                        case ChatMessage.DESCRIPTION:
+                            // Set the text to itallics
+                            StyleConstants.setBold(attr, true);
+                            doc.setCharacterAttributes(curLength,
+                                    doc.getLength() - curLength, attr, true);
+                            return;
+                        case ChatMessage.OFF_TOPIC:
+                            // Make off topic slightly muted
+                            StyleConstants.setForeground(attr, Color.lightGray);
+                            doc.setCharacterAttributes(curLength,
+                                    doc.getLength() - curLength, attr, true);
+                            return;
+                        case ChatMessage.WHISPER:
+                            // colour Whispers destinctively
+                            StyleConstants.setForeground(attr, new Color(102,0,102));
+                            doc.setCharacterAttributes(curLength,
+                                    doc.getLength() - curLength, attr, true);
+                            return;
+
                     }
 
-                } catch (BadLocationException ex) {
-                    Logger.getLogger(ChatClient.class.getName()).log(Level.SEVERE, null, ex);
+
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(ChatClient.class.getName()).log(
+                            Level.SEVERE, null, ex);
                 }
                 messageList.setDocument(doc);
             }
         });
     }
 
-    /*
+    /**
      * Get text from user input
      */
     public String getSendText() {
@@ -287,9 +309,9 @@ public class ClientFrame extends JFrame implements ActionListener, ItemListener 
     }
 
     @Override
-    public void actionPerformed(ActionEvent ae) {
+    public void actionPerformed( ActionEvent ae ) {
         // Decide what to do based on the Action Command
-        switch (ae.getActionCommand()) {
+        switch ( ae.getActionCommand() ) {
 
             // Menu Actions
             // Exit button in File Menu
@@ -311,7 +333,7 @@ public class ClientFrame extends JFrame implements ActionListener, ItemListener 
             // Send button/ sendText action
             case "Send":
                 // Check that there is text to send
-                if (getSendText().length() == 0) {
+                if ( getSendText().length() == 0 ) {
                     return;
                 }
                 // Create the runnable object that sends the text
@@ -342,13 +364,13 @@ public class ClientFrame extends JFrame implements ActionListener, ItemListener 
     }
 
     @Override
-    public void itemStateChanged(ItemEvent ie) {
+    public void itemStateChanged( ItemEvent ie ) {
         // check what type of object is sent via ie.getItem()
         // then do as above based on output of that command
         Object object = ie.getItem();
-        if (object instanceof JCheckBoxMenuItem) {
+        if ( object instanceof JCheckBoxMenuItem ) {
             JCheckBoxMenuItem menuChk = (JCheckBoxMenuItem) object;
-            switch (menuChk.getText()) {
+            switch ( menuChk.getText() ) {
                 case "Show User List":
                     userPane.setVisible(menuChk.isSelected());
                     this.pack();

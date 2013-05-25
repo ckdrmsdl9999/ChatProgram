@@ -52,7 +52,7 @@ public ChatClient(){}
 
     }
 
-    /*
+    /**
      * Connect to a server
      */
     protected void connect() {
@@ -66,7 +66,7 @@ public ChatClient(){}
         }
     }
 
-    /*
+    /**
      * Remove the current client
      */
     protected void disconnect() {
@@ -76,7 +76,7 @@ public ChatClient(){}
         client.stop();}
     }
 
-    /*
+    /**
      * Request a change of Display Name (gui form)
      */
     protected void requestNameChange(String name) {
@@ -86,14 +86,14 @@ public ChatClient(){}
         client.sendTCP(registerName);
     }
 
-    /*
+    /**
      * expose the underlying network client
      */
     protected Client getClient() {
         return client;
     }
 
-    /*
+    /**
      *
      * Setup a kryo client
      */
