@@ -38,8 +38,10 @@ public class ClientFrame extends JFrame implements ActionListener,
     JTextPane messageList;
     // Document that holds the messages
     StyledDocument doc;
-    // Styles for the document
-    Style style;
+    // Attributes for the different message types
+    // Array of message styles with enough to hold the number of different chat
+    // message types
+    MessageStyle[] messageStyles = new MessageStyle[ChatMessage.NUM_TYPE];
     //Currently logged in users
     JList userList;
     // User inputted text
@@ -103,6 +105,9 @@ public class ClientFrame extends JFrame implements ActionListener,
         // Create the document to hold the messages
         doc = messageList.getStyledDocument();
 
+        // set all styles
+        setStyle();
+
         // user list
         userPane = new JScrollPane(userList = new JList());
 
@@ -145,6 +150,30 @@ public class ClientFrame extends JFrame implements ActionListener,
                 GroupLayout.Alignment.TRAILING, false)
                 .addComponent(sendText)
                 .addComponent(sendButton)));
+    }
+
+    /**
+     * Set the styles used in the chat log
+     */
+    private void setStyle() {
+        // Start creating the attribute sets for the messages
+        messageStyles[ChatMessage.TYPE_ALIAS] = new MessageStyle().fromString(
+                "#000000;false;true");
+        messageStyles[ChatMessage.TYPE_ALL] = new MessageStyle().fromString(
+                "#000000;false;false");
+        messageStyles[ChatMessage.TYPE_ANNOUNCE] = new MessageStyle().fromString(
+                "#ff00ff;true;false");
+        messageStyles[ChatMessage.TYPE_DESCRIPTION] = new MessageStyle().fromString(
+                "#000000;false;true");
+        messageStyles[ChatMessage.TYPE_EMOTE] = new MessageStyle().fromString(
+                "#aaaaaa;false;false");
+        messageStyles[ChatMessage.TYPE_OFF_TOPIC] = new MessageStyle().fromString(
+                "#cccccc;false;true");
+        messageStyles[ChatMessage.TYPE_SENDER] = new MessageStyle().fromString(
+                "#000000;true;false");
+        messageStyles[ChatMessage.TYPE_WHISPER] = new MessageStyle().fromString(
+                "#660066;false;false");
+
     }
 
     /**
@@ -243,54 +272,17 @@ public class ClientFrame extends JFrame implements ActionListener,
                     //insert the message to the doccument
                     doc.insertString(doc.getLength(), message.text, null);
                     // add the style for the line
-                    // create the attribute set to be used
-                    SimpleAttributeSet attr = new SimpleAttributeSet();
-                    // Check the type of message
-                    switch ( message.sendTo ) {
-                        case ChatMessage.EMOTE:
-                            // set colour for the line
-                            StyleConstants.setForeground(attr, Color.gray);
-
-                            //add the style to the line
-                            doc.setCharacterAttributes(curLength,
-                                    doc.getLength() - curLength, attr, true);
-                            return;
-                        case ChatMessage.ANNOUNCE:
-                            // set the Colour
-                            StyleConstants.setForeground(attr, Color.magenta);
-                            // also set it to bold, so it stands out more
-                            StyleConstants.setBold(attr, true);
-                            doc.setCharacterAttributes(curLength,
-                                    doc.getLength() - curLength, attr, true);
-                            return;
-                        case ChatMessage.SENDER:
-                            // Set the text to bold
-                            // this is usually a help mesage, and needs to be visible
-                            StyleConstants.setBold(attr, true);
-                            doc.setCharacterAttributes(curLength,
-                                    doc.getLength() - curLength, attr, true);
-                            return;
-                        case ChatMessage.DESCRIPTION:
-                            // Set the text to itallics
-                            StyleConstants.setBold(attr, true);
-                            doc.setCharacterAttributes(curLength,
-                                    doc.getLength() - curLength, attr, true);
-                            return;
-                        case ChatMessage.OFF_TOPIC:
-                            // Make off topic slightly muted
-                            StyleConstants.setForeground(attr, Color.lightGray);
-                            doc.setCharacterAttributes(curLength,
-                                    doc.getLength() - curLength, attr, true);
-                            return;
-                        case ChatMessage.WHISPER:
-                            // colour Whispers destinctively
-                            StyleConstants.setForeground(attr, new Color(102,0,102));
-                            doc.setCharacterAttributes(curLength,
-                                    doc.getLength() - curLength, attr, true);
-                            return;
-
-                    }
-
+                    doc.setCharacterAttributes( // explanation
+                            // start point (ie, before new message)
+                            curLength,
+                            // length of styling (current length - start point)
+                            doc.getLength() - curLength,
+                            // message style taken from style array
+                            messageStyles[message.sendTo].attributes,
+                            // replace any formatting that exists
+                            // for the line
+                            true);
+                    return;
 
                 } catch ( BadLocationException ex ) {
                     Logger.getLogger(ChatClient.class.getName()).log(

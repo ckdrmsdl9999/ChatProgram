@@ -55,17 +55,18 @@ public class Network {
 
     static public class ChatMessage {
 
-        public static final int ALL = 0;
-        public static final int SENDER = 1;
-        public static final int EMOTE = 2;
-        public static final int ALIAS = 3;
-        public static final int ANNOUNCE = 4;
-        public static final int DESCRIPTION = 5;
-        public static final int OFF_TOPIC = 6;
-        public static final int WHISPER = 7;
+        public static final int TYPE_ALL = 0;
+        public static final int TYPE_SENDER = 1;
+        public static final int TYPE_EMOTE = 2;
+        public static final int TYPE_ALIAS = 3;
+        public static final int TYPE_ANNOUNCE = 4;
+        public static final int TYPE_DESCRIPTION = 5;
+        public static final int TYPE_OFF_TOPIC = 6;
+        public static final int TYPE_WHISPER = 7;
+        public static final int NUM_TYPE = 8;
 
         public String text, target = null;
-        public int sendTo = ALL;
+        public int sendTo = TYPE_ALL;
 
         public ChatMessage() {
         }

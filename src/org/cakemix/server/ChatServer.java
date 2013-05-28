@@ -28,16 +28,14 @@ public class ChatServer {
     JList messageList;
     // welcome message send to all users on connect
     // Make this customisable in a settings file or menu or something
-    ChatMessage welcome = new ChatMessage("Welcome to the Server,"
-            + "type /help to get a list of commands.", ChatMessage.ANNOUNCE);
+    ChatMessage welcome = new ChatMessage("Welcome to the Server, "
+            + "type /help to get a list of commands.", ChatMessage.TYPE_ANNOUNCE);
     // Help message
     // same as above
     String help = "/help - Print this help page." + '\n'
             + "/roll [num] - Roll [num] d10 dice" + '\n'
             + "/{me or em} <action> - Sends <action> as emotive text" + '\n'
-            // vvv broken needs looking at vvv
-            //+ "/w{hisper} <name> <message> - Send <message> to <name>" + '\n'
-
+            + "/w{hisper} <name> <message> - Send <message> to <name>" + '\n'
             + "/alias <name> - Change Displayed Name to <name>";
     // GM Help
     // this gets ADDED to athe above in the case of a GM asking for help
@@ -95,7 +93,7 @@ public class ChatServer {
                     // Announce to everyone that someone (with a registered name) has left.
                     ChatMessage chatMessage = new ChatMessage();
                     chatMessage.text = connection.name + " disconnected.";
-                    chatMessage.sendTo = ChatMessage.ANNOUNCE;
+                    chatMessage.sendTo = ChatMessage.TYPE_ANNOUNCE;
                     // Log the message in the server list
                     DefaultListModel model = (DefaultListModel) messageList.getModel();
                     model.addElement(chatMessage.text);
@@ -176,7 +174,7 @@ public class ChatServer {
                             if ( c.rank < ChatConnection.RANK_GM ) {
                                 c.rank++;
                                 // return an announcement
-                                chatMessage.sendTo = ChatMessage.ANNOUNCE;
+                                chatMessage.sendTo = ChatMessage.TYPE_ANNOUNCE;
                                 chatMessage.text = connection.name + " promoted "
                                         + c.name;
                                 return chatMessage;
@@ -184,7 +182,7 @@ public class ChatServer {
                         }
                     }
                 }
-                chatMessage.sendTo = ChatMessage.SENDER;
+                chatMessage.sendTo = ChatMessage.TYPE_SENDER;
                 chatMessage.text = "/promote <name> - Promote <name> by one rank";
                 return chatMessage;
             case "demote":
@@ -199,7 +197,7 @@ public class ChatServer {
                                 c.rank--;
 
                                 // return an announcement
-                                chatMessage.sendTo = ChatMessage.ANNOUNCE;
+                                chatMessage.sendTo = ChatMessage.TYPE_ANNOUNCE;
                                 chatMessage.text = connection.name + " demoted "
                                         + c.name;
                                 return chatMessage;
@@ -207,7 +205,7 @@ public class ChatServer {
                         }
                     }
                 }
-                chatMessage.sendTo = ChatMessage.SENDER;
+                chatMessage.sendTo = ChatMessage.TYPE_SENDER;
                 chatMessage.text = "/demote <name> - Demote <name> by one rank";
                 return chatMessage;
             case "addgm":
@@ -220,21 +218,21 @@ public class ChatServer {
                             // set it to GM
                             c.rank = ChatConnection.RANK_GM;
                             // return an announcement
-                            chatMessage.sendTo = ChatMessage.ANNOUNCE;
+                            chatMessage.sendTo = ChatMessage.TYPE_ANNOUNCE;
                             chatMessage.text = connection.name + " made "
                                     + c.name + " a GM";
                             return chatMessage;
                         }
                     }
                 }
-                chatMessage.sendTo = ChatMessage.SENDER;
+                chatMessage.sendTo = ChatMessage.TYPE_SENDER;
                 chatMessage.text = "/addgm <name> - Set <name> rank to GM";
                 return chatMessage;
             // scene descriptive text
             case "d":
             case "desc":
             case "description":
-                chatMessage.sendTo = ChatMessage.DESCRIPTION;
+                chatMessage.sendTo = ChatMessage.TYPE_DESCRIPTION;
                 chatMessage.text = message.substring(command[0].length() + 1);
                 return chatMessage;
 
@@ -256,7 +254,7 @@ public class ChatServer {
 
             case "roll":
                 // Since everyone needs to see rolls
-                chatMessage.sendTo = ChatMessage.ALL;
+                chatMessage.sendTo = ChatMessage.TYPE_ALL;
 
                 // check if they filled out the command right
                 // and check that they are not tring to roll
@@ -291,7 +289,7 @@ public class ChatServer {
                 }
 
                 // if they fuck up, give them command instructions
-                chatMessage.sendTo = ChatMessage.SENDER;
+                chatMessage.sendTo = ChatMessage.TYPE_SENDER;
                 chatMessage.text = "/roll [num] - Roll [num] d10 dice";
                 return chatMessage;
 
@@ -300,7 +298,7 @@ public class ChatServer {
             case "em":
                 // Since everyone needs to see emotes as emotes
                 // and not as messages
-                chatMessage.sendTo = ChatMessage.EMOTE;
+                chatMessage.sendTo = ChatMessage.TYPE_EMOTE;
                 // cut out the command
                 // and return the rest of the string
                 chatMessage.text = message.substring(4);
@@ -315,7 +313,7 @@ public class ChatServer {
                     if ( users.containsKey(command[1]) ) {
                         // since there is a user in the list
                         //set the message to a whisper
-                        chatMessage.sendTo = ChatMessage.WHISPER;
+                        chatMessage.sendTo = ChatMessage.TYPE_WHISPER;
                         // set the message target
                         chatMessage.target = command[1];
 
@@ -329,26 +327,26 @@ public class ChatServer {
                         return new ChatMessage(
                                 "User Not Found <" + command[1] + ">" + '\n' + users.keySet().toString()
                                 + '\n' + "/w Currently not implemented anyway",
-                                ChatMessage.SENDER);
+                                ChatMessage.TYPE_SENDER);
                     }
                 }
                 return new ChatMessage(
                         "/w{hisper} <name> <message> - Send <message> to <name>"
                         + '\n' + "Currently not implemented",
-                        ChatMessage.SENDER);
+                        ChatMessage.TYPE_SENDER);
 
 
             case "alias":
                 // Check that there is a name to alias to
                 if ( command.length > 1 ) {
                     // Set message type
-                    chatMessage.sendTo = ChatMessage.ALIAS;
+                    chatMessage.sendTo = ChatMessage.TYPE_ALIAS;
                     // set the message (will be used to change name)
                     chatMessage.text = command[1];
                 } else {
                     // cock up, send help
                     // seeing a pattren?
-                    chatMessage.sendTo = ChatMessage.SENDER;
+                    chatMessage.sendTo = ChatMessage.TYPE_SENDER;
                     chatMessage.text = "/alias <name> - Change Displayed Name to <name>";
                 }
                 // return the message
@@ -357,7 +355,7 @@ public class ChatServer {
         }
 
         // return the user their helpful message
-        chatMessage.sendTo = ChatMessage.SENDER;
+        chatMessage.sendTo = ChatMessage.TYPE_SENDER;
         chatMessage.text = help;
 
         return chatMessage;
@@ -430,7 +428,7 @@ public class ChatServer {
             }
             switch ( chatMessage.sendTo ) {
 
-                case (ChatMessage.ALL):
+                case (ChatMessage.TYPE_ALL):
                     chatMessage.text = connection.name + ": "
                             + chatMessage.text;
                     //log the message in the server list
@@ -441,8 +439,8 @@ public class ChatServer {
                     server.sendToAllTCP(chatMessage);
                     return;
 
-                case (ChatMessage.EMOTE):
-                    chatMessage.text = connection.name + ""
+                case (ChatMessage.TYPE_EMOTE):
+                    chatMessage.text = connection.name + " "
                             + chatMessage.text;
                     //log the message in the server list
                     model = (DefaultListModel) messageList.getModel();
@@ -451,7 +449,7 @@ public class ChatServer {
                     // send the message to clients
                     server.sendToAllTCP(chatMessage);
                     return;
-                case (ChatMessage.SENDER):
+                case (ChatMessage.TYPE_SENDER):
                     // Check if the GM is getting help
                     if ( chatMessage.text.equals(help)
                             && connection.rank == ChatConnection.RANK_GM ) {
@@ -465,7 +463,7 @@ public class ChatServer {
                     server.sendToTCP(connection.getID(), chatMessage);
                     return;
 
-                case (ChatMessage.ALIAS):
+                case (ChatMessage.TYPE_ALIAS):
                     // change the display name
                     if ( connection.name != null && connection.name.length() != 0
                             && chatMessage.text != null && chatMessage.text.length() != 0 ) {
@@ -483,27 +481,27 @@ public class ChatServer {
                         return;
                     }
 
-                case (ChatMessage.DESCRIPTION):
+                case (ChatMessage.TYPE_DESCRIPTION):
                     //log the message in the server list
                     model = (DefaultListModel) messageList.getModel();
-                    model.addElement("(Description)" + chatMessage.text);
+                    model.addElement(connection.name + "(Description)" + chatMessage.text);
                     messageList.ensureIndexIsVisible(model.size() - 1);
                     // send the message to clients
                     server.sendToAllTCP(chatMessage);
                     return;
 
-                case ChatMessage.OFF_TOPIC:
+                case ChatMessage.TYPE_OFF_TOPIC:
                     chatMessage.text = connection.name + ": "
                             + chatMessage.text;
                     //log the message in the server list
                     model = (DefaultListModel) messageList.getModel();
-                    model.addElement("(Off Topic)" + chatMessage.text);
+                    model.addElement(connection.name + "(Off Topic)" + chatMessage.text);
                     messageList.ensureIndexIsVisible(model.size() - 1);
                     // send the message to clients
                     server.sendToAllTCP(chatMessage);
                     return;
 
-                case ChatMessage.WHISPER:
+                case ChatMessage.TYPE_WHISPER:
                     // loop through the connections, find the matching user
                     // Send the user the message from here
                     // Send the confirmation (ie Sent To <user> :: <message>)
@@ -514,7 +512,7 @@ public class ChatServer {
                     if ( chatMessage.target.equals(connection.name) ) {
                         server.sendToAllExceptTCP(connection.getID(),
                                 new ChatMessage(connection.name
-                                + " whispers to themselves", ChatMessage.EMOTE));
+                                + " whispers to themselves", ChatMessage.TYPE_EMOTE));
                     }
                     // get the list of connections
                     Connection[] conn = server.getConnections();
@@ -620,7 +618,7 @@ public class ChatServer {
         // Send a "connected" message to everyone except the new client.
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.text = connection.name + " connected.";
-        chatMessage.sendTo = ChatMessage.ANNOUNCE;
+        chatMessage.sendTo = ChatMessage.TYPE_ANNOUNCE;
         // log the message in the server list
         DefaultListModel model = (DefaultListModel) messageList.getModel();
         model.addElement(chatMessage.text);
@@ -657,5 +655,6 @@ public class ChatServer {
         public static final int RANK_STANDARD = 1;
         public static final int RANK_PLAYER = 2;
         public static final int RANK_GM = 3;
+
     }
 }
