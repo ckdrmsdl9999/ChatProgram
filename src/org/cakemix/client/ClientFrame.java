@@ -8,11 +8,13 @@ package org.cakemix.client;
 
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -80,7 +82,44 @@ public class ClientFrame extends JFrame implements ActionListener,
      */
     @Override
     public void dispose() {
+        //disconnect the chat connection
         client.disconnect();
+
+        // Writethe chat config to file
+        // This auto generated a mess of try catch statments...
+        // look at this later
+        // create the file writer
+        FileWriter configWriter = null;
+
+        try {
+            // get the file to write too
+            File chatConfig = new File("chatConfig");
+            // tell the file writer to use that file
+            configWriter = new FileWriter(chatConfig);
+            // loop through chat settings, then write them to the file
+            for ( int i = 0; i < ChatMessage.NUM_TYPE; i++ ) {
+                configWriter.write(messageStyles[i].toString() + '\n');
+            }
+
+        } // catch any file writing errors
+        catch ( IOException ex ) {
+            // log them
+            Logger.getLogger(ClientFrame.class.getName()).log(Level.SEVERE, null,
+                    ex);
+        } // finaly close the file
+        finally {
+            if ( configWriter != null ) {
+                try {
+                    configWriter.flush();
+                    configWriter.close();
+                } catch ( IOException ex ) {
+                    ex.printStackTrace();
+                }
+            }
+
+        }
+
+        // call dispose from above
         super.dispose();
     }
 
@@ -156,24 +195,51 @@ public class ClientFrame extends JFrame implements ActionListener,
      * Set the styles used in the chat log
      */
     private void setStyle() {
-        // Start creating the attribute sets for the messages
-        messageStyles[ChatMessage.TYPE_ALIAS] = new MessageStyle().fromString(
-                "#000000;false;true");
-        messageStyles[ChatMessage.TYPE_ALL] = new MessageStyle().fromString(
-                "#000000;false;false");
-        messageStyles[ChatMessage.TYPE_ANNOUNCE] = new MessageStyle().fromString(
-                "#ff00ff;true;false");
-        messageStyles[ChatMessage.TYPE_DESCRIPTION] = new MessageStyle().fromString(
-                "#000000;false;true");
-        messageStyles[ChatMessage.TYPE_EMOTE] = new MessageStyle().fromString(
-                "#aaaaaa;false;false");
-        messageStyles[ChatMessage.TYPE_OFF_TOPIC] = new MessageStyle().fromString(
-                "#cccccc;false;true");
-        messageStyles[ChatMessage.TYPE_SENDER] = new MessageStyle().fromString(
-                "#000000;true;false");
-        messageStyles[ChatMessage.TYPE_WHISPER] = new MessageStyle().fromString(
-                "#660066;false;false");
+        // first try and load from file
+        // Create the file reader here
+        BufferedReader configReader = null;
+        try {
 
+            configReader = new BufferedReader(new FileReader("chatConfig"));
+
+            // loop untill the settings array is filled
+            // extra settings beyond that are ignored,
+            // this stops the array overloading
+            // Edit this later to be more flexable
+            // possibly index as first character?
+            for ( int i = 0; i < ChatMessage.NUM_TYPE; i++ ) {
+
+                messageStyles[i] = new MessageStyle().fromString(
+                        configReader.readLine());
+            }
+        } catch ( IOException ex ) {
+            // Start creating the attribute sets for the messages
+            ex.printStackTrace();
+            System.out.println("woa bessy");
+            messageStyles[ChatMessage.TYPE_ALIAS] = new MessageStyle().fromString(
+                    "#000000;false;true");
+            messageStyles[ChatMessage.TYPE_ALL] = new MessageStyle().fromString(
+                    "#000000;false;false");
+            messageStyles[ChatMessage.TYPE_ANNOUNCE] = new MessageStyle().fromString(
+                    "#ff00ff;true;false");
+            messageStyles[ChatMessage.TYPE_DESCRIPTION] = new MessageStyle().fromString(
+                    "#000000;false;true");
+            messageStyles[ChatMessage.TYPE_EMOTE] = new MessageStyle().fromString(
+                    "#aaaaaa;false;false");
+            messageStyles[ChatMessage.TYPE_OFF_TOPIC] = new MessageStyle().fromString(
+                    "#cccccc;false;true");
+            messageStyles[ChatMessage.TYPE_SENDER] = new MessageStyle().fromString(
+                    "#000000;true;false");
+            messageStyles[ChatMessage.TYPE_WHISPER] = new MessageStyle().fromString(
+                    "#660066;false;false");
+        } finally {
+            // close the file after all else is done with it
+            try {
+                configReader.close();
+            } catch ( IOException ex ) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -186,13 +252,13 @@ public class ClientFrame extends JFrame implements ActionListener,
         // Create the "File" menu
         JMenu file = new JMenu("File");
         // Create the "View" menu
-        JMenu view = new JMenu("View");
+        JMenu tools = new JMenu("Tools");
         // Create the "Help" menu
         JMenu help = new JMenu("Help");
 
         // Add the menus to the root menubar
         menu.add(file);
-        menu.add(view);
+        menu.add(tools);
         menu.add(help);
 
         // Populate the menus
@@ -223,7 +289,7 @@ public class ClientFrame extends JFrame implements ActionListener,
         menuChk.addItemListener(this);
 
         // add to view menu
-        view.add(menuChk);
+        tools.add(menuChk);
 
         // Set this form to use this menu by default
         setJMenuBar(menu);
@@ -280,7 +346,7 @@ public class ClientFrame extends JFrame implements ActionListener,
                             // message style taken from style array
                             messageStyles[message.sendTo].attributes,
                             // replace any formatting that exists
-                            // for the line
+                            // for the line±
                             true);
                     return;
 
@@ -316,10 +382,7 @@ public class ClientFrame extends JFrame implements ActionListener,
                 client.disconnect();
                 //setup a new one
                 client = new ChatClient(Network.getConnectionDetails(), this);
-
                 return;
-
-
 
             //Main UI
             // Send button/ sendText action
@@ -364,8 +427,14 @@ public class ClientFrame extends JFrame implements ActionListener,
             JCheckBoxMenuItem menuChk = (JCheckBoxMenuItem) object;
             switch ( menuChk.getText() ) {
                 case "Show User List":
+                    // set the users panel to be visible only if the checkbox
+                    // is checked, and hide it otherwise
                     userPane.setVisible(menuChk.isSelected());
-                    this.pack();
+                    // validate the rest of the componants
+                    // that is juggle and resize everything so it fills the form
+                    // and looks nice ;D (fuck off pack! :P *ttthhhhhssssspppp*)
+                    // this.pack(); <<< kinda looks sad now don't you think?
+                    this.validate();
                     return;
             }
         }

@@ -9,6 +9,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import java.awt.EventQueue;
 import java.io.IOException;
+import javax.swing.JOptionPane;
 import org.cakemix.Network;
 import org.cakemix.Network.ChatMessage;
 import org.cakemix.Network.RegisterName;
@@ -22,17 +23,16 @@ public class ChatClient {
 
     // the Kryonet Client
     Client client;
-
     // the connection details
-    String host,name;
+    String host, name;
     int port;
-
     //the Client frame that this client is attached too
     ClientFrame frame;
 
-public ChatClient(){}
+    public ChatClient() {
+    }
 
-    public ChatClient(String[] connectionDetails, ClientFrame frame) {
+    public ChatClient( String[] connectionDetails, ClientFrame frame ) {
         // create a new network client
         client = new Client();
 
@@ -60,9 +60,14 @@ public ChatClient(){}
         try {
             client.connect(5000, host, port);
             // Server communication after connection can go here, or in Listener#connected().
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            System.exit(1);
+        } catch ( IOException ex ) {
+            //ex.printStackTrace();
+            //System.exit(1);
+            JOptionPane.showMessageDialog(frame,
+                    "Error: Connection could not be made." + '\n'
+                    + "Check the details and try again.",
+                    "Connection Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -71,15 +76,16 @@ public ChatClient(){}
      */
     protected void disconnect() {
         // close and stop the current client, if its started
-        if (client != null){
-        client.close();
-        client.stop();}
+        if ( client != null ) {
+            client.close();
+            client.stop();
+        }
     }
 
     /**
      * Request a change of Display Name (gui form)
      */
-    protected void requestNameChange(String name) {
+    protected void requestNameChange( String name ) {
         RegisterName registerName = new RegisterName();
         registerName.name = this.name;
         registerName.displayName = name;
@@ -97,7 +103,9 @@ public ChatClient(){}
      *
      * Setup a kryo client
      */
-    private void setupClient(final Client client/*, final ChatFrameRedux chatFrame*/) {
+    private void setupClient( final Client client/*
+             * , final ChatFrameRedux chatFrame
+             */ ) {
         client.start();
 
         // For consistency, the classes to be sent over the network are
@@ -108,7 +116,7 @@ public ChatClient(){}
         client.addListener(new Listener() {
             // for connecting to a server
             @Override
-            public void connected(Connection connection) {
+            public void connected( Connection connection ) {
                 // create a register name packet
                 RegisterName registerName = new RegisterName();
                 // set the names
@@ -121,15 +129,15 @@ public ChatClient(){}
 
             // for packets received from the server
             @Override
-            public void received(Connection connection, Object object) {
+            public void received( Connection connection, Object object ) {
 
-                if (object instanceof UpdateNames) {
+                if ( object instanceof UpdateNames ) {
                     UpdateNames updateNames = (UpdateNames) object;
                     frame.setNames(updateNames);
                     return;
                 }
 
-                if (object instanceof ChatMessage) {
+                if ( object instanceof ChatMessage ) {
                     ChatMessage chatMessage = (ChatMessage) object;
                     frame.addMessage(chatMessage);
                     return;
@@ -137,7 +145,7 @@ public ChatClient(){}
             }
 
             @Override
-            public void disconnected(Connection connection) {
+            public void disconnected( Connection connection ) {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {

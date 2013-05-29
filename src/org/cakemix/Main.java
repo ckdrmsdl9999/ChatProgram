@@ -24,7 +24,7 @@ public class Main {
             if (args[0].equals("Server")) {
                 try {
                     new ChatServer();
-                    new ClientFrame();
+                    //new ClientFrame();
                     new ClientFrame();
                 } catch (IOException e) {
                 }
