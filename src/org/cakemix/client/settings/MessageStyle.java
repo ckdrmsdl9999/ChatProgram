@@ -2,11 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cakemix.client;
+package org.cakemix.client.settings;
 
 import java.awt.Color;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
 
 /**
  *
@@ -16,7 +17,9 @@ public class MessageStyle {
 
     public SimpleAttributeSet attributes;
 
-    public MessageStyle(){attributes = new SimpleAttributeSet();}
+    public MessageStyle() {
+        attributes = new SimpleAttributeSet();
+    }
 
     public void setForeground( Color color ) {
         StyleConstants.setForeground(attributes, color);
@@ -47,12 +50,16 @@ public class MessageStyle {
             if ( config[1].equalsIgnoreCase("true")
                     || config[1].equalsIgnoreCase("false") ) {
                 setBold(Boolean.valueOf(config[1]));
-            } else {throw new Exception();}
+            } else {
+                throw new Exception();
+            }
             // finally itallic
             if ( config[2].equalsIgnoreCase("true")
                     || config[2].equalsIgnoreCase("false") ) {
                 setItalic(Boolean.valueOf(config[2]));
-            } else {throw new Exception();}
+            } else {
+                throw new Exception();
+            }
             return this;
         } catch ( Exception e ) {
             // Print message to error
@@ -88,5 +95,42 @@ public class MessageStyle {
                 attributes);
 
         return output;
+    }
+
+    /**
+     * Get the Colour
+     */
+    public Color getColor() {
+        return StyleConstants.getForeground(attributes);
+    }
+
+    /**
+     * Get the Colours string value
+     */
+    public String getColorString(){
+        return "#" + Integer.toHexString(
+                StyleConstants.getForeground(attributes)
+                .getRGB()).substring(2);
+    }
+
+    /**
+     * Get Bold
+     */
+    public boolean getBold(){
+        return StyleConstants.isBold(attributes);
+    }
+
+    /**
+     * Get Itallic
+     */
+    public boolean getItalic(){
+        return StyleConstants.isItalic(attributes);
+    }
+    /**
+     * form to change chat settings via gui
+     */
+    public String stylePicker() {
+
+        return null;
     }
 }

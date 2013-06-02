@@ -1,6 +1,7 @@
 package org.cakemix;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.EndPoint;
 import javax.swing.JOptionPane;
 
@@ -16,6 +17,7 @@ public class Network {
         kryo.register(String[].class);
         kryo.register(UpdateNames.class);
         kryo.register(ChatMessage.class);
+        kryo.register(int[].class);
     }
 
     static public String[] getConnectionDetails() {
@@ -51,6 +53,8 @@ public class Network {
     static public class UpdateNames {
 
         public String[] names,displays;
+
+        public int[] rank;
     }
 
     static public class ChatMessage {
@@ -66,7 +70,7 @@ public class Network {
         public static final int NUM_TYPE = 8;
 
         public String text, target = null;
-        public int sendTo = TYPE_ALL;
+        public int messageType = TYPE_ALL;
 
         public ChatMessage() {
         }
@@ -77,13 +81,26 @@ public class Network {
 
         public ChatMessage(String text, int sendTo){
             this.text = text;
-            this.sendTo = sendTo;
+            this.messageType = sendTo;
         }
 
         public ChatMessage(String text, int sendTo, String target){
             this.text = text;
-            this.sendTo = sendTo;
+            this.messageType = sendTo;
             this.target = target;
         }
+    }
+
+    // This holds per connection state.
+    static public class ChatConnection extends Connection {
+        // Add a name to the connection
+
+        public String name;
+        // Add a rank to the connection
+        public int rank = RANK_PLAYER;
+        // Set up the static rank identifiers
+        public static final int RANK_LISTENER = 0;
+        public static final int RANK_PLAYER = 1;
+        public static final int RANK_GM = 2;
     }
 }

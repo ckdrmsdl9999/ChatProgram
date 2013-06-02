@@ -103,9 +103,7 @@ public class ChatClient {
      *
      * Setup a kryo client
      */
-    private void setupClient( final Client client/*
-             * , final ChatFrameRedux chatFrame
-             */ ) {
+    private void setupClient( final Client client) {
         client.start();
 
         // For consistency, the classes to be sent over the network are
@@ -141,6 +139,17 @@ public class ChatClient {
                     ChatMessage chatMessage = (ChatMessage) object;
                     frame.addMessage(chatMessage);
                     return;
+                }
+                if (object instanceof RegisterName){
+                    // create a register name packet
+                RegisterName registerName = new RegisterName();
+                // set the names
+                String name = JOptionPane.showInputDialog(frame, "Name not available!" + '\n' +
+                        "Please enter new name.", "", JOptionPane.INFORMATION_MESSAGE);
+                registerName.name = name;
+                registerName.displayName = name;
+                // send the packet
+                client.sendTCP(registerName);
                 }
             }
 

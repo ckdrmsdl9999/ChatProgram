@@ -6,9 +6,8 @@
  */
 package org.cakemix.client;
 
-import java.awt.Color;
+import org.cakemix.client.settings.MessageStyle;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,15 +18,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.MutableAttributeSet;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-import javax.swing.text.StyledEditorKit;
 import org.cakemix.Network;
+import org.cakemix.Network.ChatConnection;
 import org.cakemix.Network.ChatMessage;
 import org.cakemix.Network.UpdateNames;
+import org.cakemix.client.settings.StylePickerFrame;
 
 /**
  *
@@ -135,7 +131,6 @@ public class ClientFrame extends JFrame implements ActionListener,
         layout.setAutoCreateContainerGaps(true);
         // tell the panel to use the layout
         contentPane.setLayout(layout);
-
         // create the panes
         // messages
         JScrollPane messagePane = new JScrollPane(messageList = new JTextPane());
@@ -175,7 +170,7 @@ public class ClientFrame extends JFrame implements ActionListener,
                 .addGroup(layout.createSequentialGroup()
                 .addComponent(userPane, 64, 128, 192)
                 .addComponent(messagePane, 64, 384, Short.MAX_VALUE))
-                //input at the bottom
+                    //input at the bottom
                 .addGroup(layout.createSequentialGroup()
                 .addComponent(sendText)
                 .addComponent(sendButton)));
@@ -193,11 +188,17 @@ public class ClientFrame extends JFrame implements ActionListener,
 
     /**
      * Set the styles used in the chat log
+     *
+     * Look at setting up a settings specific class
+     * keep everything neat
      */
     private void setStyle() {
         // first try and load from file
         // Create the file reader here
         BufferedReader configReader = null;
+        // set an int flag to show how far through the formatting got
+        // if it missed out a few at the end, set them to default (in the finaly)
+        int set = -1;
         try {
 
             configReader = new BufferedReader(new FileReader("chatConfig"));
@@ -208,14 +209,22 @@ public class ClientFrame extends JFrame implements ActionListener,
             // Edit this later to be more flexable
             // possibly index as first character?
             for ( int i = 0; i < ChatMessage.NUM_TYPE; i++ ) {
-
-                messageStyles[i] = new MessageStyle().fromString(
-                        configReader.readLine());
+                // get the line from the file
+                String line = configReader.readLine();
+                // if the line is not null (ie, there was something there)
+                // use it to load the setting
+                if ( line != null ) {
+                    messageStyles[i] = new MessageStyle().fromString(line);
+                    // let set know how far we got
+                    set = i;
+                } else {
+                    // if there is no more lines, break out the loop
+                    break;
+                }
             }
         } catch ( IOException ex ) {
             // Start creating the attribute sets for the messages
-            ex.printStackTrace();
-            System.out.println("woa bessy");
+            // this should run if there is no file
             messageStyles[ChatMessage.TYPE_ALIAS] = new MessageStyle().fromString(
                     "#000000;false;true");
             messageStyles[ChatMessage.TYPE_ALL] = new MessageStyle().fromString(
@@ -232,12 +241,47 @@ public class ClientFrame extends JFrame implements ActionListener,
                     "#000000;true;false");
             messageStyles[ChatMessage.TYPE_WHISPER] = new MessageStyle().fromString(
                     "#660066;false;false");
+            set = 7;
         } finally {
             // close the file after all else is done with it
             try {
-                configReader.close();
+                if ( configReader != null ) {
+                    configReader.close();
+                }
             } catch ( IOException ex ) {
+                // not quite sure how to handle not being able to close a file...
                 ex.printStackTrace();
+            }
+
+            // look at how far the setting got, and continue on from there
+            // there are no breaks, as it should fall through on each one
+            switch ( set ) {
+                case -1: // nothing set, broke out on first loop
+                    messageStyles[ChatMessage.TYPE_ALIAS] = new MessageStyle().fromString(
+                            "#000000;false;true");
+                case 0:
+                    messageStyles[ChatMessage.TYPE_ALL] = new MessageStyle().fromString(
+                            "#000000;false;false");
+                case 1:
+                    messageStyles[ChatMessage.TYPE_ANNOUNCE] = new MessageStyle().fromString(
+                            "#ff00ff;true;false");
+                case 2:
+                    messageStyles[ChatMessage.TYPE_DESCRIPTION] = new MessageStyle().fromString(
+                            "#000000;false;true");
+                case 3:
+                    messageStyles[ChatMessage.TYPE_EMOTE] = new MessageStyle().fromString(
+                            "#aaaaaa;false;false");
+                case 4:
+                    messageStyles[ChatMessage.TYPE_OFF_TOPIC] = new MessageStyle().fromString(
+                            "#cccccc;false;true");
+                case 5:
+                    messageStyles[ChatMessage.TYPE_SENDER] = new MessageStyle().fromString(
+                            "#000000;true;false");
+                case 6:
+                    messageStyles[ChatMessage.TYPE_WHISPER] = new MessageStyle().fromString(
+                            "#660066;false;false");
+                default:// just incase i need to add anything...
+                    break;
             }
         }
     }
@@ -279,7 +323,12 @@ public class ClientFrame extends JFrame implements ActionListener,
         // Add the menu item to the menu (File here)
         file.add(menuItem);
 
-        //View Menu
+        // Tools Menu
+        // Setup text colors
+        menuItem = new JMenuItem("Set Colours");
+        menuItem.addActionListener(this);
+        tools.add(menuItem);
+        
         // Checkbox for show/hiding user list
         JCheckBoxMenuItem menuChk = new JCheckBoxMenuItem("Show User List");
         // default to checked, as userlist is shown by default
@@ -310,12 +359,24 @@ public class ClientFrame extends JFrame implements ActionListener,
                 DefaultListModel model = (DefaultListModel) userList.getModel();
                 model.removeAllElements();
                 for ( int i = 0; i < updateNames.names.length; i++ ) {
-                    if ( updateNames.names[i] != null ) {
+                    String rank = null;
+                    switch (updateNames.rank[i]){
+                        case ChatConnection.RANK_GM:
+                            rank = "GM";
+                            break;
+                        case ChatConnection.RANK_LISTENER:
+                            rank = "Creeper";
+                            break;
+                        case ChatConnection.RANK_PLAYER:
+                            rank = "Player";
+                            break;
+                    }
+                    if ( updateNames.displays[i] != null ) {
                         model.addElement(updateNames.displays[i] + "("
-                                + updateNames.names[i] + ")");
+                                + updateNames.names[i] + ") - " + rank);
                     } else {
                         model.addElement(updateNames.names[i] + "("
-                                + updateNames.names[i] + ")");
+                                + updateNames.names[i] + ") - " + rank);
                     }
                 }
             }
@@ -344,7 +405,7 @@ public class ClientFrame extends JFrame implements ActionListener,
                             // length of styling (current length - start point)
                             doc.getLength() - curLength,
                             // message style taken from style array
-                            messageStyles[message.sendTo].attributes,
+                            messageStyles[message.messageType].attributes,
                             // replace any formatting that exists
                             // for the line±
                             true);
@@ -382,6 +443,10 @@ public class ClientFrame extends JFrame implements ActionListener,
                 client.disconnect();
                 //setup a new one
                 client = new ChatClient(Network.getConnectionDetails(), this);
+                return;
+
+            case "Set Colours":
+                new StylePickerFrame(messageStyles);
                 return;
 
             //Main UI
