@@ -117,6 +117,7 @@ public class ClientFrame extends JFrame implements ActionListener,
 
         // call dispose from above
         super.dispose();
+        System.exit(0);
     }
 
     /**
@@ -170,7 +171,7 @@ public class ClientFrame extends JFrame implements ActionListener,
                 .addGroup(layout.createSequentialGroup()
                 .addComponent(userPane, 64, 128, 192)
                 .addComponent(messagePane, 64, 384, Short.MAX_VALUE))
-                    //input at the bottom
+                //input at the bottom
                 .addGroup(layout.createSequentialGroup()
                 .addComponent(sendText)
                 .addComponent(sendButton)));
@@ -328,7 +329,7 @@ public class ClientFrame extends JFrame implements ActionListener,
         menuItem = new JMenuItem("Set Colours");
         menuItem.addActionListener(this);
         tools.add(menuItem);
-        
+
         // Checkbox for show/hiding user list
         JCheckBoxMenuItem menuChk = new JCheckBoxMenuItem("Show User List");
         // default to checked, as userlist is shown by default
@@ -360,7 +361,7 @@ public class ClientFrame extends JFrame implements ActionListener,
                 model.removeAllElements();
                 for ( int i = 0; i < updateNames.names.length; i++ ) {
                     String rank = null;
-                    switch (updateNames.rank[i]){
+                    switch ( updateNames.rank[i] ) {
                         case ChatConnection.RANK_GM:
                             rank = "GM";
                             break;
@@ -446,7 +447,13 @@ public class ClientFrame extends JFrame implements ActionListener,
                 return;
 
             case "Set Colours":
-                new StylePickerFrame(messageStyles);
+                try {
+                    new StylePickerFrame(messageStyles);
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(ClientFrame.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
                 return;
 
             //Main UI
