@@ -6,7 +6,7 @@
  */
 package org.cakemix.client;
 
-import org.cakemix.client.settings.MessageStyle;
+import org.cakemix.client.settings.MessageAttributes;
 import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -23,7 +23,9 @@ import org.cakemix.Network;
 import org.cakemix.Network.ChatConnection;
 import org.cakemix.Network.ChatMessage;
 import org.cakemix.Network.UpdateNames;
+import org.cakemix.client.settings.ChatSettings;
 import org.cakemix.client.settings.StylePickerFrame;
+import sun.swing.SwingAccessor;
 
 /**
  *
@@ -36,10 +38,8 @@ public class ClientFrame extends JFrame implements ActionListener,
     JTextPane messageList;
     // Document that holds the messages
     StyledDocument doc;
-    // Attributes for the different message types
-    // Array of message styles with enough to hold the number of different chat
-    // message types
-    MessageStyle[] messageStyles = new MessageStyle[ChatMessage.NUM_TYPE];
+    // Holds all the current chat settings
+    ChatSettings settings;
     //Currently logged in users
     JList userList;
     // User inputted text
@@ -81,39 +81,7 @@ public class ClientFrame extends JFrame implements ActionListener,
         //disconnect the chat connection
         client.disconnect();
 
-        // Writethe chat config to file
-        // This auto generated a mess of try catch statments...
-        // look at this later
-        // create the file writer
-        FileWriter configWriter = null;
-
-        try {
-            // get the file to write too
-            File chatConfig = new File("chatConfig");
-            // tell the file writer to use that file
-            configWriter = new FileWriter(chatConfig);
-            // loop through chat settings, then write them to the file
-            for ( int i = 0; i < ChatMessage.NUM_TYPE; i++ ) {
-                configWriter.write(messageStyles[i].toString() + '\n');
-            }
-
-        } // catch any file writing errors
-        catch ( IOException ex ) {
-            // log them
-            Logger.getLogger(ClientFrame.class.getName()).log(Level.SEVERE, null,
-                    ex);
-        } // finaly close the file
-        finally {
-            if ( configWriter != null ) {
-                try {
-                    configWriter.flush();
-                    configWriter.close();
-                } catch ( IOException ex ) {
-                    ex.printStackTrace();
-                }
-            }
-
-        }
+        settings.saveStyle();
 
         // call dispose from above
         super.dispose();
@@ -124,6 +92,11 @@ public class ClientFrame extends JFrame implements ActionListener,
      * Create the form
      */
     private void buildUI( Container contentPane ) {
+
+        // for a start, set all the message styling
+        // this is also needed for the background colour
+        settings = new ChatSettings();
+        settings.setStyle();
 
         // Create the layout for the form
         GroupLayout layout = new GroupLayout(contentPane);
@@ -139,9 +112,6 @@ public class ClientFrame extends JFrame implements ActionListener,
         messageList.setEditable(false);
         // Create the document to hold the messages
         doc = messageList.getStyledDocument();
-
-        // set all styles
-        setStyle();
 
         // user list
         userPane = new JScrollPane(userList = new JList());
@@ -164,6 +134,10 @@ public class ClientFrame extends JFrame implements ActionListener,
             }
         });
 
+        // after all items are created
+        // apply the styles to them
+        applySettings();
+
         // create the group
         layout.setHonorsVisibility(true);
         layout.setHorizontalGroup(layout.createParallelGroup()
@@ -185,106 +159,7 @@ public class ClientFrame extends JFrame implements ActionListener,
                 GroupLayout.Alignment.TRAILING, false)
                 .addComponent(sendText)
                 .addComponent(sendButton)));
-    }
 
-    /**
-     * Set the styles used in the chat log
-     *
-     * Look at setting up a settings specific class
-     * keep everything neat
-     */
-    private void setStyle() {
-        // first try and load from file
-        // Create the file reader here
-        BufferedReader configReader = null;
-        // set an int flag to show how far through the formatting got
-        // if it missed out a few at the end, set them to default (in the finaly)
-        int set = -1;
-        try {
-
-            configReader = new BufferedReader(new FileReader("chatConfig"));
-
-            // loop untill the settings array is filled
-            // extra settings beyond that are ignored,
-            // this stops the array overloading
-            // Edit this later to be more flexable
-            // possibly index as first character?
-            for ( int i = 0; i < ChatMessage.NUM_TYPE; i++ ) {
-                // get the line from the file
-                String line = configReader.readLine();
-                // if the line is not null (ie, there was something there)
-                // use it to load the setting
-                if ( line != null ) {
-                    messageStyles[i] = new MessageStyle().fromString(line);
-                    // let set know how far we got
-                    set = i;
-                } else {
-                    // if there is no more lines, break out the loop
-                    break;
-                }
-            }
-        } catch ( IOException ex ) {
-            // Start creating the attribute sets for the messages
-            // this should run if there is no file
-            messageStyles[ChatMessage.TYPE_ALIAS] = new MessageStyle().fromString(
-                    "#000000;false;true");
-            messageStyles[ChatMessage.TYPE_ALL] = new MessageStyle().fromString(
-                    "#000000;false;false");
-            messageStyles[ChatMessage.TYPE_ANNOUNCE] = new MessageStyle().fromString(
-                    "#ff00ff;true;false");
-            messageStyles[ChatMessage.TYPE_DESCRIPTION] = new MessageStyle().fromString(
-                    "#000000;false;true");
-            messageStyles[ChatMessage.TYPE_EMOTE] = new MessageStyle().fromString(
-                    "#aaaaaa;false;false");
-            messageStyles[ChatMessage.TYPE_OFF_TOPIC] = new MessageStyle().fromString(
-                    "#cccccc;false;true");
-            messageStyles[ChatMessage.TYPE_SENDER] = new MessageStyle().fromString(
-                    "#000000;true;false");
-            messageStyles[ChatMessage.TYPE_WHISPER] = new MessageStyle().fromString(
-                    "#660066;false;false");
-            set = 7;
-        } finally {
-            // close the file after all else is done with it
-            try {
-                if ( configReader != null ) {
-                    configReader.close();
-                }
-            } catch ( IOException ex ) {
-                // not quite sure how to handle not being able to close a file...
-                ex.printStackTrace();
-            }
-
-            // look at how far the setting got, and continue on from there
-            // there are no breaks, as it should fall through on each one
-            switch ( set ) {
-                case -1: // nothing set, broke out on first loop
-                    messageStyles[ChatMessage.TYPE_ALIAS] = new MessageStyle().fromString(
-                            "#000000;false;true");
-                case 0:
-                    messageStyles[ChatMessage.TYPE_ALL] = new MessageStyle().fromString(
-                            "#000000;false;false");
-                case 1:
-                    messageStyles[ChatMessage.TYPE_ANNOUNCE] = new MessageStyle().fromString(
-                            "#ff00ff;true;false");
-                case 2:
-                    messageStyles[ChatMessage.TYPE_DESCRIPTION] = new MessageStyle().fromString(
-                            "#000000;false;true");
-                case 3:
-                    messageStyles[ChatMessage.TYPE_EMOTE] = new MessageStyle().fromString(
-                            "#aaaaaa;false;false");
-                case 4:
-                    messageStyles[ChatMessage.TYPE_OFF_TOPIC] = new MessageStyle().fromString(
-                            "#cccccc;false;true");
-                case 5:
-                    messageStyles[ChatMessage.TYPE_SENDER] = new MessageStyle().fromString(
-                            "#000000;true;false");
-                case 6:
-                    messageStyles[ChatMessage.TYPE_WHISPER] = new MessageStyle().fromString(
-                            "#660066;false;false");
-                default:// just incase i need to add anything...
-                    break;
-            }
-        }
     }
 
     /**
@@ -384,6 +259,30 @@ public class ClientFrame extends JFrame implements ActionListener,
         });
     }
 
+    public void setSettings( ChatSettings settings ) {
+        // update the settings
+        this.settings = settings;
+        applySettings();
+
+    }
+
+    private void applySettings(){
+
+        // Update te background color of the message List
+        messageList.setBackground(settings.getBackgroundColor());
+        // updatethe background colour of the user list
+        userList.setBackground(settings.getBackgroundColor());
+        // And set its text color to match the standard message
+        userList.setForeground(
+                settings.getMessageAttributes()[ChatMessage.TYPE_ALL].getColor());
+        // and do the same for the send text
+        sendText.setBackground(settings.getBackgroundColor());
+        // possibly change the send text as some point to reflect the message type
+        // in an item listener
+        sendText.setForeground(
+                settings.getMessageAttributes()[ChatMessage.TYPE_ALL].getColor());
+    }
+
     /**
      * Add a new message to the list
      */
@@ -406,7 +305,7 @@ public class ClientFrame extends JFrame implements ActionListener,
                             // length of styling (current length - start point)
                             doc.getLength() - curLength,
                             // message style taken from style array
-                            messageStyles[message.messageType].attributes,
+                            settings.getMessageAttributes()[message.messageType].attributes,
                             // replace any formatting that exists
                             // for the line±
                             true);
@@ -448,7 +347,7 @@ public class ClientFrame extends JFrame implements ActionListener,
 
             case "Set Colours":
                 try {
-                    new StylePickerFrame(messageStyles);
+                    new StylePickerFrame(settings, this);
                 } catch ( BadLocationException ex ) {
                     Logger.getLogger(ClientFrame.class.getName()).log(
                             Level.SEVERE, null,

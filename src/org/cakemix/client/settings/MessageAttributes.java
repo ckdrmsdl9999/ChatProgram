@@ -8,17 +8,21 @@ import java.awt.Color;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
+import org.cakemix.Network.ChatMessage;
 
 /**
  *
  * @author cakemix
  */
-public class MessageStyle {
+public class MessageAttributes {
 
     public SimpleAttributeSet attributes;
 
-    public MessageStyle() {
+    public MessageAttributes() {
         attributes = new SimpleAttributeSet();
+    }
+
+    public void setFont() {
     }
 
     public void setForeground( Color color ) {
@@ -36,7 +40,7 @@ public class MessageStyle {
     /*
      * Load the attributes from string
      */
-    public MessageStyle fromString( String input ) {
+    public MessageAttributes fromString( String input ) {
 
         // if something goes wrong, load defaults
         try {
@@ -107,7 +111,15 @@ public class MessageStyle {
     /**
      * Get the Colours string value
      */
-    public String getColorString(){
+    public String getColorString() {
+        /**
+         * to get the colour as a string,
+         * We use Integer to format it correctly
+         * StyleConstants to get the color in question
+         * then call .getRGB to get the color red green blue values
+         * then chop off the first 2 characters, because we don't need alpha
+         * all beginning with a hash because it needs one to parse
+         */
         return "#" + Integer.toHexString(
                 StyleConstants.getForeground(attributes)
                 .getRGB()).substring(2);
@@ -116,21 +128,56 @@ public class MessageStyle {
     /**
      * Get Bold
      */
-    public boolean getBold(){
+    public boolean getBold() {
         return StyleConstants.isBold(attributes);
     }
 
     /**
      * Get Itallic
      */
-    public boolean getItalic(){
+    public boolean getItalic() {
         return StyleConstants.isItalic(attributes);
     }
-    /**
-     * form to change chat settings via gui
-     */
-    public String stylePicker() {
 
-        return null;
+    public static MessageAttributes[] setToDefalts() {
+        MessageAttributes[] msgAttr = new MessageAttributes[ChatMessage.NUM_TYPE];
+        msgAttr[ChatMessage.TYPE_ALIAS] = new MessageAttributes().fromString(
+                "#000000;false;true");
+        msgAttr[ChatMessage.TYPE_ALL] = new MessageAttributes().fromString(
+                "#000000;false;false");
+        msgAttr[ChatMessage.TYPE_ANNOUNCE] = new MessageAttributes().fromString(
+                "#8080ff;true;false");
+        msgAttr[ChatMessage.TYPE_DESCRIPTION] = new MessageAttributes().fromString(
+                "#000000;true;true");
+        msgAttr[ChatMessage.TYPE_EMOTE] = new MessageAttributes().fromString(
+                "#ff8040;false;false");
+        msgAttr[ChatMessage.TYPE_OFF_TOPIC] = new MessageAttributes().fromString(
+                "#ff4040;false;true");
+        msgAttr[ChatMessage.TYPE_SENDER] = new MessageAttributes().fromString(
+                "#000000;true;false");
+        msgAttr[ChatMessage.TYPE_WHISPER] = new MessageAttributes().fromString(
+                "#bb00bb;false;false");
+        return msgAttr;
+    }
+
+    public static MessageAttributes[] setToConsole() {
+        MessageAttributes[] msgAttr = new MessageAttributes[ChatMessage.NUM_TYPE];
+        msgAttr[ChatMessage.TYPE_ALIAS] = new MessageAttributes().fromString(
+                "#00ff00;false;true");
+        msgAttr[ChatMessage.TYPE_ALL] = new MessageAttributes().fromString(
+                "#00ff00;false;false");
+        msgAttr[ChatMessage.TYPE_ANNOUNCE] = new MessageAttributes().fromString(
+                "#8080ff;true;false");
+        msgAttr[ChatMessage.TYPE_DESCRIPTION] = new MessageAttributes().fromString(
+                "#00ff00;true;true");
+        msgAttr[ChatMessage.TYPE_EMOTE] = new MessageAttributes().fromString(
+                "#ff8040;false;false");
+        msgAttr[ChatMessage.TYPE_OFF_TOPIC] = new MessageAttributes().fromString(
+                "#ff4040;false;true");
+        msgAttr[ChatMessage.TYPE_SENDER] = new MessageAttributes().fromString(
+                "#00ff00;true;false");
+        msgAttr[ChatMessage.TYPE_WHISPER] = new MessageAttributes().fromString(
+                "#bb00bb;false;false");
+        return msgAttr;
     }
 }

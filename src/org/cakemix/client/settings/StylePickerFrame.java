@@ -19,8 +19,10 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 import org.cakemix.Network.ChatMessage;
+import org.cakemix.client.ClientFrame;
 
 /**
  *
@@ -29,33 +31,38 @@ import org.cakemix.Network.ChatMessage;
 public class StylePickerFrame extends JFrame implements ActionListener,
         ItemListener {
 
-    MessageStyle[] styles;
+    // Store the styles that currently exist
+    ChatSettings settings;
+    // Create the form elements array
+    // there needs to be the same ammount as there is
+    // number of message types, one of each element
+    // per message type
     JButton[] colour = new JButton[ChatMessage.NUM_TYPE];
     JCheckBox[] bold = new JCheckBox[ChatMessage.NUM_TYPE];
     JCheckBox[] italic = new JCheckBox[ChatMessage.NUM_TYPE];
     JTextPane[] example = new JTextPane[ChatMessage.NUM_TYPE];
+    Color background;
+    ClientFrame owner;
 
-    public StylePickerFrame( MessageStyle[] styles ) throws BadLocationException {
+    public StylePickerFrame( ChatSettings settings, ClientFrame owner ) throws
+            BadLocationException {
         // set the name and create the frame
         super("Style Picker");
-
+        // Dispose the JFrame when it closes
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.styles = styles;
+        // set the styles array
+        this.settings = settings;
+
+        // set the owner
+        this.owner = owner;
+
+        // Populate the form
         createGroupLayout();
 
+        // Pack the form and make it visible
         pack();
-
         setVisible(true);
 
-    }
-
-    /**
-     * Newer card layout attempt
-     *
-     * @param styles
-     */
-    private void setCardLayout() {
-        // create the card layout
     }
 
     /**
@@ -77,23 +84,29 @@ public class StylePickerFrame extends JFrame implements ActionListener,
         // create all the componants and set them to their current values
         for ( int i = 0; i < ChatMessage.NUM_TYPE; i++ ) {
 
+            // Create all the check boxes
+            // Setting them all to match the current styles
             bold[i] = new JCheckBox("Bold");
-            bold[i].setSelected(styles[i].getBold());
+            bold[i].setSelected(settings.getMessageAttributes()[i].getBold());
             bold[i].addItemListener(this);
+            // Use this to identify which checkbox calls the item changed event
             bold[i].setName('b' + String.valueOf(i));
             italic[i] = new JCheckBox("Itallic");
-            italic[i].setSelected(styles[i].getItalic());
+            italic[i].setSelected(settings.getMessageAttributes()[i].getItalic());
             italic[i].addItemListener(this);
+            // same as bold name
             italic[i].setName('i' + String.valueOf(i));
+            // Create the example message pane
             example[i] = new JTextPane();
+            example[i].setBackground(settings.getBackgroundColor());
 
+            // Create an empty string for the message pane
             String name = "";
 
-            // find out which style it is, and set the text for the example
+            // find out which style it is, and create the identifier
             switch ( i ) {
                 case ChatMessage.TYPE_ALIAS:
                     name = "Alias";
-
                     break;
                 case ChatMessage.TYPE_ALL:
                     name = "Standard";
@@ -116,14 +129,30 @@ public class StylePickerFrame extends JFrame implements ActionListener,
                 case ChatMessage.TYPE_WHISPER:
                     name = "Player Whisper";
                     break;
-
             }
+
+            // Get the current styled doc for the message box
             example[i].getStyledDocument().insertString(0,
-                    "An example of " + name, styles[i].attributes);
+                    "An example of " + name, settings.getMessageAttributes()[i].attributes);
+            // Make sure the user cannot change it
             example[i].setEditable(false);
+            // Create the colour button
             colour[i] = new JButton(name);
+            // add teh action listener to the button
             colour[i].addActionListener(this);
         }
+
+        // create a button to reset colours to programmed default
+        JButton defaults = new JButton("Defaults");
+        defaults.addActionListener(this);
+
+        // create button for Console Style
+        JButton alt = new JButton("Console");
+        alt.addActionListener(this);
+
+        // create the Background Colour button
+        JButton bgColor = new JButton("Background Colour");
+        bgColor.addActionListener(this);
 
 
         // Create the horizontal group
@@ -134,18 +163,24 @@ public class StylePickerFrame extends JFrame implements ActionListener,
                 GroupLayout.Alignment.TRAILING);
 
         for ( int i = 0; i < ChatMessage.NUM_TYPE; i++ ) {
-// Then create the sequential group
+            // Then create the sequential group
             SequentialGroup sg = layout.createSequentialGroup();
 
 
             // add the parallel to the main group
             horizGroup.addGroup(sg);
-            sg.addComponent(colour[i]);//, 64, 128, 256);
-            sg.addComponent(bold[i]);//, 32, 32, 32);
-            sg.addComponent(italic[i]);//, 32, 32, 32);
-            sg.addComponent(example[i], 256, 256, 256);
+            sg.addComponent(colour[i]);
+            sg.addComponent(bold[i]);
+            sg.addComponent(italic[i]);
+            sg.addComponent(example[i]);//, 256, 256, 256);
 
         }
+
+        // Add the background & default
+        horizGroup.addGroup(layout.createSequentialGroup()
+                .addComponent(alt)
+                .addComponent(defaults)
+                .addComponent(bgColor));
 
         // link the button sizes and the example text sizes
 
@@ -172,57 +207,141 @@ public class StylePickerFrame extends JFrame implements ActionListener,
             pg.addComponent(italic[i]);
             pg.addComponent(example[i]);
         }
-
+        // Add the background & default
+        vertGroup.addGroup(layout.createParallelGroup()
+                .addComponent(alt)
+                .addComponent(defaults)
+                .addComponent(bgColor));
         // then set the vertical group
         layout.setVerticalGroup(vertGroup);
     }
 
     private void applyStyles() {
-        for ( int i = 0; i < styles.length; i++ ) {
-
+        // When the styles are changed
+        // make sure it is replicated in the example text
+        for ( int i = 0; i < settings.getMessageAttributes().length; i++ ) {
+            // select all the text in the box
             example[i].selectAll();
-            example[i].setCharacterAttributes(styles[i].attributes, true);
+            // update the message attributes of that box
+            example[i].setCharacterAttributes(settings.getMessageAttributes()[i].attributes,
+                    true);
+            // deselect all text
             example[i].select(0, 0);
+            //set the background colour
+            example[i].setBackground(settings.getBackgroundColor());
         }
+
+        // set styles in the owner as well
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                owner.setSettings(settings);
+            }
+        });
     }
 
     @Override
     public void actionPerformed( ActionEvent ae ) {
-        for ( int i = 0; i < styles.length; i++ ) {
+        //check if its the defaults button first off
+        if ( ae.getActionCommand().equals("Defaults") ) {
+            // if it does,set all message attributes to hard coded defautlts
+            settings = ChatSettings.setToDefalts();
+            //loop through components and change them to the new settings
+            for ( int i = 0; i < settings.getMessageAttributes().length; i++ ) {
+                bold[i].setSelected(settings.getMessageAttributes()[i].getBold());
+                italic[i].setSelected(settings.getMessageAttributes()[i].getItalic());
+            }
+            // apply the new settings
+            applyStyles();
+            // after this is all done, return rather than go through the loop
+            return;
+        }
+
+        // oterwise check if its the alternate
+        if ( ae.getActionCommand().equals("Console") ) {
+            // if it does,set all message attributes to hard coded defautlts
+            settings = ChatSettings.setToConsole();
+            //loop through components and change them to the new settings
+            for ( int i = 0; i < settings.getMessageAttributes().length; i++ ) {
+                bold[i].setSelected(settings.getMessageAttributes()[i].getBold());
+                italic[i].setSelected(settings.getMessageAttributes()[i].getItalic());
+            }
+            // apply the new settings
+            applyStyles();
+            // after this is all done, return rather than go through the loop
+            return;
+        }
+
+        //if not, then check if its the background colour button
+        if ( ae.getActionCommand().equals("Background Colour") ) {
+            // call the color chooser in a dialoge
+            // and temporarily store the colour in a var
+            Color c = JColorChooser.showDialog(
+                    new JDialog(), "Choose your Colour",
+                    settings.getBackgroundColor());
+            // if the user chose a colour (ie didnt hit cancel)
+            if ( c != null ) {
+                // update the correct message attributes
+                settings.setBackgroundColor(c);
+            }
+        }
+
+        // called when a button in pressed
+        // loop through the buttons
+        for ( int i = 0; i < settings.getMessageAttributes().length; i++ ) {
+            // if the action command is the same as the button text
+            // set up the colour chooser
             if ( ae.getActionCommand().equals(colour[i].getText()) ) {
+                // call the color chooser in a dialoge
+                // and temporarily store the colour in a var
                 Color c = JColorChooser.showDialog(
                         new JDialog(), "Choose your Colour",
-                        styles[i].getColor());
+                        settings.getMessageAttributes()[i].getColor());
+                // if the user chose a colour (ie didnt hit cancel)
                 if ( c != null ) {
-                    styles[i].setForeground(c);
+                    // update the correct message attributes
+                    settings.getMessageAttributes()[i].setForeground(c);
                 }
+                // Break from the loop, so we dont make unneeded checks
                 break;
             }
         }
+        // after the loop has completed (or been broken from)
+        // update the styles (do this no mater what, just to be safe ;))
         applyStyles();
     }
 
     @Override
     public void itemStateChanged( ItemEvent ie ) {
-        JCheckBox src = (JCheckBox) ie.getSource();
-        if ( src.getName().charAt(0) == 'i' ) {
-            for ( int i = 0; i < styles.length; i++ ) {
+        // when a checkbox state is changed (ticked or unticked)
+        // check that the caller IS a checkbox, no ugly errors this way
+        if ( ie.getSource() instanceof JCheckBox ) {
+            // store said checkbox in a var, make it easyer to get at
+            JCheckBox src = (JCheckBox) ie.getSource();
+            //get a copy of the current settings
+            MessageAttributes[] msgAttr = settings.getMessageAttributes();
+            // loop through all possible message types
+            for ( int i = 0; i < msgAttr.length; i++ ) {
+                // check if the second character of the name is the same as
+                // the loop number
                 if ( src.getName().substring(1).equalsIgnoreCase(String.valueOf(
                         i)) ) {
-                    styles[i].setItalic(src.isSelected());
-                    break;
+                    // if it is, check if its bold or italic
+                    // denoted by a b or an i as the first character
+                    if ( src.getName().charAt(0) == 'i' ) {
+                        // if its itallic box, set the itallic to match the value
+                        msgAttr[i].setItalic(src.isSelected());
+                        break;
+                    } else if ( src.getName().charAt(0) == 'b' ) {
+                        // same as above but for bold
+                        msgAttr[i].setBold(src.isSelected());
+                        break;
+                    }
                 }
             }
-
-        } else if ( src.getName().charAt(0) == 'b' ) {
-            for ( int i = 0; i < styles.length; i++ ) {
-                if ( src.getName().substring(1).equalsIgnoreCase(String.valueOf(
-                        i)) ) {
-                    styles[i].setBold(src.isSelected());
-                    break;
-                }
-            }
+            // Update the stored settings
+            settings.updateAttributes(msgAttr);
+            // once again, apply the updated settings
+            applyStyles();
         }
-        applyStyles();
     }
 }
