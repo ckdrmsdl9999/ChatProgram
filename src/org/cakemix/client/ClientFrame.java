@@ -24,6 +24,7 @@ import org.cakemix.Network.ChatConnection;
 import org.cakemix.Network.ChatMessage;
 import org.cakemix.Network.UpdateNames;
 import org.cakemix.client.settings.ChatSettings;
+import org.cakemix.client.settings.ConfigIO;
 import org.cakemix.client.settings.StylePickerFrame;
 import sun.swing.SwingAccessor;
 
@@ -38,6 +39,8 @@ public class ClientFrame extends JFrame implements ActionListener,
     JTextPane messageList;
     // Document that holds the messages
     StyledDocument doc;
+    // Config file reader
+    ConfigIO configIO = new ConfigIO();
     // Holds all the current chat settings
     ChatSettings settings;
     //Currently logged in users
@@ -56,6 +59,9 @@ public class ClientFrame extends JFrame implements ActionListener,
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setLocation(100, 100);
+
+        // before anything else occurs, load the settings file
+        loadSettings();
 
         //create a network client
         client = new ChatClient();
@@ -81,11 +87,20 @@ public class ClientFrame extends JFrame implements ActionListener,
         //disconnect the chat connection
         client.disconnect();
 
-        settings.saveStyle();
+        settings.saveStyle(configIO);
 
         // call dispose from above
         super.dispose();
         System.exit(0);
+    }
+
+    private void loadSettings() {
+        try {
+            configIO.loadSettings(new FileReader("chatConfig.ini"));
+        } catch ( IOException ex ) {
+            Logger.getLogger(ClientFrame.class.getName()).log(Level.SEVERE,
+                    "ERROR: Loading config file, Reverting to defaults", ex);
+        }
     }
 
     /**
@@ -96,7 +111,7 @@ public class ClientFrame extends JFrame implements ActionListener,
         // for a start, set all the message styling
         // this is also needed for the background colour
         settings = new ChatSettings();
-        settings.setStyle();
+        settings.setStyle(configIO);
 
         // Create the layout for the form
         GroupLayout layout = new GroupLayout(contentPane);
@@ -207,6 +222,8 @@ public class ClientFrame extends JFrame implements ActionListener,
 
         // Checkbox for show/hiding user list
         JCheckBoxMenuItem menuChk = new JCheckBoxMenuItem("Show User List");
+        // Give the item a name, used to distingish between them
+        menuChk.setName("Users");
         // default to checked, as userlist is shown by default
         menuChk.setSelected(true);
         // Add listener after the change, otherwise it errors due to the
@@ -266,7 +283,7 @@ public class ClientFrame extends JFrame implements ActionListener,
 
     }
 
-    private void applySettings(){
+    private void applySettings() {
 
         // Update te background color of the message List
         messageList.setBackground(settings.getBackgroundColor());
@@ -396,8 +413,8 @@ public class ClientFrame extends JFrame implements ActionListener,
         Object object = ie.getItem();
         if ( object instanceof JCheckBoxMenuItem ) {
             JCheckBoxMenuItem menuChk = (JCheckBoxMenuItem) object;
-            switch ( menuChk.getText() ) {
-                case "Show User List":
+            switch ( menuChk.getName() ) {
+                case "Users":
                     // set the users panel to be visible only if the checkbox
                     // is checked, and hide it otherwise
                     userPane.setVisible(menuChk.isSelected());

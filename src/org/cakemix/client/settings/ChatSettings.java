@@ -29,8 +29,6 @@ public class ChatSettings {
             new MessageAttributes[ChatMessage.NUM_TYPE];
     // background colour for the text pane
     private Color backgroundColor = Color.white;
-    // Config file reader
-    private ConfigIO configIO = new ConfigIO();
 
     public MessageAttributes[] getMessageAttributes() {
         return msgAttr;
@@ -51,16 +49,11 @@ public class ChatSettings {
      * Look at setting up a settings specific class
      * keep everything neat
      */
-    public void setStyle() {
+    public void setStyle(ConfigIO configIO) {
 
         // Set the attributes to defaults
         msgAttr = MessageAttributes.setToDefalts();
         // first try and load from file
-
-        try {
-
-
-            configIO.loadSettings(new FileReader("chatConfig.ini"));
 
                     backgroundColor = configIO.getBackgroundColor();
             String[] chat = configIO.getChatSettings();
@@ -70,17 +63,9 @@ public class ChatSettings {
                     msgAttr[i].fromString(chat[i]);
                 }
             }
-        } catch ( IOException ex ) {
-            // warn that there was no config found and that a new one
-            // is being created
-            new JOptionPane("Problem reading Config File, creating new one",
-                    JOptionPane.OK_OPTION);
-            Logger.getLogger(ConfigIO.class.getName()).log(Level.SEVERE, null,
-                    ex);
-        }
     }
 
-    public void saveStyle() {
+    public void saveStyle(ConfigIO configIO) {
         try {
             configIO.saveSettings(this);
         } catch ( IOException ex ) {

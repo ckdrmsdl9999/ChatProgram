@@ -157,46 +157,24 @@ public class StylePickerFrame extends JFrame implements ActionListener,
 
         // Create the horizontal group
         // this gets a bit funky cus were looping through the items
-        // first, create the SequentialGroup, so when we loop
-        // they come out one after the other
+        // create root groups
         ParallelGroup horizGroup = layout.createParallelGroup(
                 GroupLayout.Alignment.TRAILING);
+        SequentialGroup vertGroup = layout.createSequentialGroup();
 
         for ( int i = 0; i < ChatMessage.NUM_TYPE; i++ ) {
-            // Then create the sequential group
+            // Then create the sub groups
+            // first the horis
             SequentialGroup sg = layout.createSequentialGroup();
-
 
             // add the parallel to the main group
             horizGroup.addGroup(sg);
             sg.addComponent(colour[i]);
             sg.addComponent(bold[i]);
             sg.addComponent(italic[i]);
-            sg.addComponent(example[i]);//, 256, 256, 256);
+            sg.addComponent(example[i]);
 
-        }
-
-        // Add the background & default
-        horizGroup.addGroup(layout.createSequentialGroup()
-                .addComponent(alt)
-                .addComponent(defaults)
-                .addComponent(bgColor));
-
-        // link the button sizes and the example text sizes
-
-        layout.linkSize(SwingConstants.HORIZONTAL, colour);
-        layout.linkSize(SwingConstants.HORIZONTAL, example);
-
-        // then set the horizontal group
-        layout.setHorizontalGroup(horizGroup);
-
-
-        // do the same for the vertical group
-        SequentialGroup vertGroup = layout.createSequentialGroup();
-
-
-
-        for ( int i = 0; i < ChatMessage.NUM_TYPE; i++ ) {
+            // then the  vert
             // Then create the parallel group
             ParallelGroup pg = layout.createParallelGroup();
 
@@ -206,13 +184,26 @@ public class StylePickerFrame extends JFrame implements ActionListener,
             pg.addComponent(bold[i]);
             pg.addComponent(italic[i]);
             pg.addComponent(example[i]);
+
         }
+
         // Add the background & default
+        horizGroup.addGroup(layout.createSequentialGroup()
+                .addComponent(alt)
+                .addComponent(defaults)
+                .addComponent(bgColor));
         vertGroup.addGroup(layout.createParallelGroup()
                 .addComponent(alt)
                 .addComponent(defaults)
                 .addComponent(bgColor));
-        // then set the vertical group
+
+
+        // link the button sizes and the example text sizes
+        layout.linkSize(SwingConstants.HORIZONTAL, colour);
+        layout.linkSize(SwingConstants.HORIZONTAL, example);
+
+        // then assign the groups
+        layout.setHorizontalGroup(horizGroup);
         layout.setVerticalGroup(vertGroup);
     }
 
