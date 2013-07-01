@@ -180,31 +180,34 @@ public class Changeling extends JFrame {
         SequentialGroup midSectionH = layout.createSequentialGroup();
 
         midSectionH.addGroup(layout.createParallelGroup()
-                .addGroup(sequentialPair(layout, lblIntelligence,
-                addArrayToPanel(rdoIntelligence, new JPanel())))
-                .addGroup(sequentialPair(layout, lblWits,
-                addArrayToPanel(rdoWits, new JPanel())))
+                .addGroup(
+                sequentialPair(layout, lblIntelligence, sequentialRadioArray(
+                layout, rdoIntelligence)))
+                .addGroup(sequentialPair(layout, lblWits, sequentialRadioArray(
+                layout, rdoWits)))
                 .addGroup(sequentialPair(layout, lblResolve,
-                addArrayToPanel(rdoResolve, new JPanel()))));
+                sequentialRadioArray(
+                layout, rdoResolve))));
 
         midSectionH.addGroup(layout.createParallelGroup()
-                .addGroup(sequentialPair(layout, lblStrength,
-                addArrayToPanel(rdoStrength, new JPanel())))
-                .addGroup(sequentialPair(layout, lblDexterity,
-                addArrayToPanel(rdoDexterity, new JPanel())))
-                .addGroup(sequentialPair(layout, lblStamina,
-                addArrayToPanel(rdoStamina, new JPanel()))));
+                .addGroup(sequentialPair(layout, lblStrength, sequentialRadioArray(
+                layout, rdoStrength)))
+                .addGroup(sequentialPair(layout, lblDexterity, sequentialRadioArray(
+                layout, rdoDexterity)))
+                .addGroup(sequentialPair(layout, lblStamina, sequentialRadioArray(
+                layout, rdoStamina))));
 
         midSectionH.addGroup(layout.createParallelGroup()
-                .addGroup(sequentialPair(layout, lblPresence,
-                addArrayToPanel(rdoPresence, new JPanel())))
+                .addGroup(sequentialPair(layout, lblPresence, sequentialRadioArray(
+                layout, rdoPresence)))
                 .addGroup(sequentialPair(layout, lblManipulation,
-                addArrayToPanel(rdoManipulation, new JPanel())))
-                .addGroup(sequentialPair(layout, lblComposure,
-                addArrayToPanel(rdoComposure, new JPanel()))));
+                sequentialRadioArray(
+                layout, rdoManipulation)))
+                .addGroup(sequentialPair(layout, lblComposure, sequentialRadioArray(
+                layout, rdoComposure))));
 
         //Create a group to add everything into
-        SequentialGroup fullh = layout.createSequentialGroup();
+        ParallelGroup fullh = layout.createParallelGroup();
 
         fullh.addGroup(topSecctionH);
         fullh.addGroup(midSectionH);
@@ -239,27 +242,28 @@ public class Changeling extends JFrame {
 
         midSectionV.addGroup(layout.createSequentialGroup()
                 .addGroup(parallelPair(layout, lblIntelligence,
-                addArrayToPanel(rdoIntelligence, new JPanel())))
-                .addGroup(parallelPair(layout, lblWits,
-                addArrayToPanel(rdoWits, new JPanel())))
-                .addGroup(parallelPair(layout, lblResolve,
-                addArrayToPanel(rdoResolve, new JPanel()))));
+                parallelRadioArray(
+                layout, rdoIntelligence)))
+                .addGroup(parallelPair(layout, lblWits, parallelRadioArray(
+                layout, rdoWits)))
+                .addGroup(parallelPair(layout, lblResolve, parallelRadioArray(
+                layout, rdoResolve))));
 
         midSectionV.addGroup(layout.createSequentialGroup()
-                .addGroup(parallelPair(layout, lblStrength,
-                addArrayToPanel(rdoStrength, new JPanel())))
-                .addGroup(parallelPair(layout, lblDexterity,
-                addArrayToPanel(rdoDexterity, new JPanel())))
-                .addGroup(parallelPair(layout, lblStamina,
-                addArrayToPanel(rdoStamina, new JPanel()))));
+                .addGroup(parallelPair(layout, lblStrength, parallelRadioArray(
+                layout, rdoStrength)))
+                .addGroup(parallelPair(layout, lblDexterity, parallelRadioArray(
+                layout, rdoDexterity)))
+                .addGroup(parallelPair(layout, lblStamina, parallelRadioArray(
+                layout, rdoStamina))));
 
         midSectionV.addGroup(layout.createSequentialGroup()
-                .addGroup(parallelPair(layout, lblPresence,
-                addArrayToPanel(rdoPresence, new JPanel())))
-                .addGroup(parallelPair(layout, lblManipulation,
-                addArrayToPanel(rdoManipulation, new JPanel())))
-                .addGroup(parallelPair(layout, lblComposure,
-                addArrayToPanel(rdoComposure, new JPanel()))));
+                .addGroup(parallelPair(layout, lblPresence, parallelRadioArray(
+                layout, rdoPresence)))
+                .addGroup(parallelPair(layout, lblManipulation, parallelRadioArray(
+                layout, rdoManipulation)))
+                .addGroup(parallelPair(layout, lblComposure, parallelRadioArray(
+                layout, rdoComposure))));
 
         SequentialGroup fullV = layout.createSequentialGroup();
 
@@ -274,10 +278,17 @@ public class Changeling extends JFrame {
         layout.linkSize(lblName, lblPlayer, lblChronicle,
                 lblVirtue, lblVice, lblConcept,
                 lblSeeming, lblKith, lblCourt);
+        layout.linkSize(
+                lblIntelligence, lblWits, lblResolve,
+                lblStrength, lblDexterity, lblStamina,
+                lblPresence, lblManipulation, lblComposure);
+
         // link all editable items too
+
         layout.linkSize(txtName, txtPlayer, txtChronicle,
                 cboVirtue, cboVice, txtConcept,
                 cboSeeming, txtKith, cboCourt);
+
 
     }
 }
