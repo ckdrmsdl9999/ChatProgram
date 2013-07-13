@@ -333,6 +333,7 @@ public class ClientFrame extends JFrame implements ActionListener,
                             Level.SEVERE, null, ex);
                 }
                 messageList.setDocument(doc);
+                messageList.setCaretPosition(doc.getLength());
             }
         });
     }

@@ -8,13 +8,14 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.cakemix.characterSheets.Changeling;
+import org.cakemix.client.ChatClient;
 import org.cakemix.server.ChatServer;
 import org.cakemix.client.ClientFrame;
 import org.cakemix.util.StatTracker;
 
 /**
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in
+ * the editor.
  */
 /**
  *
@@ -26,38 +27,61 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        // set the ui look and feel
         try {
             //UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch ( Exception ex ) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
+        //set the log level
         Log.set(Log.LEVEL_DEBUG);
+
+        // parse server args
+        // check first if there are any to be parsed
         if (args.length > 0) {
-            if (args[0].toLowerCase().equals("Server")) {
-                try {
-                    new ChatServer();
-                    new ClientFrame();
-                } catch (IOException e) {
+            //set up the bools to hold the results, with logical defaults
+            boolean client = true, //default to client
+                    server = false, //with no server
+                    nogui = false, //default to the server using gui
+                    sheetOnly = false; //for debugging character sheet
+
+            for (int i = 0; i < args.length; i++) {
+                switch (args[i].toLowerCase()) {
+                    case "server":
+                    case "s":
+                        server = true;
+                        break;
+                    case ("serveronly"):
+                    case ("so"):
+                        server = true;
+                        client = false;
+                        break;
+                    case ("nogui"):
+                        nogui = true;
+                        break;
+                    case ("sheet"):
+                        sheetOnly = true;
+                        break;
                 }
-            } else if (args[0].toLowerCase().equals("serveronly")) {
-                try {
-                    new ChatServer();
-                } catch (IOException e) {
-                }
-            } else if (args[0].toLowerCase().equals("sheet")){
+
+            }
+            if (sheetOnly) {
                 new Changeling();
-            }else if (args[0].toLowerCase().equals("tracker")){
-                JFrame frame = new JFrame();
-                frame.add(new StatTracker(5,3,1,1));
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.pack();
-                frame.setVisible(true);
+            } else {
+                if (server) {
+                    try {
+                        new ChatServer(nogui);
+                    } catch (IOException ex) {
+                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                if (client) {
+                    new ClientFrame();
+                }
             }
-            else{
-                new ClientFrame();
-            }
-        } else {
+        } else // if no args to be parsed
+        {
             new ClientFrame();
         }
     }
