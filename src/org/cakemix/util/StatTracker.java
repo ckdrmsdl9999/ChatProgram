@@ -4,9 +4,15 @@
  */
 package org.cakemix.util;
 
+import java.awt.Component;
 import java.awt.Container;
+import java.awt.Font;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 import javax.swing.*;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.text.Style;
+import static org.cakemix.util.Functions.*;
 
 /**
  *
@@ -17,64 +23,55 @@ import javax.swing.*;
 public class StatTracker extends JPanel {
 
     // labels for the componants
-    JLabel lblName = new JLabel("Name"),
-            lblHealth = new JLabel("Health"),
+    JLabel lblHealth = new JLabel("Health"),
             lblWillpower = new JLabel("Willpower"),
-            lblPower = new JLabel("Supernatural Resource"),
-            lblAfinity = new JLabel("Supernatural Power");
-    // Player/ Character name
-    JTextField txtName;
+            lblPower = new JLabel("Glamour"),
+            lblAfinity = new JLabel("Wyrd");
     // Radio buttons to epresent stat dots
     JRadioButton[] rdoHealth = new JRadioButton[15],
             rdoWillpower = new JRadioButton[10],
             rdoAfinity = new JRadioButton[10];
-    JCheckBox[] chkPower = new JCheckBox[20];
+    JCheckBox[] txtWillpower = new JCheckBox[10];
+    JCheckBox[][] chkPower = new JCheckBox[2][10];
     // "check boxes" to show stats current states
-    JTextField[] txtHealth = new JTextField[15],
-            txtWillpower = new JTextField[10];
+    JTextField[] txtHealth = new JTextField[15];
 
     public StatTracker() {
         super();
-        initialiseComponants("", 1, 1, 1, 1);
+        initialiseComponants(1, 1, 1, 1);
     }
 
-    public StatTracker( String name, int health, int will,
+    public StatTracker( int health, int will,
             int power, int afinity ) {
         super();
-        initialiseComponants(name, health, will, afinity, power);
+        initialiseComponants(health, will, afinity, power);
 
     }
 
-    private void initialiseComponants( String name, int health, int will,
+    private void initialiseComponants( int health, int will,
             int afinity, int power ) {
-        txtName = new JTextField(name);
 
         for ( int i = 0; i < 15; i++ ) {
             if ( i < 10 ) {
                 rdoAfinity[i] = new JRadioButton();
-                rdoAfinity[i].setBorder(BorderFactory.createEmptyBorder());
                 if ( i < afinity ) {
                     rdoAfinity[i].setSelected(true);
                 }
 
                 rdoWillpower[i] = new JRadioButton();
-                rdoWillpower[i].setBorder(BorderFactory.createEmptyBorder());
-                txtWillpower[i] = new JTextField();
-                txtWillpower[i].setBorder(BorderFactory.createEmptyBorder());
+                txtWillpower[i] = new JCheckBox();
                 if ( i < will ) {
                     rdoWillpower[i].setSelected(true);
                 }
-                chkPower[i] = new JCheckBox();
-                chkPower[i].setBorder(BorderFactory.createEmptyBorder());
-                chkPower[i+10] = new JCheckBox();
-                chkPower[i+10].setBorder(BorderFactory.createEmptyBorder());
+                chkPower[0][i] = new JCheckBox();
+                chkPower[1][i] = new JCheckBox();
                 if ( i < power ) {
-                    chkPower[i].setSelected(true);
+                    chkPower[0][i].setSelected(true);
                 }
             }
             rdoHealth[i] = new JRadioButton();
-            rdoHealth[i].setBorder(BorderFactory.createEmptyBorder());
             txtHealth[i] = new JTextField(1);
+            txtHealth[i].setFont(new Font("Arial", 0, 14));
 
             if ( i < health ) {
                 rdoHealth[i].setSelected(true);
@@ -82,55 +79,77 @@ public class StatTracker extends JPanel {
 
         }
 
-        initialiseGrid();
-
-    }
-
-    private void initialiseGrid() {
-        GridLayout layout = new GridLayout(0, 2);
-        setLayout(layout);
-
-        add(lblName);
-        add(txtName);
-
-        add(lblHealth);
-        JPanel p = new JPanel();
-        GridLayout panelLayout = new GridLayout (2,15);
-        p.setLayout(panelLayout);
-        for ( int i = 0; i < 15; i++ ) {
-            p.add(rdoHealth[i]);}
-        for ( int i = 0; i < 15; i++ ) {
-            p.add(txtHealth[i]);
-        }
-        add(p);
-
-        add(lblWillpower);
-        p = new JPanel();
-        panelLayout = new GridLayout (2,10);
-        p.setLayout(panelLayout);
-        for ( int i = 0; i < 10; i++ ) {
-            p.add(rdoWillpower[i]);}
-        for ( int i = 0; i < 10; i++ ) {
-            p.add(txtWillpower[i]);
-        }
-        add(p);
-
-        add(lblPower);p = new JPanel();
-        for ( int i = 0; i < 20; i++ ) {
-            p.add(chkPower[i]);
-        }
-        add(p);
-
-        add(lblAfinity);
-        p = new JPanel();
-        for ( int i = 0; i < 10; i++ ) {
-            p.add(rdoAfinity[i]);
-        }
-        add(p);
+        initialiseGroup();
 
     }
 
     private void initialiseGroup() {
+        GroupLayout layout = new GroupLayout(this);
+        this.setLayout(layout);
 
+        layout.setHorizontalGroup(layout.createParallelGroup()
+                .addGroup(
+                sequentialPair(layout,
+                lblHealth,
+                parallelPair(layout,
+                sequentialRadioArray(layout, rdoHealth),
+                sequentialRadioArray(layout, txtHealth))))
+                .addGroup(
+                sequentialPair(layout,
+                lblWillpower,
+                parallelPair(layout,
+                sequentialRadioArray(layout, rdoWillpower),
+                sequentialRadioArray(layout, txtWillpower))))
+                .addGroup(
+                sequentialPair(layout,
+                lblPower,
+                parallelPair(layout,
+                sequentialRadioArray(layout, chkPower[0]),
+                sequentialRadioArray(layout, chkPower[1]))))
+                .addGroup(
+                sequentialPair(layout,
+                lblAfinity,
+                sequentialRadioArray(layout, rdoAfinity)))
+                );
+
+        layout.setVerticalGroup(layout.createSequentialGroup()
+                .addGroup(
+                parallelPair(layout,
+                lblHealth,
+                sequentialPair(layout,
+                parallelRadioArray(layout, rdoHealth),
+                parallelRadioArray(layout, txtHealth))))
+                .addGroup(
+                parallelPair(layout,
+                lblWillpower,
+                sequentialPair(layout,
+                parallelRadioArray(layout, rdoWillpower),
+                parallelRadioArray(layout, txtWillpower))))
+                .addGroup(
+                parallelPair(layout,
+                lblPower,
+                sequentialPair(layout,
+                parallelRadioArray(layout, chkPower[0]),
+                parallelRadioArray(layout, chkPower[1]))))
+                .addGroup(
+                parallelPair(layout,
+                lblAfinity,
+                parallelRadioArray(layout, rdoAfinity))));
+
+        ArrayList cmp = new ArrayList<Component>();
+        for ( int i = 0; i < this.getComponents().length; i++ ) {
+            if ( this.getComponents()[i] instanceof JRadioButton
+                    || this.getComponent(i) instanceof JTextField
+                    //|| this.getComponent(i) instanceof JCheckBox
+                    ) {
+                cmp.add(this.getComponents()[i]);
+            }
+        }
+        Component[] cmpPass = new Component[cmp.size()];
+        for ( int i = 0; i < cmp.size(); i++ ) {
+            cmpPass[i] = (Component) cmp.get(i);
+        }
+        layout.linkSize(cmpPass);
+        layout.linkSize(lblHealth, lblPower,lblPower,lblAfinity);
     }
 }
