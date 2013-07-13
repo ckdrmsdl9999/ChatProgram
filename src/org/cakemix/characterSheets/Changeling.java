@@ -4,6 +4,7 @@
  */
 package org.cakemix.characterSheets;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import javax.swing.*;
@@ -111,9 +112,14 @@ public class Changeling extends JFrame {
                 txtKith = new JTextField();
     // Merits are slightly different
     // Text feilds to put the merits in
-    JTextField[] txtMerits = new JTextField[10];
+    JComboBox[] cboMerits = new JComboBox[10];
     // 5 dots for each merit, thus 2d array
     JRadioButton[][] rdoMerits = new JRadioButton[10][5];
+    // same again for the contracts
+    // Text feilds to put the contracts in
+    JComboBox[] cboContracts = new JComboBox[10];
+    // 5 dots for each merit, thus 2d array
+    JRadioButton[][] rdoContracts = new JRadioButton[10][5];
 
     //add a stat tracker (to be linked into the gms overall one)
     StatTracker vitals = new StatTracker();
@@ -121,7 +127,9 @@ public class Changeling extends JFrame {
     public Changeling() {
         super("Changeling - The Lost");
         buildUI(this.getContentPane());
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        //this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
         pack();
         setVisible(true);
     }
@@ -282,9 +290,11 @@ public class Changeling extends JFrame {
 
         // loop again, try and intergrate this with above later on, loop as little as possible
         for (int i = 0; i < 10; i++){
-            txtMerits[i] = new JTextField();
+            cboMerits[i] = new JComboBox<String>();
+            cboContracts[i] = new JComboBox<String>();
             for (int j = 0; j < 5; j++){
                 rdoMerits[i][j] = new JRadioButton();
+                rdoContracts[i][j] = new JRadioButton();
             }
         }
 
@@ -377,6 +387,7 @@ public class Changeling extends JFrame {
         //set the layout for the skills tab, you get the jist
         glSkills.setHorizontalGroup(buildSkillsH(glSkills));
         glMerits.setHorizontalGroup(buildMeritsH(glMerits));
+        glContracts.setHorizontalGroup(buildContractsH(glContracts));
 
         //</editor-fold>
 
@@ -427,6 +438,7 @@ public class Changeling extends JFrame {
         //set the skills tab
         glSkills.setVerticalGroup(buildSkillsV(glSkills));
         glMerits.setVerticalGroup(buildMeritsV(glMerits));
+        glContracts.setVerticalGroup(buildContractsV(glContracts));
 
         //</editor-fold>
 
@@ -465,71 +477,77 @@ public class Changeling extends JFrame {
     //<editor-fold desc="Stats Layout" defaultstate="collapsed">
     private Group buildAttributesH( GroupLayout layout ) {
 
-        SequentialGroup statsSectionH = layout.createSequentialGroup();
-        statsSectionH.addGroup(layout.createParallelGroup()
-                .addGroup(
-                sequentialPair(layout, lblIntelligence, sequentialRadioArray(
-                layout, rdoIntelligence)))
-                .addGroup(sequentialPair(layout, lblWits, sequentialRadioArray(
-                layout, rdoWits)))
-                .addGroup(sequentialPair(layout, lblResolve,
-                sequentialRadioArray(
-                layout, rdoResolve))));
-
-        statsSectionH.addGroup(layout.createParallelGroup()
+        ParallelGroup statsSectionH = layout.createParallelGroup(
+                GroupLayout.Alignment.CENTER);
+        
+        statsSectionH.addGap(10, 75, 100);
+        
+        statsSectionH.addGroup(layout.createSequentialGroup()
+                .addGroup(sequentialPair(layout, lblIntelligence, 
+                sequentialRadioArray(layout, rdoIntelligence)))
                 .addGroup(sequentialPair(layout, lblStrength,
-                sequentialRadioArray(
-                layout, rdoStrength)))
-                .addGroup(sequentialPair(layout, lblDexterity,
-                sequentialRadioArray(
-                layout, rdoDexterity)))
-                .addGroup(sequentialPair(layout, lblStamina,
-                sequentialRadioArray(
-                layout, rdoStamina))));
-
-        statsSectionH.addGroup(layout.createParallelGroup()
+                sequentialRadioArray(layout, rdoStrength)))
                 .addGroup(sequentialPair(layout, lblPresence,
-                sequentialRadioArray(
-                layout, rdoPresence)))
+                sequentialRadioArray(layout, rdoPresence)))
+                );
+
+        statsSectionH.addGap(10, 75, 100);
+        
+        statsSectionH.addGroup(layout.createSequentialGroup()
+                .addGroup(sequentialPair(layout, lblWits,
+                sequentialRadioArray(layout, rdoWits)))
+                .addGroup(sequentialPair(layout, lblDexterity,
+                sequentialRadioArray(layout, rdoDexterity)))
                 .addGroup(sequentialPair(layout, lblManipulation,
-                sequentialRadioArray(
-                layout, rdoManipulation)))
+                sequentialRadioArray(layout, rdoManipulation)))
+                );
+
+        statsSectionH.addGap(10, 75, 100);
+        
+        statsSectionH.addGroup(layout.createSequentialGroup()
+                
+                .addGroup(sequentialPair(layout, lblResolve,
+                sequentialRadioArray(layout, rdoResolve)))
+                .addGroup(sequentialPair(layout, lblStamina,
+                sequentialRadioArray(layout, rdoStamina)))
                 .addGroup(sequentialPair(layout, lblComposure,
-                sequentialRadioArray(
-                layout, rdoComposure))));
+                sequentialRadioArray(layout, rdoComposure)))
+                );
+        
+        statsSectionH.addGap(10, 75, 100);
 
         return statsSectionH;
     }
 
     private Group buildAttributesV( GroupLayout layout ) {
-        ParallelGroup statsSectionV = layout.createParallelGroup(
-                GroupLayout.Alignment.CENTER);
+        SequentialGroup statsSectionV = layout.createSequentialGroup();
 
-        statsSectionV.addGroup(layout.createSequentialGroup()
+        statsSectionV.addGroup(layout.createParallelGroup()
                 .addGroup(parallelPair(layout, lblIntelligence,
-                parallelRadioArray(
-                layout, rdoIntelligence)))
-                .addGroup(parallelPair(layout, lblWits, parallelRadioArray(
-                layout, rdoWits)))
-                .addGroup(parallelPair(layout, lblResolve, parallelRadioArray(
-                layout, rdoResolve))));
+                parallelRadioArray(layout, rdoIntelligence)))
+                .addGroup(parallelPair(layout, lblStrength, 
+                parallelRadioArray(layout, rdoStrength)))
+                .addGroup(parallelPair(layout, lblPresence, 
+                parallelRadioArray(layout, rdoPresence)))
+                );
 
-        statsSectionV.addGroup(layout.createSequentialGroup()
-                .addGroup(parallelPair(layout, lblStrength, parallelRadioArray(
-                layout, rdoStrength)))
-                .addGroup(parallelPair(layout, lblDexterity, parallelRadioArray(
-                layout, rdoDexterity)))
-                .addGroup(parallelPair(layout, lblStamina, parallelRadioArray(
-                layout, rdoStamina))));
-
-        statsSectionV.addGroup(layout.createSequentialGroup()
-                .addGroup(parallelPair(layout, lblPresence, parallelRadioArray(
-                layout, rdoPresence)))
+        statsSectionV.addGroup(layout.createParallelGroup()
+                .addGroup(parallelPair(layout, lblDexterity, 
+                parallelRadioArray(layout, rdoDexterity)))
+                .addGroup(parallelPair(layout, lblWits, 
+                parallelRadioArray(layout, rdoWits)))
                 .addGroup(parallelPair(layout, lblManipulation,
-                parallelRadioArray(
-                layout, rdoManipulation)))
-                .addGroup(parallelPair(layout, lblComposure, parallelRadioArray(
-                layout, rdoComposure))));
+                parallelRadioArray(layout, rdoManipulation)))
+                );
+       
+        statsSectionV.addGroup(layout.createParallelGroup())
+                .addGroup(parallelPair(layout, lblResolve, 
+                parallelRadioArray(layout, rdoResolve)))
+                .addGroup(parallelPair(layout, lblStamina, 
+                parallelRadioArray(layout, rdoStamina)))
+                .addGroup(parallelPair(layout, lblComposure,
+                parallelRadioArray(layout, rdoComposure))
+                );
 
         return statsSectionV;
     }
@@ -540,6 +558,9 @@ public class Changeling extends JFrame {
 
         SequentialGroup skillsSectionH = layout.createSequentialGroup();
         // Mental
+        
+        skillsSectionH.addGap(10, 75, 100);
+        
         skillsSectionH.addGroup(layout.createParallelGroup()
                 .addGroup(
                 sequentialPair(layout, lblAcademics, sequentialRadioArray(
@@ -565,7 +586,9 @@ public class Changeling extends JFrame {
                 .addGroup(sequentialPair(layout, lblScience,
                 sequentialRadioArray(
                 layout, rdoScience))));
-
+        
+        skillsSectionH.addGap(10, 75, 100);
+        
         // Physical
         skillsSectionH.addGroup(layout.createParallelGroup()
                 .addGroup(sequentialPair(layout, lblAthletics,
@@ -590,6 +613,8 @@ public class Changeling extends JFrame {
                 .addGroup(sequentialPair(layout, lblWeaponry,
                 sequentialRadioArray(
                 layout, rdoWeaponry))));
+        
+        skillsSectionH.addGap(10, 75, 100);
 
         // Social
         skillsSectionH.addGroup(layout.createParallelGroup()
@@ -617,6 +642,8 @@ public class Changeling extends JFrame {
                 .addGroup(sequentialPair(layout, lblSubterfuge,
                 sequentialRadioArray(
                 layout, rdoSubterfuge))));
+        
+        skillsSectionH.addGap(10, 75, 100);
         return skillsSectionH;
     }
 
@@ -695,9 +722,9 @@ public class Changeling extends JFrame {
 
     //<editor-fold desc="Merits Layout" defaultstate="collapsed">
     private Group buildMeritsH( GroupLayout layout){
-        ParallelGroup meritsSectionH = layout.createParallelGroup();
+        ParallelGroup meritsSectionH = layout.createParallelGroup(Alignment.CENTER);
         for (int i = 0; i < 10; i++){
-            meritsSectionH.addGroup(sequentialPair(layout,txtMerits[i],
+            meritsSectionH.addGroup(sequentialPair(layout,cboMerits[i],
                     sequentialRadioArray(layout, rdoMerits[i])));
         }
         return meritsSectionH;
@@ -705,10 +732,33 @@ public class Changeling extends JFrame {
     private Group buildMeritsV( GroupLayout layout){
         SequentialGroup meritsSectionV = layout.createSequentialGroup();
         for (int i = 0; i < 10; i++){
-            meritsSectionV.addGroup(parallelPair(layout,txtMerits[i],
+            meritsSectionV.addGroup(parallelPair(layout,cboMerits[i],
                     parallelRadioArray(layout, rdoMerits[i])));
         }
         return meritsSectionV;
+    }
+    //</editor-fold>
+    
+    //<editor-fold desc="Contracts Layout" defaultstate="collapsed">
+    private Group buildContractsH( GroupLayout layout){
+        ParallelGroup contractsSectionH = layout.createParallelGroup(Alignment.CENTER);
+        contractsSectionH.addGap(10,75,100);
+        for (int i = 0; i < 10; i++){
+            contractsSectionH.addGroup(sequentialPair(layout,cboContracts[i],
+                    sequentialRadioArray(layout, rdoContracts[i])));
+            
+        }
+        contractsSectionH.addGap(10,75,100);
+        return contractsSectionH;
+    }
+    private Group buildContractsV( GroupLayout layout){
+        SequentialGroup contractsSectionV = layout.createSequentialGroup();
+        for (int i = 0; i < 10; i++){
+            contractsSectionV.addGroup(parallelPair(layout,cboContracts[i],
+                    parallelRadioArray(layout, rdoContracts[i])));
+            contractsSectionV.addGap(5, 10, 15);
+        }
+        return contractsSectionV;
     }
     //</editor-fold>
 
@@ -716,7 +766,7 @@ public class Changeling extends JFrame {
     private Group buildDerivedH( GroupLayout layout){
         ParallelGroup meritsSectionH = layout.createParallelGroup();
         for (int i = 0; i < 10; i++){
-            meritsSectionH.addGroup(sequentialPair(layout,txtMerits[i],
+            meritsSectionH.addGroup(sequentialPair(layout,cboMerits[i],
                     sequentialRadioArray(layout, rdoMerits[i])));
         }
         return meritsSectionH;
@@ -724,7 +774,7 @@ public class Changeling extends JFrame {
     private Group buildDerivedV( GroupLayout layout){
         SequentialGroup meritsSectionV = layout.createSequentialGroup();
         for (int i = 0; i < 10; i++){
-            meritsSectionV.addGroup(parallelPair(layout,txtMerits[i],
+            meritsSectionV.addGroup(parallelPair(layout,cboMerits[i],
                     parallelRadioArray(layout, rdoMerits[i])));
         }
         return meritsSectionV;
