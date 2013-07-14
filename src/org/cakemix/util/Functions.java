@@ -50,10 +50,11 @@ public class Functions {
                 .addGroup(arrayGroup);
     }
 
+
     public static ParallelGroup parallelPair( GroupLayout layout,
             JComponent label,
             Component editable ) {
-        return layout.createParallelGroup()//GroupLayout.Alignment.BASELINE)
+        return layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                 .addComponent(label)
                 .addComponent(editable);
     }
@@ -61,7 +62,7 @@ public class Functions {
     public static ParallelGroup parallelPair( GroupLayout layout,
             Component label,
             Component editable ) {
-        return layout.createParallelGroup()//GroupLayout.Alignment.BASELINE)
+        return layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                 .addComponent(label)
                 .addComponent(editable);
     }
@@ -69,7 +70,7 @@ public class Functions {
     public static ParallelGroup parallelPair( GroupLayout layout,
             Component label,
             Group arrayGroup ) {
-        return layout.createParallelGroup()//GroupLayout.Alignment.BASELINE)
+        return layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                 .addComponent(label)
                 .addGroup(arrayGroup);
     }
