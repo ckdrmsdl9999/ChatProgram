@@ -41,6 +41,7 @@ public class StatTracker extends JPanel implements ActionListener {
     public StatTracker() {
         super();
         initialiseComponants(6, 1, 1, 10);
+        reValidate();
     }
 
     public StatTracker( int health, int will,
@@ -230,11 +231,11 @@ public class StatTracker extends JPanel implements ActionListener {
                 break;
             case 'p':
                 if ( name.charAt(1) == '0' ) {
-                    vitals.setStats("po",
+                    vitals.setStats("pl",
                             Integer.parseInt(name.substring(2)) + 1);
                 }
                 if ( name.charAt(1) == '1' ) {
-                    vitals.setStats("po",
+                    vitals.setStats("pl",
                             Integer.parseInt(name.substring(2)) + 10);
                 }
                 break;
@@ -255,6 +256,7 @@ public class StatTracker extends JPanel implements ActionListener {
     }
 
     private void reValidate() {
+       System.out.println(vitals.willpower);
         for ( int i = 0; i < this.getComponentCount(); i++ ) {
             String name = getComponent(i).getName();
             if ( name != null ) {
@@ -293,12 +295,24 @@ public class StatTracker extends JPanel implements ActionListener {
                         } else {
                             ((JCheckBox) getComponent(i)).setSelected(true);
                         }
+                        if (Integer.parseInt(name.substring(2)) > vitals.power -1){
+                            ((JCheckBox) getComponent(i)).setEnabled(false);
+                        }
+                        else {
+                            ((JCheckBox) getComponent(i)).setEnabled(true);
+                        }
                         break;
                     case "p1":
                         if ( Integer.parseInt(name.substring(2)) > vitals.powerLeft - 11 ) {
                             ((JCheckBox) getComponent(i)).setSelected(false);
                         } else {
                             ((JCheckBox) getComponent(i)).setSelected(true);
+                        }
+                        if (Integer.parseInt(name.substring(2)) > vitals.power -11){
+                            ((JCheckBox) getComponent(i)).setEnabled(false);
+                        }
+                        else {
+                            ((JCheckBox) getComponent(i)).setEnabled(true);
                         }
                         break;
                     case "ar":
