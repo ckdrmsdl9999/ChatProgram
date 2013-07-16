@@ -418,7 +418,7 @@ public class Changeling extends JFrame {
             lblSubterfuge.setToolTipText("Experience Cost: New Dots x3");
             lblBlessing.setToolTipText("Experience Cost: New Dots x3");
             lblCurse.setToolTipText("Experience Cost: New Dots x3");
-            lblSize.setToolTipText("Experience Cost: New Dots x3";)
+            lblSize.setToolTipText("Experience Cost: New Dots x3");
 
         //<editor-fold desc="Layout Setup Creation" defaultstate="collapsed">
         // Create the layout for the form
