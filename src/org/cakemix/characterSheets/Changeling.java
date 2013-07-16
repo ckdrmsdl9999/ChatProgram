@@ -17,6 +17,14 @@ import static org.cakemix.util.Functions.*;
  * @author cakemix
  */
 public class Changeling extends JFrame {
+    
+    JTextField txtName = new JTextField(),
+            txtPlayer = new JTextField(),
+            txtChronicle = new JTextField(),
+            txtConcept = new JTextField(),
+            txtKith = new JTextField();
+            
+    JComboBox cboVirtue, cboVice, cboSeeming, cboCourt;
 
     // Create the stat labels
     JLabel lblIntelligence = new JLabel("Intelligence"),
@@ -59,9 +67,8 @@ public class Changeling extends JFrame {
             lblBlessing = new JLabel("Seeming Blessing"),
             lblCurse = new JLabel("Seeming Curse"),
             lblSize = new JLabel("Size");
-    JComboBox cboVirtue, cboVice, cboSeeming, cboCourt;
+            
     /**
-     * phew, right, stat arrays...
      * 5 "dots" (ie, radio buttons) per stat (hope to HELL this works)
      * can always try checkboxes another time (tho not round : /)
      * start by creating all te arrays
@@ -103,11 +110,10 @@ public class Changeling extends JFrame {
             rdoSocialize = new JRadioButton[5],
             rdoStreetwise = new JRadioButton[5],
             rdoSubterfuge = new JRadioButton[5];
-    JTextField txtName = new JTextField(),
-            txtPlayer = new JTextField(),
-            txtChronicle = new JTextField(),
-            txtConcept = new JTextField(),
-            txtKith = new JTextField();
+    // Skill Specialty List
+    JComboBox[] cboSpecialty = new JComboBox[10];
+    JTextField[] txtSpecialty = new JTextField[10];
+    
     // Merits are slightly different
     // Text feilds to put the merits in
     JComboBox[] cboMerits = new JComboBox[10];
@@ -172,14 +178,23 @@ public class Changeling extends JFrame {
 
         // Set input box names
         txtName.setName("name");
+        txtName.setToolTipText("Characters name.");
         txtPlayer.setName("player");
+        txtPlayer.setToolTipText("Your (real) name.");
         txtChronicle.setName("chronicle");
+        txtChronicle.setToolTipText("Chronicle the character is part of, may be left blank at Storytellers Descretion");
         cboVirtue.setName("virtue");
+        cboVirtue.setToolTipText("Characters Virtue")
         cboVice.setName("vice");
+        cboVice.setToolTipText("Characters Virtue");
         txtConcept.setName("concept");
+        txtConcept.setToolTipText("Short description of the character")
         cboSeeming.setName("seeming");
+        cboSeeming.setToolTipText("Characters Seeming");
         txtKith.setName("kith");
+        cboKith.setToolTipText("Characters Kith (optional)");
         cboCourt.setName("court");
+        cboCourt.setToolTipText("Characters Court (optional)")
 //</editor-fold>
 
         JTabbedPane tabber = new JTabbedPane();
@@ -202,14 +217,23 @@ public class Changeling extends JFrame {
 
             // name them all
             rdoIntelligence[i].setName("intelligence " + i);
+            rdoIntelligence[i].setToolTipText("Experience Cost: New Dots x5");
             rdoWits[i].setName("wits " + i);
+            rdoWits[i].setToolTipText("Experience Cost: New Dots x5");
             rdoResolve[i].setName("resolve " + i);
+            rdoResolve[i].setToolTipText("Experience Cost: New Dots x5");
             rdoStrength[i].setName("strength " + i);
+            rdoStrength[i].setToolTipText("Experience Cost: New Dots x5");
             rdoDexterity[i].setName("dexterity " + i);
+            rdoDexterity[i].setToolTipText("Experience Cost: New Dots x5");
             rdoStamina[i].setName("stamina " + i);
+            rdoStamina[i].setToolTipText("Experience Cost: New Dots x5");
             rdoPresence[i].setName("presence" + i);
+            rdoPresence[i].setToolTipText("Experience Cost: New Dots x5");
             rdoManipulation[i].setName("manipulation" + i);
+            rdoManipulation[i].setToolTipText("Experience Cost: New Dots x5");
             rdoComposure[i].setName("composure " + i);
+            rdoComposure[i].setToolTipText("Experience Cost: New Dots x5");
 
             // since these are the Stats and you get a free dot
             // if this is the first loop, set all of them to checked
@@ -253,51 +277,148 @@ public class Changeling extends JFrame {
             rdoStreetwise[i] = new JRadioButton();
             rdoSubterfuge[i] = new JRadioButton();
 
-            //Naming
+            //Naming and Labels
             //Mental
             rdoAcademics[i].setName("academics " + i);
+            rdoAcademics[i].setToolTipText("Experience Cost: New Dots x3");
             rdoComputer[i].setName("computer " + i);
+            rdoComputer[i].setToolTipText("Experience Cost: New Dots x3");
             rdoCrafts[i].setName("crafts " + i);
+            rdoCrafts[i].setToolTipText("Experience Cost: New Dots x3");
             rdoInvestigation[i].setName("investigation " + i);
             rdoMedicine[i].setName("medicine " + i);
+            rdoMedicine[i].setToolTipText("Experience Cost: New Dots x3");
             rdoOccult[i].setName("occult " + i);
+            rdoOccult[i].setToolTipText("Experience Cost: New Dots x3");
             rdoPolitics[i].setName("politics " + i);
+            rdoPolitics[i].setToolTipText("Experience Cost: New Dots x3");
             rdoScience[i].setName("science " + i);
+            rdoScience[i].setToolTipText("Experience Cost: New Dots x3");
             //Physical
             rdoAthletics[i].setName("athletics " + i);
+            rdoAthletics[i].setToolTipText("Experience Cost: New Dots x3");
             rdoBrawl[i].setName("brawl " + i);
+            rdoBrawl[i].setToolTipText("Experience Cost: New Dots x3");
             rdoDrive[i].setName("drive " + i);
+            rdoDrive[i].setToolTipText("Experience Cost: New Dots x3");
             rdoFirearms[i].setName("firearms " + i);
+            rdoFirearms[i].setToolTipText("Experience Cost: New Dots x3");
             rdoLarceny[i].setName("larceny " + i);
+            rdoLarceny[i].setToolTipText("Experience Cost: New Dots x3");
             rdoStealth[i].setName("stealth " + i);
+            rdoStealth[i].setToolTipText("Experience Cost: New Dots x3");
             rdoSurvival[i].setName("survival " + i);
+            rdoSurvival[i].setToolTipText("Experience Cost: New Dots x3");
             rdoWeaponry[i].setName("weaponry " + i);
+            rdoWeaponry[i].setToolTipText("Experience Cost: New Dots x3");
             //Social
             rdoAnimalKen[i].setName("animal " + i);
+            rdoAnimalKen[i].setToolTipText("Experience Cost: New Dots x3");
             rdoEmpathy[i].setName("empathy " + i);
+            rdoEmpathy[i].setToolTipText("Experience Cost: New Dots x3");
             rdoExpression[i].setName("expression " + i);
+            rdoExpression[i].setToolTipText("Experience Cost: New Dots x3");
             rdoIntimidation[i].setName("intimidation " + i);
+            rdoIntimidation[i].setToolTipText("Experience Cost: New Dots x3");
             rdoPersuasion[i].setName("persuasion " + i);
+            rdoPersuasion[i].setToolTipText("Experience Cost: New Dots x3");
             rdoSocialize[i].setName("socialize " + i);
+            rdoSocialize[i].setToolTipText("Experience Cost: New Dots x3");
             rdoStreetwise[i].setName("streetwise " + i);
+            rdoStreetwise[i].setToolTipText("Experience Cost: New Dots x3");
             rdoSubterfuge[i].setName("subterfuge " + i);
+            rdoSubterfuge[i].setToolTipText("Experience Cost: New Dots x3");
 
         } // Done componant setup
         //</editor-fold>
 
         // loop again, try and intergrate this with above later on, loop as little as possible
 
-            String[] merit = { "Test1", "Test2" },
-                    contract = {"Contract1","Contract2"};
-            
+            String[] merit = { 
+                    "--Mental--", "Common Sense", "Danger Sense", "Eidetic Memory", 
+                    "Encyclopedic Knowledge", "Holistic Awareness", "Language", "Meditative Mind", 
+                    "Unseen Sense", 
+                    "--Physical--", "Ambidextrous", "Brawling Dodge", "Direction Sense", "Disarm",
+                    "Fast Reflexes", "Fighting Finese", "Fighting Style: Boxing", "Fighting Style: Kung Fu",
+                    "Fighting Style: Two Weapons", "Fleet of Foot", "Fresh Start", "Giant", "Gunslinger",
+                    "Iron Stamina", "Iron Stomach", "Natural Immunity", "Quick Draw", "Quick Healer", 
+                    "Strong Back", "Strong Lungs", "Stunt Driver", "Toxin Resistance", "Weaponry Dodge"
+                    "--Social Merits--", "Allies", "Barfly", "Contacts", "Fame", "Inspiring", "Mentor",
+                    "Resources", "Retainer", "Status", "Striking Looks",
+                    "--Changeling--","Court Goodwill: Spring", "Court Goodwill: Summer", "Court Goodwill: Autumn",
+                    "Court Goodwill: Winter", "Harvest", "Hollow", "Mantle: Spring", 
+                    "Mantle: Summer", "Mantle: Autumn", "Mantle: Winter", "New Identity", "Token"},
+                contract = {
+                    "--Seeming--", "Artifice", "Darkness", "Elements", "Fang and Talon", "Stone", "Vainglory"
+                    "--General--", "Dream", "Hearth", "Mirror", "Smoke",
+                    "--Court--", "Eternal Spring", "Fleeting Spring","Eternal Summer", "Fleeting Summer",
+                    "Eternal Autumn", "Fleeting Autumn", "Eternal Winter", "Fleeting Winter",
+                    "--Goblin--"},
+                speciality = {"--Mental--", "Academics", "Computer", "Crafts", "Investigation", "Medicine",
+                    "Occult", "Politics", "Science",
+                    "--Physical--", "Athletics", "Brawl", "Drive", "Firearms", "Larceny", "Stealth",
+                    "Survival", "Weaponry",
+                    "--Mental--", "Animal Ken", "Empathy", "Intimidation", "Persuasion", "Socialize",
+                    "Streetwise", "Subterfuge"};
+                    
         for ( int i = 0; i < 10; i++ ) {
             cboMerits[i] = new JComboBox<String>(merit);
+            cboMerits[i].setToolTipText("Experience Cost: New Dots x2");
             cboContracts[i] = new JComboBox<String>(contract);
+            cboContracts[i].setToolTipText("Experience Cost: New Dots (Affinity)x4 (Non-Affinity)x6 (Goblin)x3");
+            cboSpeciality[i] = new JComboBox<String>(speciality);
+            cboSpeciality[i].setToolTipText("Experience Cost: 3");
+            txtSpeciality[i] = new JTextField();
+            txtSpeciality[i].setToolTipText("Skill Speciality Details");
             for ( int j = 0; j < 5; j++ ) {
                 rdoMerits[i][j] = new JRadioButton();
+                rdoMerits[i][j]..setToolTipText("Experience Cost: New Dots x2")
                 rdoContracts[i][j] = new JRadioButton();
+                rdoContracts[i][j].setToolTipText("Experience Cost: New Dots (Affinity)x4 (Non-Affinity)x6 (Goblin)x3");
             }
         }
+        
+        // Tool Tips
+            lblIntelligence.setToolTipText("Experience Cost: New Dots x5");
+            lblWits.setToolTipText("Experience Cost: New Dots x5");
+            lblResolve.setToolTipText("Experience Cost: New Dots x5");
+            lblStrength.setToolTipText("Experience Cost: New Dots x5");
+            lblDexterity.setToolTipText("Experience Cost: New Dots x5");
+            lblStamina.setToolTipText("Experience Cost: New Dots x5");
+            lblPresence.setToolTipText("Experience Cost: New Dots x5");
+            lblManipulation.setToolTipText("Experience Cost: New Dots x5");
+            lblComposure.setToolTipText("Experience Cost: New Dots x5");
+            //Skill labels
+            //Mental
+            lblAcademics.setToolTipText("Experience Cost: New Dots x3");
+            lblComputer.setToolTipText("Experience Cost: New Dots x3");
+            lblCrafts.setToolTipText("Experience Cost: New Dots x3");
+            lblInvestigation.setToolTipText("Experience Cost: New Dots x3");
+            lblMedicine.setToolTipText("Experience Cost: New Dots x3");
+            lblOccult.setToolTipText("Experience Cost: New Dots x3");
+            lblPolitics.setToolTipText("Experience Cost: New Dots x3");
+            lblScience.setToolTipText("Experience Cost: New Dots x3");
+            //Physical
+            lblAthletics.setToolTipText("Experience Cost: New Dots x3");
+            lblBrawl.setToolTipText("Experience Cost: New Dots x3");
+            lblDrive.setToolTipText("Experience Cost: New Dots x3");
+            lblFirearms.setToolTipText("Experience Cost: New Dots x3");
+            lblLarceny.setToolTipText("Experience Cost: New Dots x3");
+            lblStealth.setToolTipText("Experience Cost: New Dots x3");
+            lblSurvival.setToolTipText("Experience Cost: New Dots x3");
+            lblWeaponry.setToolTipText("Experience Cost: New Dots x3");
+            //Social
+            lblAnimalKen.setToolTipText("Experience Cost: New Dots x3");
+            lblEmpathy.setToolTipText("Experience Cost: New Dots x3");
+            lblExpression.setToolTipText("Experience Cost: New Dots x3");
+            lblIntimidation.setToolTipText("Experience Cost: New Dots x3");
+            lblPersuasion.setToolTipText("Experience Cost: New Dots x3");
+            lblSocialize.setToolTipText("Experience Cost: New Dots x3");
+            lblStreetwise.setToolTipText("Experience Cost: New Dots x3");
+            lblSubterfuge.setToolTipText("Experience Cost: New Dots x3");
+            lblBlessing.setToolTipText("Experience Cost: New Dots x3");
+            lblCurse.setToolTipText("Experience Cost: New Dots x3");
+            lblSize.setToolTipText("Experience Cost: New Dots x3";)
 
         //<editor-fold desc="Layout Setup Creation" defaultstate="collapsed">
         // Create the layout for the form
@@ -323,6 +444,11 @@ public class Changeling extends JFrame {
         GroupLayout glSkills = new GroupLayout(pnlSkills);
         pnlSkills.setLayout(glSkills);
         tabber.addTab("Skills", pnlSkills);
+        //Specialty
+        JPanel pnlSpec = new JPanel();
+        GroupLayout glSpec = new GroupLayout(pnlSpec);
+        pnlSpec.setLayout(glSpec);
+        tabber.addTab("Skill Specialty", pnlSpec);
         //Merits
         JPanel pnlMerits = new JPanel();
         GroupLayout glMerits = new GroupLayout(pnlMerits);
@@ -339,7 +465,7 @@ public class Changeling extends JFrame {
         JPanel pnlPledges = new JPanel();
         GroupLayout glPledges = new GroupLayout(pnlPledges);
         pnlPledges.setLayout(glPledges);
-        tabber.addTab("Pledges", pnlPledges);
+        tabber.addTab("Pledges", pnlPledges;)
         // Vitals
         tabber.addTab("Vitals", vitals);
 
@@ -389,6 +515,7 @@ public class Changeling extends JFrame {
 
         //set the layout for the skills tab, you get the jist
         glSkills.setHorizontalGroup(buildSkillsH(glSkills));
+        glSpec.setVerticalGroup(buildSpecV(glSpec));
         glMerits.setHorizontalGroup(buildMeritsH(glMerits));
         glContracts.setHorizontalGroup(buildContractsH(glContracts));
 
@@ -440,6 +567,7 @@ public class Changeling extends JFrame {
 
         //set the skills tab
         glSkills.setVerticalGroup(buildSkillsV(glSkills));
+        glSpec.setVerticalGroup(buildSpecV(glSpec));
         glMerits.setVerticalGroup(buildMeritsV(glMerits));
         glContracts.setVerticalGroup(buildContractsV(glContracts));
 
@@ -713,16 +841,42 @@ public class Changeling extends JFrame {
 
         return skillsSectionV;
     }//</editor-fold>
+    
+    //<editor-fold desc="Specialty Layout" defaultstate="collapsed">
+    private Group buildSpecialtyH( GroupLayout layout ) {
+        ParallelGroup specSectionH = layout.createParallelGroup(
+                Alignment.CENTER);
+        for ( int i = 0; i < cboSpecialty.length; i++ ) {
+            specSectionH.addGroup(sequentialPair(layout, cboSpecialty[i],txtSpecialty[i]);
+        }
+        return contractsSectionH;
+    }
+
+    private Group buildSpecialtyV( GroupLayout layout ) {
+        SequentialGroup specSectionV = layout.createSequentialGroup();
+
+        specSectionV.addGap(5, 10, 15);
+        for ( int i = 0; i < cboSpecialty.length; i++ ) {
+            specSectionV.addGroup(sequentialPair(layout, cboSpecialty[i],txtSpecialty[i]);
+            if ( i == cboSpecialty.length - 1 ) {
+                specSectionV.addGap(10, 15, Short.MAX_VALUE);
+            } else {
+                specSectionV.addGap(5, 10, 15);
+            }
+
+        }
+        return contractsSectionV;
+    }
+    //</editor-fold>
 
     //<editor-fold desc="Merits Layout" defaultstate="collapsed">
 
     private Group buildMeritsH( GroupLayout layout ) {
         ParallelGroup contractsSectionH = layout.createParallelGroup(
                 Alignment.CENTER);
-        for ( int i = 0; i < 10; i++ ) {
+        for ( int i = 0; i < cboMerits.length; i++ ) {
             contractsSectionH.addGroup(sequentialPair(layout, cboMerits[i],
                     sequentialRadioArray(layout, rdoMerits[i])));
-
         }
         return contractsSectionH;
     }
@@ -731,7 +885,7 @@ public class Changeling extends JFrame {
         SequentialGroup contractsSectionV = layout.createSequentialGroup();
 
         contractsSectionV.addGap(5, 10, 15);
-        for ( int i = 0; i < 10; i++ ) {
+        for ( int i = 0; i < cboMerits.length; i++ ) {
             contractsSectionV.addGroup(parallelPair(layout, cboMerits[i],
                     parallelRadioArray(layout, rdoMerits[i])));
             if ( i == rdoContracts.length - 1 ) {
@@ -750,7 +904,7 @@ public class Changeling extends JFrame {
     private Group buildContractsH( GroupLayout layout ) {
         ParallelGroup contractsSectionH = layout.createParallelGroup(
                 Alignment.CENTER);
-        for ( int i = 0; i < 10; i++ ) {
+        for ( int i = 0; i < cboContracts.length; i++ ) {
             contractsSectionH.addGroup(sequentialPair(layout, cboContracts[i],
                     sequentialRadioArray(layout, rdoContracts[i])));
 
@@ -762,7 +916,7 @@ public class Changeling extends JFrame {
         SequentialGroup contractsSectionV = layout.createSequentialGroup();
 
         contractsSectionV.addGap(5, 10, 15);
-        for ( int i = 0; i < 10; i++ ) {
+        for ( int i = 0; i < cboContracts.length; i++ ) {
             contractsSectionV.addGroup(parallelPair(layout, cboContracts[i],
                     parallelRadioArray(layout, rdoContracts[i])));
             if ( i == rdoContracts.length - 1 ) {
@@ -779,7 +933,7 @@ public class Changeling extends JFrame {
     //<editor-fold desc="Derived and Extra Stats" defaultstate="collapsed">
     private Group buildDerivedH( GroupLayout layout ) {
         ParallelGroup meritsSectionH = layout.createParallelGroup();
-        for ( int i = 0; i < 10; i++ ) {
+        for ( int i = 0; i < cboMerits.length; i++ ) {
             meritsSectionH.addGroup(sequentialPair(layout, cboMerits[i],
                     sequentialRadioArray(layout, rdoMerits[i])));
         }
@@ -788,7 +942,7 @@ public class Changeling extends JFrame {
 
     private Group buildDerivedV( GroupLayout layout ) {
         SequentialGroup meritsSectionV = layout.createSequentialGroup();
-        for ( int i = 0; i < 10; i++ ) {
+        for ( int i = 0; i < cboMerits.length; i++ ) {
             meritsSectionV.addGroup(parallelPair(layout, cboMerits[i],
                     parallelRadioArray(layout, rdoMerits[i])));
         }
