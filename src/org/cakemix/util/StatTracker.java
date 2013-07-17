@@ -41,14 +41,14 @@ public class StatTracker extends JPanel implements ActionListener {
     public StatTracker() {
         super();
         initialiseComponants(6, 1, 1, 10);
-        reValidate();
+        update();
     }
 
     public StatTracker( int health, int will,
             int power, int afinity ) {
         super();
         initialiseComponants(health, will, afinity, power);
-        reValidate();
+        update();
 
     }
 
@@ -250,13 +250,12 @@ public class StatTracker extends JPanel implements ActionListener {
                 }
                 break;
         }
-        reValidate();
+        update();
 
 
     }
 
-    private void reValidate() {
-       System.out.println(vitals.willpower);
+    private void update() {
         for ( int i = 0; i < this.getComponentCount(); i++ ) {
             String name = getComponent(i).getName();
             if ( name != null ) {
@@ -328,7 +327,4 @@ public class StatTracker extends JPanel implements ActionListener {
         }
     }
 
-    private String parseAeName( ActionEvent ae ) {
-        return ((Component) ae.getSource()).getName();
-    }
 }

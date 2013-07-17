@@ -7,6 +7,10 @@ package org.cakemix.characterSheets;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.*;
 import javax.swing.GroupLayout.*;
 import org.cakemix.util.StatTracker;
@@ -16,16 +20,15 @@ import static org.cakemix.util.Functions.*;
  *
  * @author cakemix
  */
-public class Changeling extends JFrame {
-    
+public class Changeling extends JFrame implements ActionListener,
+        ItemListener {
+
     JTextField txtName = new JTextField(),
             txtPlayer = new JTextField(),
             txtChronicle = new JTextField(),
             txtConcept = new JTextField(),
             txtKith = new JTextField();
-            
     JComboBox cboVirtue, cboVice, cboSeeming, cboCourt;
-
     // Create the stat labels
     JLabel lblIntelligence = new JLabel("Intelligence"),
             lblWits = new JLabel("Wits"),
@@ -67,7 +70,6 @@ public class Changeling extends JFrame {
             lblBlessing = new JLabel("Seeming Blessing"),
             lblCurse = new JLabel("Seeming Curse"),
             lblSize = new JLabel("Size");
-            
     /**
      * 5 "dots" (ie, radio buttons) per stat (hope to HELL this works)
      * can always try checkboxes another time (tho not round : /)
@@ -111,9 +113,8 @@ public class Changeling extends JFrame {
             rdoStreetwise = new JRadioButton[5],
             rdoSubterfuge = new JRadioButton[5];
     // Skill Specialty List
-    JComboBox[] cboSpecialty = new JComboBox[10];
-    JTextField[] txtSpecialty = new JTextField[10];
-    
+    JComboBox[] cboSpeciality = new JComboBox[10];
+    JTextField[] txtSpeciality = new JTextField[10];
     // Merits are slightly different
     // Text feilds to put the merits in
     JComboBox[] cboMerits = new JComboBox[10];
@@ -124,8 +125,10 @@ public class Changeling extends JFrame {
     JComboBox[] cboContracts = new JComboBox[10];
     // 5 dots for each merit, thus 2d array
     JRadioButton[][] rdoContracts = new JRadioButton[10][5];
-    //add a stat tracker (to be linked into the gms overall one)
+    // add a stat tracker (to be linked into the gms overall one)
     StatTracker vitals = new StatTracker();
+    // character sheet stat storage
+    ChangelingStats stats = new ChangelingStats();
 
     public Changeling() {
         super("Changeling - The Lost");
@@ -141,8 +144,6 @@ public class Changeling extends JFrame {
      * Build the UI
      */
     private void buildUI( Container contentPane ) {
-
-
 
         //<editor-fold desc="Header Labels" defaultstate="collapsed">
         JLabel lblGame = new JLabel("Changeling - The Lost");
@@ -182,19 +183,20 @@ public class Changeling extends JFrame {
         txtPlayer.setName("player");
         txtPlayer.setToolTipText("Your (real) name.");
         txtChronicle.setName("chronicle");
-        txtChronicle.setToolTipText("Chronicle the character is part of, may be left blank at Storytellers Descretion");
+        txtChronicle.setToolTipText(
+                "Chronicle the character is part of, may be left blank at Storytellers Descretion");
         cboVirtue.setName("virtue");
-        cboVirtue.setToolTipText("Characters Virtue")
+        cboVirtue.setToolTipText("Characters Virtue");
         cboVice.setName("vice");
         cboVice.setToolTipText("Characters Virtue");
         txtConcept.setName("concept");
-        txtConcept.setToolTipText("Short description of the character")
+        txtConcept.setToolTipText("Short description of the character");
         cboSeeming.setName("seeming");
         cboSeeming.setToolTipText("Characters Seeming");
         txtKith.setName("kith");
-        cboKith.setToolTipText("Characters Kith (optional)");
+        txtKith.setToolTipText("Characters Kith (optional)");
         cboCourt.setName("court");
-        cboCourt.setToolTipText("Characters Court (optional)")
+        cboCourt.setToolTipText("Characters Court (optional)");
 //</editor-fold>
 
         JTabbedPane tabber = new JTabbedPane();
@@ -334,91 +336,132 @@ public class Changeling extends JFrame {
 
         // loop again, try and intergrate this with above later on, loop as little as possible
 
-            String[] merit = { 
-                    "--Mental--", "Common Sense", "Danger Sense", "Eidetic Memory", 
-                    "Encyclopedic Knowledge", "Holistic Awareness", "Language", "Meditative Mind", 
-                    "Unseen Sense", 
-                    "--Physical--", "Ambidextrous", "Brawling Dodge", "Direction Sense", "Disarm",
-                    "Fast Reflexes", "Fighting Finese", "Fighting Style: Boxing", "Fighting Style: Kung Fu",
-                    "Fighting Style: Two Weapons", "Fleet of Foot", "Fresh Start", "Giant", "Gunslinger",
-                    "Iron Stamina", "Iron Stomach", "Natural Immunity", "Quick Draw", "Quick Healer", 
-                    "Strong Back", "Strong Lungs", "Stunt Driver", "Toxin Resistance", "Weaponry Dodge"
-                    "--Social Merits--", "Allies", "Barfly", "Contacts", "Fame", "Inspiring", "Mentor",
-                    "Resources", "Retainer", "Status", "Striking Looks",
-                    "--Changeling--","Court Goodwill: Spring", "Court Goodwill: Summer", "Court Goodwill: Autumn",
-                    "Court Goodwill: Winter", "Harvest", "Hollow", "Mantle: Spring", 
-                    "Mantle: Summer", "Mantle: Autumn", "Mantle: Winter", "New Identity", "Token"},
-                contract = {
-                    "--Seeming--", "Artifice", "Darkness", "Elements", "Fang and Talon", "Stone", "Vainglory"
-                    "--General--", "Dream", "Hearth", "Mirror", "Smoke",
-                    "--Court--", "Eternal Spring", "Fleeting Spring","Eternal Summer", "Fleeting Summer",
-                    "Eternal Autumn", "Fleeting Autumn", "Eternal Winter", "Fleeting Winter",
-                    "--Goblin--"},
-                speciality = {"--Mental--", "Academics", "Computer", "Crafts", "Investigation", "Medicine",
-                    "Occult", "Politics", "Science",
-                    "--Physical--", "Athletics", "Brawl", "Drive", "Firearms", "Larceny", "Stealth",
-                    "Survival", "Weaponry",
-                    "--Mental--", "Animal Ken", "Empathy", "Intimidation", "Persuasion", "Socialize",
-                    "Streetwise", "Subterfuge"};
-                    
-        for ( int i = 0; i < 10; i++ ) {
-            cboMerits[i] = new JComboBox<String>(merit);
+        String[] merit = {
+            "--Mental--", "Common Sense", "Danger Sense", "Eidetic Memory",
+            "Encyclopedic Knowledge", "Holistic Awareness", "Language", "Meditative Mind",
+            "Unseen Sense",
+            "--Physical--", "Ambidextrous", "Brawling Dodge", "Direction Sense", "Disarm",
+            "Fast Reflexes", "Fighting Finese", "Fighting Style: Boxing", "Fighting Style: Kung Fu",
+            "Fighting Style: Two Weapons", "Fleet of Foot", "Fresh Start", "Giant", "Gunslinger",
+            "Iron Stamina", "Iron Stomach", "Natural Immunity", "Quick Draw", "Quick Healer",
+            "Strong Back", "Strong Lungs", "Stunt Driver", "Toxin Resistance", "Weaponry Dodge",
+            "--Social Merits--", "Allies", "Barfly", "Contacts", "Fame", "Inspiring", "Mentor",
+            "Resources", "Retainer", "Status", "Striking Looks",
+            "--Changeling--", "Court Goodwill: Spring", "Court Goodwill: Summer", "Court Goodwill: Autumn",
+            "Court Goodwill: Winter", "Harvest", "Hollow", "Mantle: Spring", "Mantle: Summer", "Mantle: Autumn", "Mantle: Winter", "New Identity", "Token" },
+                contract = { "--Seeming--", "Artifice", "Darkness", "Elements", "Fang and Talon", "Stone", "Vainglory",
+            "--General--", "Dream", "Hearth", "Mirror", "Smoke",
+            "--Court--", "Eternal Spring", "Fleeting Spring", "Eternal Summer", "Fleeting Summer",
+            "Eternal Autumn", "Fleeting Autumn", "Eternal Winter", "Fleeting Winter",
+            "--Goblin--" },
+                speciality = { "--Mental--", "Academics", "Computer", "Crafts", "Investigation", "Medicine",
+            "Occult", "Politics", "Science",
+            "--Physical--", "Athletics", "Brawl", "Drive", "Firearms", "Larceny", "Stealth",
+            "Survival", "Weaponry",
+            "--Social--", "Animal Ken", "Empathy", "Intimidation", "Persuasion", "Socialize",
+            "Streetwise", "Subterfuge" };
+        String ttContracts = "<html>Experience Cost:  <br />(Affinity)New Dots x4 <br />(Non-Affinity)New Dots x6 <br />(Goblin)New Dots x3</html>";
+        for ( int i = 0;
+                i < 10; i++ ) {
+            cboMerits[i] = new JComboBox<>(merit);
             cboMerits[i].setToolTipText("Experience Cost: New Dots x2");
-            cboContracts[i] = new JComboBox<String>(contract);
-            cboContracts[i].setToolTipText("Experience Cost: New Dots (Affinity)x4 (Non-Affinity)x6 (Goblin)x3");
-            cboSpeciality[i] = new JComboBox<String>(speciality);
+            cboMerits[i].setName("merit name " + i);
+            cboContracts[i] = new JComboBox<>(contract);
+            cboContracts[i].setName("contract name" + i);
+            cboContracts[i].setToolTipText(ttContracts);
+            cboSpeciality[i] = new JComboBox<>(speciality);
+            cboSpeciality[i].setName("speciality name" + i);
             cboSpeciality[i].setToolTipText("Experience Cost: 3");
             txtSpeciality[i] = new JTextField();
+            txtSpeciality[i].setName("speciality info" + i);
             txtSpeciality[i].setToolTipText("Skill Speciality Details");
             for ( int j = 0; j < 5; j++ ) {
                 rdoMerits[i][j] = new JRadioButton();
-                rdoMerits[i][j]..setToolTipText("Experience Cost: New Dots x2")
+                rdoMerits[i][j].setName("merit level " + i + "-" + j);
+                rdoMerits[i][j].setToolTipText("Experience Cost: New Dots x2");
                 rdoContracts[i][j] = new JRadioButton();
-                rdoContracts[i][j].setToolTipText("Experience Cost: New Dots (Affinity)x4 (Non-Affinity)x6 (Goblin)x3");
+                rdoContracts[i][j].setName("contract level " + i + "-" + j);
+                rdoContracts[i][j].setToolTipText(ttContracts);
             }
         }
-        
+
         // Tool Tips
-            lblIntelligence.setToolTipText("Experience Cost: New Dots x5");
-            lblWits.setToolTipText("Experience Cost: New Dots x5");
-            lblResolve.setToolTipText("Experience Cost: New Dots x5");
-            lblStrength.setToolTipText("Experience Cost: New Dots x5");
-            lblDexterity.setToolTipText("Experience Cost: New Dots x5");
-            lblStamina.setToolTipText("Experience Cost: New Dots x5");
-            lblPresence.setToolTipText("Experience Cost: New Dots x5");
-            lblManipulation.setToolTipText("Experience Cost: New Dots x5");
-            lblComposure.setToolTipText("Experience Cost: New Dots x5");
-            //Skill labels
-            //Mental
-            lblAcademics.setToolTipText("Experience Cost: New Dots x3");
-            lblComputer.setToolTipText("Experience Cost: New Dots x3");
-            lblCrafts.setToolTipText("Experience Cost: New Dots x3");
-            lblInvestigation.setToolTipText("Experience Cost: New Dots x3");
-            lblMedicine.setToolTipText("Experience Cost: New Dots x3");
-            lblOccult.setToolTipText("Experience Cost: New Dots x3");
-            lblPolitics.setToolTipText("Experience Cost: New Dots x3");
-            lblScience.setToolTipText("Experience Cost: New Dots x3");
-            //Physical
-            lblAthletics.setToolTipText("Experience Cost: New Dots x3");
-            lblBrawl.setToolTipText("Experience Cost: New Dots x3");
-            lblDrive.setToolTipText("Experience Cost: New Dots x3");
-            lblFirearms.setToolTipText("Experience Cost: New Dots x3");
-            lblLarceny.setToolTipText("Experience Cost: New Dots x3");
-            lblStealth.setToolTipText("Experience Cost: New Dots x3");
-            lblSurvival.setToolTipText("Experience Cost: New Dots x3");
-            lblWeaponry.setToolTipText("Experience Cost: New Dots x3");
-            //Social
-            lblAnimalKen.setToolTipText("Experience Cost: New Dots x3");
-            lblEmpathy.setToolTipText("Experience Cost: New Dots x3");
-            lblExpression.setToolTipText("Experience Cost: New Dots x3");
-            lblIntimidation.setToolTipText("Experience Cost: New Dots x3");
-            lblPersuasion.setToolTipText("Experience Cost: New Dots x3");
-            lblSocialize.setToolTipText("Experience Cost: New Dots x3");
-            lblStreetwise.setToolTipText("Experience Cost: New Dots x3");
-            lblSubterfuge.setToolTipText("Experience Cost: New Dots x3");
-            lblBlessing.setToolTipText("Experience Cost: New Dots x3");
-            lblCurse.setToolTipText("Experience Cost: New Dots x3");
-            lblSize.setToolTipText("Experience Cost: New Dots x3");
+        lblIntelligence.setToolTipText(
+                "Experience Cost: New Dots x5");
+        lblWits.setToolTipText(
+                "Experience Cost: New Dots x5");
+        lblResolve.setToolTipText(
+                "Experience Cost: New Dots x5");
+        lblStrength.setToolTipText(
+                "Experience Cost: New Dots x5");
+        lblDexterity.setToolTipText(
+                "Experience Cost: New Dots x5");
+        lblStamina.setToolTipText(
+                "Experience Cost: New Dots x5");
+        lblPresence.setToolTipText(
+                "Experience Cost: New Dots x5");
+        lblManipulation.setToolTipText(
+                "Experience Cost: New Dots x5");
+        lblComposure.setToolTipText(
+                "Experience Cost: New Dots x5");
+        //Skill labels
+        //Mental
+        lblAcademics.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblComputer.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblCrafts.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblInvestigation.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblMedicine.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblOccult.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblPolitics.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblScience.setToolTipText(
+                "Experience Cost: New Dots x3");
+        //Physical
+        lblAthletics.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblBrawl.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblDrive.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblFirearms.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblLarceny.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblStealth.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblSurvival.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblWeaponry.setToolTipText(
+                "Experience Cost: New Dots x3");
+        //Social
+        lblAnimalKen.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblEmpathy.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblExpression.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblIntimidation.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblPersuasion.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblSocialize.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblStreetwise.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblSubterfuge.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblBlessing.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblCurse.setToolTipText(
+                "Experience Cost: New Dots x3");
+        lblSize.setToolTipText(
+                "Experience Cost: New Dots x3");
 
         //<editor-fold desc="Layout Setup Creation" defaultstate="collapsed">
         // Create the layout for the form
@@ -428,7 +471,6 @@ public class Changeling extends JFrame {
         layout.setAutoCreateContainerGaps(true);
         // tell the panel to use the layout
         contentPane.setLayout(layout);
-
         // create attributes tab
         // first the panel
         JPanel pnlAttributes = new JPanel();
@@ -449,6 +491,8 @@ public class Changeling extends JFrame {
         GroupLayout glSpec = new GroupLayout(pnlSpec);
         pnlSpec.setLayout(glSpec);
         tabber.addTab("Skill Specialty", pnlSpec);
+        glSpec.setAutoCreateGaps(true);
+        glSpec.setAutoCreateContainerGaps(true);
         //Merits
         JPanel pnlMerits = new JPanel();
         GroupLayout glMerits = new GroupLayout(pnlMerits);
@@ -465,7 +509,8 @@ public class Changeling extends JFrame {
         JPanel pnlPledges = new JPanel();
         GroupLayout glPledges = new GroupLayout(pnlPledges);
         pnlPledges.setLayout(glPledges);
-        tabber.addTab("Pledges", pnlPledges;)
+        tabber.addTab("Pledges", pnlPledges);
+        glContracts.setAutoCreateContainerGaps(true);
         // Vitals
         tabber.addTab("Vitals", vitals);
 
@@ -515,7 +560,7 @@ public class Changeling extends JFrame {
 
         //set the layout for the skills tab, you get the jist
         glSkills.setHorizontalGroup(buildSkillsH(glSkills));
-        glSpec.setVerticalGroup(buildSpecV(glSpec));
+        glSpec.setHorizontalGroup(buildSpecH(glSpec));
         glMerits.setHorizontalGroup(buildMeritsH(glMerits));
         glContracts.setHorizontalGroup(buildContractsH(glContracts));
 
@@ -561,7 +606,6 @@ public class Changeling extends JFrame {
         //finalise the main layout
         layout.setVerticalGroup(fullV);
 
-
         // set the attributes tab
         glAttributes.setVerticalGroup(buildAttributesV(glAttributes));
 
@@ -580,10 +624,12 @@ public class Changeling extends JFrame {
         layout.linkSize(lblName, lblPlayer, lblChronicle,
                 lblVirtue, lblVice, lblConcept,
                 lblSeeming, lblKith, lblCourt);
+
         glAttributes.linkSize(
                 lblIntelligence, lblWits, lblResolve,
                 lblStrength, lblDexterity, lblStamina,
                 lblPresence, lblManipulation, lblComposure);
+
         glSkills.linkSize(
                 //mental
                 lblAcademics, lblComputer, lblCrafts, lblInvestigation,
@@ -595,14 +641,11 @@ public class Changeling extends JFrame {
                 lblAnimalKen, lblEmpathy, lblExpression, lblIntimidation,
                 lblPersuasion, lblSocialize, lblStreetwise, lblSubterfuge);
 
-
         // link all editable items too
-
         layout.linkSize(txtName, txtPlayer, txtChronicle,
                 cboVirtue, cboVice, txtConcept,
                 cboSeeming, txtKith, cboCourt);
         //</editor-fold>
-
     }
 
     //<editor-fold desc="Stats Layout" defaultstate="collapsed">
@@ -841,36 +884,37 @@ public class Changeling extends JFrame {
 
         return skillsSectionV;
     }//</editor-fold>
-    
-    //<editor-fold desc="Specialty Layout" defaultstate="collapsed">
-    private Group buildSpecialtyH( GroupLayout layout ) {
+
+    //<editor-fold desc="Speciality Layout" defaultstate="collapsed">
+    private Group buildSpecH( GroupLayout layout ) {
         ParallelGroup specSectionH = layout.createParallelGroup(
                 Alignment.CENTER);
-        for ( int i = 0; i < cboSpecialty.length; i++ ) {
-            specSectionH.addGroup(sequentialPair(layout, cboSpecialty[i],txtSpecialty[i]);
+        for ( int i = 0; i < cboSpeciality.length; i++ ) {
+            specSectionH.addGroup(sequentialPair(layout, cboSpeciality[i],
+                    txtSpeciality[i]));
         }
-        return contractsSectionH;
+        return specSectionH;
     }
 
-    private Group buildSpecialtyV( GroupLayout layout ) {
+    private Group buildSpecV( GroupLayout layout ) {
         SequentialGroup specSectionV = layout.createSequentialGroup();
 
-        specSectionV.addGap(5, 10, 15);
-        for ( int i = 0; i < cboSpecialty.length; i++ ) {
-            specSectionV.addGroup(sequentialPair(layout, cboSpecialty[i],txtSpecialty[i]);
-            if ( i == cboSpecialty.length - 1 ) {
-                specSectionV.addGap(10, 15, Short.MAX_VALUE);
+        //specSectionV.addGap(5, 10, 15);
+        for ( int i = 0; i < cboSpeciality.length; i++ ) {
+            specSectionV.addGroup(parallelPair(layout, cboSpeciality[i],
+                    txtSpeciality[i]));
+            if ( i == cboSpeciality.length - 1 ) {
+                //specSectionV.addGap(10, 15, Short.MAX_VALUE);
             } else {
-                specSectionV.addGap(5, 10, 15);
+                //specSectionV.addGap(5, 10, 15);
             }
 
         }
-        return contractsSectionV;
+        return specSectionV;
     }
     //</editor-fold>
 
     //<editor-fold desc="Merits Layout" defaultstate="collapsed">
-
     private Group buildMeritsH( GroupLayout layout ) {
         ParallelGroup contractsSectionH = layout.createParallelGroup(
                 Alignment.CENTER);
@@ -899,7 +943,6 @@ public class Changeling extends JFrame {
     }
 
     //</editor-fold>
-
     //<editor-fold desc="Contracts Layout" defaultstate="collapsed">
     private Group buildContractsH( GroupLayout layout ) {
         ParallelGroup contractsSectionH = layout.createParallelGroup(
@@ -949,4 +992,136 @@ public class Changeling extends JFrame {
         return meritsSectionV;
     }
     //</editor-fold>
+
+    @Override
+    public void actionPerformed( ActionEvent ae ) {
+        String name = parseAeName(ae);
+        switch ( name.split(" ")[0] ) {
+            case "intelligence":
+                updateStatDots(stats.intelligence,
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "wits":
+                updateStatDots(stats.wits,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "resolve":
+                updateStatDots(stats.resolve,
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "strength":
+                updateStatDots(stats.strength,
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "dexterity":
+                updateStatDots(stats.dexterity,
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "stamina":
+                updateStatDots(stats.stamina,
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "presence":
+                updateStatDots(stats.presence,
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "manipulation":
+                updateStatDots(stats.manipulation,
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "composure":
+                updateStatDots(stats.strength,
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+
+            case "academics":
+                updateStatDots(stats.academics,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "computer":
+                updateStatDots(stats.computer,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "crafts":
+                updateStatDots(stats.crafts,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "investigation":
+                updateStatDots(stats.investigation,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "medicine":
+                updateStatDots(stats.medicine,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "occult":
+                updateStatDots(stats.occult,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "politics":
+                updateStatDots(stats.politics,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "science":
+                updateStatDots(stats.science,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+
+            case "athletics":
+                updateStatDots(stats.athletics,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "brawl":
+                updateStatDots(stats.brawl,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "drive":
+                updateStatDots(stats.drive,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "firearms":
+                updateStatDots(stats.firearms,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "larcey":
+                updateStatDots(stats.larceny,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "stealth":
+                updateStatDots(stats.stealth,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "survival":
+                updateStatDots(stats.survival,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "weaponry":
+                updateStatDots(stats.weaponry,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+
+            case "animal":
+                updateStatDots(stats.animalKen,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "empathy":
+                updateStatDots(stats.empathy,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "expression":
+                updateStatDots(stats.expression,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "intimidation":
+                updateStatDots(stats.intimidation,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "persuasion":
+                updateStatDots(stats.persuasion,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "socialize":
+                updateStatDots(stats.socialize,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "streetwise":
+                updateStatDots(stats.streetwise,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "subterfuge":
+                updateStatDots(stats.subterfuge,((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+                
+            case "merit":
+                break;
+        }
+    }
+
+    public void updateStatDots( int stat, boolean state, String name ) {
+        if ( state ) {
+            stat = Integer.parseInt(name.substring((name.length() - 2)));
+        } else {
+            stat = Integer.parseInt(name.substring((name.length() - 2))) - 1;
+        }
+    }
+
+    @Override
+    public void itemStateChanged( ItemEvent ie ) {
+    }
 }

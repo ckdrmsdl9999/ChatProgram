@@ -5,6 +5,7 @@
 package org.cakemix.util;
 
 import java.awt.Component;
+import java.awt.event.ActionEvent;
 import javax.swing.*;
 import javax.swing.GroupLayout.Group;
 import javax.swing.GroupLayout.ParallelGroup;
@@ -99,5 +100,9 @@ public class Functions {
             rtn.addComponent(array[i]);
         }
         return rtn;
+    }
+
+    public static String parseAeName( ActionEvent ae ) {
+        return ((Component) ae.getSource()).getName();
     }
 }
