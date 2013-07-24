@@ -13,7 +13,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import javax.swing.*;
 import javax.swing.GroupLayout.*;
+import org.cakemix.util.ScrollAlert;
 import org.cakemix.util.StatTracker;
+import org.cakemix.util.Vitals;
 import static org.cakemix.util.Functions.*;
 
 /**
@@ -133,6 +135,7 @@ public class Changeling extends JFrame implements ActionListener,
     public Changeling() {
         super("Changeling - The Lost");
         buildUI(this.getContentPane());
+        buildMenu();
         //this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //setResizable(false);
@@ -140,6 +143,7 @@ public class Changeling extends JFrame implements ActionListener,
         setVisible(true);
     }
 
+    //<editor-fold desc="Build UI" defaultstate="collapsed">
     /**
      * Build the UI
      */
@@ -220,22 +224,31 @@ public class Changeling extends JFrame implements ActionListener,
             // name them all
             rdoIntelligence[i].setName("intelligence " + i);
             rdoIntelligence[i].setToolTipText("Experience Cost: New Dots x5");
+            rdoIntelligence[i].addActionListener(this);
             rdoWits[i].setName("wits " + i);
             rdoWits[i].setToolTipText("Experience Cost: New Dots x5");
+            rdoWits[i].addActionListener(this);
             rdoResolve[i].setName("resolve " + i);
+            rdoResolve[i].addActionListener(this);
             rdoResolve[i].setToolTipText("Experience Cost: New Dots x5");
             rdoStrength[i].setName("strength " + i);
             rdoStrength[i].setToolTipText("Experience Cost: New Dots x5");
+            rdoStrength[i].addActionListener(this);
             rdoDexterity[i].setName("dexterity " + i);
             rdoDexterity[i].setToolTipText("Experience Cost: New Dots x5");
+            rdoDexterity[i].addActionListener(this);
             rdoStamina[i].setName("stamina " + i);
             rdoStamina[i].setToolTipText("Experience Cost: New Dots x5");
-            rdoPresence[i].setName("presence" + i);
+            rdoStamina[i].addActionListener(this);
+            rdoPresence[i].setName("presence " + i);
             rdoPresence[i].setToolTipText("Experience Cost: New Dots x5");
-            rdoManipulation[i].setName("manipulation" + i);
+            rdoPresence[i].addActionListener(this);
+            rdoManipulation[i].setName("manipulation " + i);
             rdoManipulation[i].setToolTipText("Experience Cost: New Dots x5");
+            rdoManipulation[i].addActionListener(this);
             rdoComposure[i].setName("composure " + i);
             rdoComposure[i].setToolTipText("Experience Cost: New Dots x5");
+            rdoComposure[i].addActionListener(this);
 
             // since these are the Stats and you get a free dot
             // if this is the first loop, set all of them to checked
@@ -283,59 +296,84 @@ public class Changeling extends JFrame implements ActionListener,
             //Mental
             rdoAcademics[i].setName("academics " + i);
             rdoAcademics[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoAcademics[i].addActionListener(this);
             rdoComputer[i].setName("computer " + i);
             rdoComputer[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoComputer[i].addActionListener(this);
             rdoCrafts[i].setName("crafts " + i);
             rdoCrafts[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoCrafts[i].addActionListener(this);
             rdoInvestigation[i].setName("investigation " + i);
+            rdoInvestigation[i].addActionListener(this);
             rdoMedicine[i].setName("medicine " + i);
             rdoMedicine[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoMedicine[i].addActionListener(this);
             rdoOccult[i].setName("occult " + i);
             rdoOccult[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoOccult[i].addActionListener(this);
             rdoPolitics[i].setName("politics " + i);
             rdoPolitics[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoPolitics[i].addActionListener(this);
             rdoScience[i].setName("science " + i);
             rdoScience[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoScience[i].addActionListener(this);
             //Physical
             rdoAthletics[i].setName("athletics " + i);
             rdoAthletics[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoAthletics[i].addActionListener(this);
             rdoBrawl[i].setName("brawl " + i);
             rdoBrawl[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoBrawl[i].addActionListener(this);
             rdoDrive[i].setName("drive " + i);
             rdoDrive[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoDrive[i].addActionListener(this);
             rdoFirearms[i].setName("firearms " + i);
             rdoFirearms[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoFirearms[i].addActionListener(this);
             rdoLarceny[i].setName("larceny " + i);
+            rdoLarceny[i].addActionListener(this);
             rdoLarceny[i].setToolTipText("Experience Cost: New Dots x3");
             rdoStealth[i].setName("stealth " + i);
+            rdoStealth[i].addActionListener(this);
             rdoStealth[i].setToolTipText("Experience Cost: New Dots x3");
             rdoSurvival[i].setName("survival " + i);
             rdoSurvival[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoSurvival[i].addActionListener(this);
             rdoWeaponry[i].setName("weaponry " + i);
             rdoWeaponry[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoWeaponry[i].addActionListener(this);
             //Social
             rdoAnimalKen[i].setName("animal " + i);
             rdoAnimalKen[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoAnimalKen[i].addActionListener(this);
             rdoEmpathy[i].setName("empathy " + i);
             rdoEmpathy[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoEmpathy[i].addActionListener(this);
             rdoExpression[i].setName("expression " + i);
             rdoExpression[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoExpression[i].addActionListener(this);
             rdoIntimidation[i].setName("intimidation " + i);
             rdoIntimidation[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoIntimidation[i].addActionListener(this);
             rdoPersuasion[i].setName("persuasion " + i);
             rdoPersuasion[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoPersuasion[i].addActionListener(this);
             rdoSocialize[i].setName("socialize " + i);
             rdoSocialize[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoSocialize[i].addActionListener(this);
             rdoStreetwise[i].setName("streetwise " + i);
             rdoStreetwise[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoStreetwise[i].addActionListener(this);
             rdoSubterfuge[i].setName("subterfuge " + i);
             rdoSubterfuge[i].setToolTipText("Experience Cost: New Dots x3");
+            rdoSubterfuge[i].addActionListener(this);
 
         } // Done componant setup
         //</editor-fold>
 
-        // loop again, try and intergrate this with above later on, loop as little as possible
+        //<editor-fold desc="Merits and Contracts" defaultstate="collapsed">
 
+        // loop again, try and intergrate this with above later on, loop as little as possible
         String[] merit = {
             "--Mental--", "Common Sense", "Danger Sense", "Eidetic Memory",
             "Encyclopedic Knowledge", "Holistic Awareness", "Language", "Meditative Mind",
@@ -366,25 +404,33 @@ public class Changeling extends JFrame implements ActionListener,
             cboMerits[i] = new JComboBox<>(merit);
             cboMerits[i].setToolTipText("Experience Cost: New Dots x2");
             cboMerits[i].setName("merit name " + i);
+            cboMerits[i].addActionListener(this);
             cboContracts[i] = new JComboBox<>(contract);
             cboContracts[i].setName("contract name" + i);
             cboContracts[i].setToolTipText(ttContracts);
+            cboContracts[i].addActionListener(this);
             cboSpeciality[i] = new JComboBox<>(speciality);
             cboSpeciality[i].setName("speciality name" + i);
             cboSpeciality[i].setToolTipText("Experience Cost: 3");
+            cboSpeciality[i].addActionListener(this);
             txtSpeciality[i] = new JTextField();
             txtSpeciality[i].setName("speciality info" + i);
             txtSpeciality[i].setToolTipText("Skill Speciality Details");
+            txtSpeciality[i].addActionListener(this);
             for ( int j = 0; j < 5; j++ ) {
                 rdoMerits[i][j] = new JRadioButton();
                 rdoMerits[i][j].setName("merit level " + i + "-" + j);
                 rdoMerits[i][j].setToolTipText("Experience Cost: New Dots x2");
+                rdoMerits[i][j].addActionListener(this);
                 rdoContracts[i][j] = new JRadioButton();
                 rdoContracts[i][j].setName("contract level " + i + "-" + j);
                 rdoContracts[i][j].setToolTipText(ttContracts);
+                rdoContracts[i][j].addActionListener(this);
             }
         }
+        //</editor-fold>
 
+        //<editor-fold desc="Tool Tips" defaultstate="collapsed">
         // Tool Tips
         lblIntelligence.setToolTipText(
                 "Experience Cost: New Dots x5");
@@ -462,8 +508,9 @@ public class Changeling extends JFrame implements ActionListener,
                 "Experience Cost: New Dots x3");
         lblSize.setToolTipText(
                 "Experience Cost: New Dots x3");
+        //</editor-fold>
 
-        //<editor-fold desc="Layout Setup Creation" defaultstate="collapsed">
+        //<editor-fold desc="Tabs and Layout Setup Creation" defaultstate="collapsed">
         // Create the layout for the form
         GroupLayout layout = new GroupLayout(contentPane);
         // Set auto-create gaps, makes it look neater
@@ -647,6 +694,44 @@ public class Changeling extends JFrame implements ActionListener,
                 cboSeeming, txtKith, cboCourt);
         //</editor-fold>
     }
+    //</editor-fold>
+
+    //<editor-fold desc="Build Menu" defaultstate="collapsed">
+    private void buildMenu() {
+        JMenuBar bar = new JMenuBar();
+
+        // file menu
+        JMenu menu = new JMenu("File");
+        JMenuItem item = new JMenuItem("New");
+        item.addActionListener(this);
+        menu.add(item);
+        item = new JMenuItem("Load");
+        item.addActionListener(this);
+        menu.add(item);
+        item = new JMenuItem("Save");
+        item.addActionListener(this);
+        menu.add(item);
+        item = new JMenuItem("Save as...");
+        item.addActionListener(this);
+        menu.add(item);
+        menu.addSeparator();
+        item = new JMenuItem("From String...");
+        item.addActionListener(this);
+        menu.add(item);
+        item = new JMenuItem("To String...");
+        item.addActionListener(this);
+        menu.add(item);
+        menu.addSeparator();
+        item = new JMenuItem("Quit");
+        item.addActionListener(this);
+        menu.add(item);
+
+        bar.add(menu);
+
+        this.setJMenuBar(bar);
+
+    }
+    //</editor-fold>
 
     //<editor-fold desc="Stats Layout" defaultstate="collapsed">
     private Group buildAttributesH( GroupLayout layout ) {
@@ -995,130 +1080,529 @@ public class Changeling extends JFrame implements ActionListener,
 
     @Override
     public void actionPerformed( ActionEvent ae ) {
+
+        if ( ae.getSource() instanceof JMenuItem ) {
+            parseMenu(ae);
+            System.out.println(ae.getActionCommand());
+        } else {
+
+            updateStats(ae);
+        }
+
+        update();
+    }
+
+    private void parseMenu( ActionEvent ae ) {
+        String name = ae.getActionCommand().toLowerCase();
+        switch ( name ) {
+            case "new":
+                stats = new ChangelingStats();
+                vitals.setVitals(new Vitals());
+                break;
+            case "save":
+            case "save as...":
+                try {
+                    new ScrollAlert(stats.toString(),
+                            "Manual Save Function... Yup.",
+                            "Saveing/Loading not currently implemented, "
+                            + "copy output below, then use \"From String...\" function.");
+                } catch ( Exception e ) {
+                    e.printStackTrace();
+                }
+                break;
+
+            case "to string...":
+                new ScrollAlert(stats.toString() + vitals.getVitals().toString());
+                break;
+
+            case "load":
+            case "from string...":
+                String tmp = JOptionPane.showInputDialog("Enter the string that contains all "
+                        + "character info." + '\n'
+                        + "Invalid strings will be silently ignored ;)");
+                if ( tmp != null ) {
+                    stats.fromString(tmp);
+                    Vitals v = vitals.getVitals();
+                    v.fromString(tmp);
+                    vitals.setVitals(v);
+                }
+                break;
+
+            case "quit":
+                this.dispose();
+                break;
+        }
+    }
+
+    protected void updateStats( ActionEvent ae ) {
+
         String name = parseAeName(ae);
         switch ( name.split(" ")[0] ) {
             case "intelligence":
-                updateStatDots(stats.intelligence,
+                stats.intelligence = updateStatDots(
                         ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "wits":
-                updateStatDots(stats.wits,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.wits = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "resolve":
-                updateStatDots(stats.resolve,
+                stats.resolve = updateStatDots(
                         ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "strength":
-                updateStatDots(stats.strength,
+                stats.strength = updateStatDots(
                         ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "dexterity":
-                updateStatDots(stats.dexterity,
+                stats.dexterity = updateStatDots(
                         ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "stamina":
-                updateStatDots(stats.stamina,
+                stats.stamina = updateStatDots(
                         ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "presence":
-                updateStatDots(stats.presence,
+                stats.presence = updateStatDots(
                         ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "manipulation":
-                updateStatDots(stats.manipulation,
+                stats.manipulation = updateStatDots(
                         ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "composure":
-                updateStatDots(stats.strength,
+                stats.composure = updateStatDots(
                         ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
 
             case "academics":
-                updateStatDots(stats.academics,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.academics = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "computer":
-                updateStatDots(stats.computer,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.computer = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "crafts":
-                updateStatDots(stats.crafts,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.crafts = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "investigation":
-                updateStatDots(stats.investigation,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.investigation = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "medicine":
-                updateStatDots(stats.medicine,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.medicine = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "occult":
-                updateStatDots(stats.occult,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.occult = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "politics":
-                updateStatDots(stats.politics,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.politics = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "science":
-                updateStatDots(stats.science,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.science = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
 
             case "athletics":
-                updateStatDots(stats.athletics,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.athletics = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "brawl":
-                updateStatDots(stats.brawl,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.brawl = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "drive":
-                updateStatDots(stats.drive,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.drive = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "firearms":
-                updateStatDots(stats.firearms,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.firearms = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
-            case "larcey":
-                updateStatDots(stats.larceny,((JRadioButton) ae.getSource()).isSelected(), name);
+            case "larceny":
+                stats.larceny = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "stealth":
-                updateStatDots(stats.stealth,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.stealth = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "survival":
-                updateStatDots(stats.survival,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.survival = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "weaponry":
-                updateStatDots(stats.weaponry,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.weaponry = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
 
             case "animal":
-                updateStatDots(stats.animalKen,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.animalKen = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "empathy":
-                updateStatDots(stats.empathy,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.empathy = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "expression":
-                updateStatDots(stats.expression,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.expression = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "intimidation":
-                updateStatDots(stats.intimidation,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.intimidation = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "persuasion":
-                updateStatDots(stats.persuasion,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.persuasion = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "socialize":
-                updateStatDots(stats.socialize,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.socialize = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "streetwise":
-                updateStatDots(stats.streetwise,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.streetwise = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
             case "subterfuge":
-                updateStatDots(stats.subterfuge,((JRadioButton) ae.getSource()).isSelected(), name);
+                stats.subterfuge = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
                 break;
-                
+
             case "merit":
                 break;
         }
     }
 
-    public void updateStatDots( int stat, boolean state, String name ) {
-        if ( state ) {
-            stat = Integer.parseInt(name.substring((name.length() - 2)));
-        } else {
-            stat = Integer.parseInt(name.substring((name.length() - 2))) - 1;
+    public void update() {
+        for ( int root = 0; root < this.getContentPane().getComponentCount(); root++ ) {
+            Component cmpt = this.getContentPane().getComponent(root);
+            if ( cmpt instanceof JTabbedPane ) {
+                parseTab(
+                        (Container) ((JTabbedPane) cmpt).getSelectedComponent());
+            }
         }
+    }
+
+    public void parseTab( Container cont ) {
+        for ( int i = 0; i < cont.getComponentCount(); i++ ) {
+            Component c = cont.getComponent(i);
+
+            String name = c.getName();
+            if ( name != null ) {
+                switch ( name.split(" ")[0] ) {
+                    case "intelligence":
+                        if ( stats.intelligence <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "wits":
+                        if ( stats.wits <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "resolve":
+                        if ( stats.resolve <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "strength":
+                        if ( stats.strength <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "dexterity":
+                        if ( stats.dexterity <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "stamina":
+                        if ( stats.stamina <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "presence":
+                        if ( stats.presence <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "manipulation":
+                        if ( stats.manipulation <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "composure":
+                        if ( stats.composure <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+
+                    case "academics":
+                        if ( stats.academics <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "computer":
+                        if ( stats.computer <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "crafts":
+                        if ( stats.crafts <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "investigation":
+                        if ( stats.investigation <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "medicine":
+                        if ( stats.medicine <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "occult":
+                        if ( stats.occult <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "politics":
+                        if ( stats.politics <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "science":
+                        if ( stats.science <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+
+                    case "athletics":
+                        if ( stats.athletics <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "brawl":
+                        if ( stats.brawl <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "drive":
+                        if ( stats.drive <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "firearms":
+                        if ( stats.firearms <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "larceny":
+                        if ( stats.larceny <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "stealth":
+                        if ( stats.stealth <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "survival":
+                        if ( stats.survival <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "weaponry":
+                        if ( stats.weaponry <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+
+                    case "animal":
+                        if ( stats.animalKen <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "empathy":
+                        if ( stats.empathy <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "expression":
+                        if ( stats.expression <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "intimidation":
+                        if ( stats.intimidation <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "persuasion":
+                        if ( stats.persuasion <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "socialize":
+                        if ( stats.socialize <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "streetwise":
+                        if ( stats.streetwise <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+                    case "subterfuge":
+                        if ( stats.subterfuge <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
+                        } else {
+                            ((JRadioButton) c).setSelected(true);
+                            break;
+                        }
+
+                    case "merit":
+                        break;
+                }
+            }
+        }
+
     }
 
     @Override

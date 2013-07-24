@@ -105,4 +105,12 @@ public class Functions {
     public static String parseAeName( ActionEvent ae ) {
         return ((Component) ae.getSource()).getName();
     }
+
+    public static int updateStatDots( boolean state, String name ) {
+        if ( state ) {
+            return Integer.parseInt(name.split(" ")[name.split(" ").length - 1]) + 1;
+        } else {
+            return Integer.parseInt(name.split(" ")[name.split(" ").length - 1]);
+        }
+    }
 }

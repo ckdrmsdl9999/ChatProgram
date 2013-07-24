@@ -10,6 +10,7 @@ package org.cakemix.characterSheets;
  */
 public class ChangelingStats {
 
+    String name, player, chronicle, virtue, vice, concept, seeming, kith, court;
     int intelligence, wits, resolve,
             strength, dexterity, stamina,
             presence, manipulation, composure,
@@ -83,5 +84,168 @@ public class ChangelingStats {
         subterfuge = 0;
 
         size = 5;
+    }
+
+    public void setName( String n ) {
+        name = n;
+    }
+
+    public void setPlayer( String p ) {
+        player = p;
+    }
+
+    public void fromString( String s ) {
+        String[] split = s.split(";");
+        for ( String stat : split ) {
+            switch ( stat.split(",")[0] ) {
+                case "intelligence":
+                    intelligence = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "wits":
+                    wits = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "resolve":
+                    resolve = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "strength":
+                    strength = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "dexterity":
+                    dexterity = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "stamina":
+                    stamina = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "presence":
+                    presence = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "manipulation":
+                    manipulation = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "composure":
+                    composure = Integer.parseInt(stat.split(",")[1]);
+                    break;
+
+                case "academics":
+                    academics = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "computer":
+                    computer = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "crafts":
+                    crafts = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "investigation":
+                    investigation = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "medicine":
+                    medicine = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "occult":
+                    occult = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "politics":
+                    politics = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "science":
+                    science = Integer.parseInt(stat.split(",")[1]);
+                    break;
+
+                case "athletics":
+                    athletics = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "brawl":
+                    brawl = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "drive":
+                    drive = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "firearms":
+                    firearms = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "larceny":
+                    larceny = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "stealth":
+                    stealth = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "survival":
+                    survival = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "weaponry":
+                    weaponry = Integer.parseInt(stat.split(",")[1]);
+                    break;
+
+                case "animalKen":
+                    animalKen = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "empathy":
+                    empathy = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "expression":
+                    expression = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "intimidation":
+                    intimidation = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "persuasion":
+                    persuasion = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "socialize":
+                    socialize = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "streetwise":
+                    streetwise = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "subterfuge":
+                    subterfuge = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                //add merits, contracts... etc
+                case "size":
+                    size = Integer.parseInt(stat.split(",")[1]);
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "intelligence," + intelligence + ";"
+                + "wits," + wits + ";"
+                + "resolve," + resolve + ";"
+                + "strength," + strength + ";"
+                + "dexterity," + dexterity + ";"
+                + "stamina," + stamina + ";"
+                + "presence," + presence + ";"
+                + "manipulation," + manipulation + ";"
+                + "composure," + composure + ";"
+                + ""
+                + "academics," + academics + ";"
+                + "computer," + computer + ";"
+                + "crafts," + crafts + ";"
+                + "investigation," + investigation + ";"
+                + "medicine," + medicine + ";"
+                + "occult," + occult + ";"
+                + "politics," + politics + ";"
+                + "science," + science + ";"
+                + ""
+                + "athletics," + athletics + ";"
+                + "brawl," + brawl + ";"
+                + "drive," + drive + ";"
+                + "firearms," + firearms + ";"
+                + "larceny," + larceny + ";"
+                + "stealth," + stealth + ";"
+                + "survival," + survival + ";"
+                + "weaponry," + weaponry + ";"
+                + ""
+                + "animalKen," + animalKen + ";"
+                + "empathy," + empathy + ";"
+                + "expression," + expression + ";"
+                + "intimidation," + intimidation + ";"
+                + "persuasion," + persuasion + ";"
+                + "socialize," + socialize + ";"
+                + "streetwise," + streetwise + ";"
+                + "subterfuge," + subterfuge + ";"
+                //add merits, contracts... etc
+                + "size" + size + ";";
     }
 }

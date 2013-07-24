@@ -10,15 +10,16 @@ package org.cakemix.util;
  */
 public class Vitals {
 
-    protected int health,willpower,usedWill,power,powerLeft,afinity;
-    protected String damage;
+    public int health, willpower, usedWill, power, powerLeft, afinity;
+    public String damage;
 
-    public Vitals(){
+    public Vitals() {
 
-        this(6,"                ",2,0,10,5,1);
+        this(6, "                ", 2, 0, 10, 5, 1);
     }
 
-    public Vitals(int hp, String cHp, int will, int uWill, int pow, int powL, int af){
+    public Vitals( int hp, String cHp, int will, int uWill, int pow, int powL,
+            int af ) {
         health = hp;
         damage = cHp;
         willpower = will;
@@ -28,34 +29,57 @@ public class Vitals {
         afinity = af;
     }
 
-    public void setStats(String var, int val){
-        if (var.length() > 2){
+    // What the fuck was i thinking when i wrote this?
+    // Have a look at it and try and make it readable
+    // that means re writing alot in StatTracker too no doubt...
+    // *sigh*
+    public void updateDamage( char var, int val ) {
+
             char[] dmg = damage.toCharArray();
-            dmg[val] = var.charAt(0);
+            dmg[val] = var;
             damage = new String(dmg);
-        }
-        if (var.length() == 2){
-            switch (var){
-                case "hp":
-                    health = val;
+
+    }
+
+    public void fromString( String s ) {
+        String[] split = s.split(";");
+        for ( String stat : split ) {
+            switch ( stat.split(",")[0] ) {
+                case "health":
+                    health = Integer.parseInt(stat.split(",")[1]);
                     break;
-                case "wp":
-                    willpower = val;
+                case "damage":
+                    damage = stat.split(",")[1];
                     break;
-                case "uw":
-                    usedWill = val;
+                case "willpower":
+                    willpower = Integer.parseInt(stat.split(",")[1]);
                     break;
-                case "po":
-                    power = val;
+                case "usedwill":
+                    usedWill = Integer.parseInt(stat.split(",")[1]);
                     break;
-                case "pl":
-                    powerLeft = val;
+                case "power":
+                    power = Integer.parseInt(stat.split(",")[1]);
                     break;
-                case "af":
-                    afinity = val;
+                case "powerleft":
+                    powerLeft = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "afinity":
+                    afinity = Integer.parseInt(stat.split(",")[1]);
                     break;
             }
         }
     }
 
+    @Override
+    public String toString() {
+        return ""
+                + "health," + health + ";"
+                + "damage," + damage + ";"
+                + "willpower," + willpower + ";"
+                + "usedwill," + usedWill + ";"
+                + "power," + power + ";"
+                + "powerleft," + powerLeft + ";"
+                + "afinity," + afinity + ";";
+
+    }
 }

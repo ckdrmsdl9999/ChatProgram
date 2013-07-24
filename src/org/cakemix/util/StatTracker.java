@@ -8,10 +8,15 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import javax.swing.*;
+import org.omg.PortableInterceptor.USER_EXCEPTION;
 import static org.cakemix.util.Functions.*;
 
 /**
@@ -58,26 +63,26 @@ public class StatTracker extends JPanel implements ActionListener {
         for ( int i = 0; i < 15; i++ ) {
             if ( i < 10 ) {
                 rdoAfinity[i] = new JRadioButton();
-                rdoAfinity[i].setName("ar" + i);
+                rdoAfinity[i].setName("afinity " + i);
                 rdoAfinity[i].addActionListener(this);
                 if ( i < afinity ) {
                     rdoAfinity[i].setSelected(true);
                 }
 
                 rdoWillpower[i] = new JRadioButton();
-                rdoWillpower[i].setName("wr" + i);
+                rdoWillpower[i].setName("willpower " + i);
                 rdoWillpower[i].addActionListener(this);
                 txtWillpower[i] = new JCheckBox();
                 txtWillpower[i].addActionListener(this);
-                txtWillpower[i].setName("wc" + i);
+                txtWillpower[i].setName("usedwill " + i);
                 if ( i < will ) {
                     rdoWillpower[i].setSelected(true);
                 }
                 chkPower[0][i] = new JCheckBox();
-                chkPower[0][i].setName("p0" + i);
+                chkPower[0][i].setName("power " + i);
                 chkPower[0][i].addActionListener(this);
                 chkPower[1][i] = new JCheckBox();
-                chkPower[1][i].setName("p1" + i);
+                chkPower[1][i].setName("power 1" + i);
                 chkPower[1][i].addActionListener(this);
                 if ( i < power / 2 ) {
                     chkPower[0][i].setSelected(true);
@@ -91,12 +96,32 @@ public class StatTracker extends JPanel implements ActionListener {
                 }
             }
             rdoHealth[i] = new JRadioButton();
-            rdoHealth[i].setName("hr" + i);
+            rdoHealth[i].setName("health " + i);
             rdoHealth[i].addActionListener(this);
             txtHealth[i] = new JTextField(1);
-            txtHealth[i].setName("ht" + i);
-            txtHealth[i].addActionListener(this);
-            txtHealth[i].setFont(new Font("Arial", 0, 14));
+            txtHealth[i].setName("damage " + i);
+           // txtHealth[i].setEditable(false);
+            txtHealth[i].addMouseListener(new MouseListener() {
+
+                @Override
+                public void mouseClicked( MouseEvent me ) {
+                   dmgOnClick(me);
+                }
+
+                @Override
+                public void mousePressed( MouseEvent me ) {}
+
+                @Override
+                public void mouseReleased( MouseEvent me ) {}
+
+                @Override
+                public void mouseEntered( MouseEvent me ) {}
+
+                @Override
+                public void mouseExited( MouseEvent me ) {
+                }
+            });
+                    txtHealth[i].setFont(new Font("Arial", 0, 14));
 
             if ( i < health ) {
                 rdoHealth[i].setSelected(true);
@@ -187,67 +212,68 @@ public class StatTracker extends JPanel implements ActionListener {
     public void actionPerformed( ActionEvent ae ) {
         // get the actual item that called this
         String name = parseAeName(ae);
-        switch ( name.charAt(0) ) {
-            case 'a':
+        switch ( name.split(" ")[0] ) {
+            case "afinity":
 
-                vitals.setStats("af",
-                        Integer.parseInt(name.substring(2)) + 1);
-                switch ( Integer.parseInt(name.substring(2)) + 1 ) {
+                vitals.afinity = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
+                switch ( Integer.parseInt(name.split(" ")[1]) + 1 ) {
                     case 1:
-                        vitals.setStats("po", 10);
+                        vitals.power = 10;
                         break;
                     case 2:
-                        vitals.setStats("po", 11);
+                        vitals.power = 11;
                         break;
                     case 3:
-                        vitals.setStats("po", 12);
+                        vitals.power = 12;
                         break;
                     case 4:
-                        vitals.setStats("po", 13);
+                        vitals.power = 13;
                         break;
                     case 5:
-                        vitals.setStats("po", 14);
+                        vitals.power = 14;
                         break;
                     case 6:
-                        vitals.setStats("po", 15);
+                        vitals.power = 15;
                         break;
                     case 7:
                     case 8:
                     case 9:
                     case 10:
-                        vitals.setStats("po", 20);
+                        vitals.power = 20;
                         break;
                 }
                 break;
-            case 'h':
-                if ( name.charAt(1) == 'r' ) {
-                    vitals.setStats("hp",
-                            Integer.parseInt(name.substring(2)) + 1);
-                }
-                if ( name.charAt(1) == 't' ) {
-                    vitals.setStats(ae.getActionCommand(),
-                            Integer.parseInt(name.substring(2)));
-                }
+            case "health":
+                vitals.health = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
+
                 break;
-            case 'p':
-                if ( name.charAt(1) == '0' ) {
-                    vitals.setStats("pl",
-                            Integer.parseInt(name.substring(2)) + 1);
-                }
-                if ( name.charAt(1) == '1' ) {
-                    vitals.setStats("pl",
-                            Integer.parseInt(name.substring(2)) + 10);
-                }
+//            case "damage":
+//                switch (((JTextField) ae.getSource()).getText().charAt(0) ){
+//                    case '/':
+//                    case '\\':
+//                        vitals.updateDamage('X',Integer.parseInt(name.split(" ")[1]));
+//                    case 'x':
+//                    case 'X':
+//                        vitals.updateDamage('*',Integer.parseInt(name.split(" ")[1]));
+//                    case '*':
+//                    default:
+//                       vitals.updateDamage(' ',Integer.parseInt(name.split(" ")[1]));
+//
+//                }
+//                break;
+            case "power":
+                vitals.powerLeft = updateStatDots(
+                        ((JCheckBox) ae.getSource()).isSelected(), name);
                 break;
-            case 'w':
-                if ( name.charAt(1) == 'r' ) {
-                    vitals.setStats("wp",
-                            Integer.parseInt(name.substring(2)) + 1);
-                }
-                if ( name.charAt(1) == 'c' ) {
-                    vitals.setStats("wl",
-                            Integer.parseInt(name.substring(2)) + 1);
-                }
+            case "willpower":
+                vitals.willpower = updateStatDots(
+                        ((JRadioButton) ae.getSource()).isSelected(), name);
+                break;
+            case "usedwill":
+                vitals.usedWill = updateStatDots(
+                        ((JCheckBox) ae.getSource()).isSelected(), name);
                 break;
         }
         update();
@@ -255,76 +281,105 @@ public class StatTracker extends JPanel implements ActionListener {
 
     }
 
+    public Vitals getVitals() {
+        return vitals;
+    }
+
+    public void setVitals( Vitals vitals ) {
+        this.vitals = vitals;
+        update();
+    }
+
     private void update() {
-        for ( int i = 0; i < this.getComponentCount(); i++ ) {
-            String name = getComponent(i).getName();
+        for ( Component c : this.getComponents() ) {
+            String name = c.getName();
             if ( name != null ) {
-                String s = name.substring(0, 2);
+                String s = name.split(" ")[0];
                 switch ( s ) {
 
-                    case "hr":
-                        if ( Integer.parseInt(name.substring(2)) > vitals.health - 1 ) {
-                            ((JRadioButton) getComponent(i)).setSelected(false);
+                    case "health":
+                        if ( vitals.health <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
                         } else {
-                            ((JRadioButton) getComponent(i)).setSelected(true);
+                            ((JRadioButton) c).setSelected(true);
+                            break;
                         }
+                    case "damage":
+                        ((JTextField) c).setText("" + vitals.damage.charAt(
+                                Integer.parseInt(name.split(" ")[1])));
                         break;
-                    case "ht":
-                        ((JTextField) getComponent(i)).setText(
-                                String.valueOf(vitals.damage.charAt(
-                                Integer.parseInt(name.substring(2)))));
-                        break;
-                    case "wr":
-                        if ( Integer.parseInt(name.substring(2)) > vitals.willpower - 1 ) {
-                            ((JRadioButton) getComponent(i)).setSelected(false);
+                    case "willpower":
+                        if ( vitals.willpower <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
                         } else {
-                            ((JRadioButton) getComponent(i)).setSelected(true);
+                            ((JRadioButton) c).setSelected(true);
+                            break;
                         }
-                        break;
-                    case "wc":
-                        if ( Integer.parseInt(name.substring(2)) > vitals.usedWill - 1 ) {
-                            ((JCheckBox) getComponent(i)).setSelected(false);
+                    case "usedwill":
+                        if ( vitals.usedWill <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JCheckBox) c).setSelected(false);
+                            break;
                         } else {
-                            ((JCheckBox) getComponent(i)).setSelected(true);
+                            ((JCheckBox) c).setSelected(true);
+                            break;
                         }
-                        break;
-                    case "p0":
-                        if ( Integer.parseInt(name.substring(2)) > vitals.powerLeft - 1 ) {
-                            ((JCheckBox) getComponent(i)).setSelected(false);
+                    case "power":
+                        if ( vitals.powerLeft <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JCheckBox) c).setSelected(false);
                         } else {
-                            ((JCheckBox) getComponent(i)).setSelected(true);
+                            ((JCheckBox) c).setSelected(true);
+
                         }
-                        if (Integer.parseInt(name.substring(2)) > vitals.power -1){
-                            ((JCheckBox) getComponent(i)).setEnabled(false);
-                        }
-                        else {
-                            ((JCheckBox) getComponent(i)).setEnabled(true);
-                        }
-                        break;
-                    case "p1":
-                        if ( Integer.parseInt(name.substring(2)) > vitals.powerLeft - 11 ) {
-                            ((JCheckBox) getComponent(i)).setSelected(false);
+                        if ( vitals.power <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JCheckBox) c).setEnabled(false);
+                            break;
                         } else {
-                            ((JCheckBox) getComponent(i)).setSelected(true);
+                            ((JCheckBox) c).setEnabled(true);
+                            break;
                         }
-                        if (Integer.parseInt(name.substring(2)) > vitals.power -11){
-                            ((JCheckBox) getComponent(i)).setEnabled(false);
-                        }
-                        else {
-                            ((JCheckBox) getComponent(i)).setEnabled(true);
-                        }
-                        break;
-                    case "ar":
-                        if ( Integer.parseInt(name.substring(2)) > vitals.afinity- 1 ) {
-                            ((JRadioButton) getComponent(i)).setSelected(false);
+
+                    case "afinity":
+                        if ( vitals.afinity <= Integer.parseInt(name.split(
+                                " ")[1]) ) {
+                            ((JRadioButton) c).setSelected(false);
+                            break;
                         } else {
-                            ((JRadioButton) getComponent(i)).setSelected(true);
+                            ((JRadioButton) c).setSelected(true);
+                            break;
                         }
-                        break;
 
                 }
             }
         }
     }
 
+    private void dmgOnClick (MouseEvent me){
+         JTextField c = ((JTextField) me.getComponent());
+                    String name = c.getName();
+                    switch ( c.getText().charAt(0) ) {
+                        case '/':
+                        case '\\':
+                            vitals.updateDamage('X',
+                                    Integer.parseInt(name.split(" ")[1]));
+                            c.setText("X");
+                        case 'x':
+                        case 'X':
+                            vitals.updateDamage('*',
+                                    Integer.parseInt(name.split(" ")[1]));
+                            c.setText("*");
+                        case '*':
+                        default:
+                            vitals.updateDamage(' ',
+                                    Integer.parseInt(name.split(" ")[1]));
+                            c.setText(" ");
+
+                    }
+    }
 }
