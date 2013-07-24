@@ -33,10 +33,10 @@ public class Vitals {
     // Have a look at it and try and make it readable
     // that means re writing alot in StatTracker too no doubt...
     // *sigh*
-    public void updateDamage( char var, int val ) {
+    public void updateDamage( char val, int loc ) {
 
             char[] dmg = damage.toCharArray();
-            dmg[val] = var;
+            dmg[loc] = val;
             damage = new String(dmg);
 
     }

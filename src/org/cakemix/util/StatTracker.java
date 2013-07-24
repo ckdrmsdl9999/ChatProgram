@@ -100,28 +100,31 @@ public class StatTracker extends JPanel implements ActionListener {
             rdoHealth[i].addActionListener(this);
             txtHealth[i] = new JTextField(1);
             txtHealth[i].setName("damage " + i);
-           // txtHealth[i].setEditable(false);
+            txtHealth[i].setEditable(false);
+            // txtHealth[i].setEditable(false);
             txtHealth[i].addMouseListener(new MouseListener() {
-
                 @Override
                 public void mouseClicked( MouseEvent me ) {
-                   dmgOnClick(me);
+                    dmgOnClick(me);
                 }
 
                 @Override
-                public void mousePressed( MouseEvent me ) {}
+                public void mousePressed( MouseEvent me ) {
+                }
 
                 @Override
-                public void mouseReleased( MouseEvent me ) {}
+                public void mouseReleased( MouseEvent me ) {
+                }
 
                 @Override
-                public void mouseEntered( MouseEvent me ) {}
+                public void mouseEntered( MouseEvent me ) {
+                }
 
                 @Override
                 public void mouseExited( MouseEvent me ) {
                 }
             });
-                    txtHealth[i].setFont(new Font("Arial", 0, 14));
+            txtHealth[i].setFont(new Font("Arial", 0, 14));
 
             if ( i < health ) {
                 rdoHealth[i].setSelected(true);
@@ -360,26 +363,34 @@ public class StatTracker extends JPanel implements ActionListener {
         }
     }
 
-    private void dmgOnClick (MouseEvent me){
-         JTextField c = ((JTextField) me.getComponent());
-                    String name = c.getName();
-                    switch ( c.getText().charAt(0) ) {
-                        case '/':
-                        case '\\':
-                            vitals.updateDamage('X',
-                                    Integer.parseInt(name.split(" ")[1]));
-                            c.setText("X");
-                        case 'x':
-                        case 'X':
-                            vitals.updateDamage('*',
-                                    Integer.parseInt(name.split(" ")[1]));
-                            c.setText("*");
-                        case '*':
-                        default:
-                            vitals.updateDamage(' ',
-                                    Integer.parseInt(name.split(" ")[1]));
-                            c.setText(" ");
+    private void dmgOnClick( MouseEvent me ) {
+        JTextField c = ((JTextField) me.getComponent());
+        String name = c.getName();
+        switch ( c.getText().charAt(0) ) {
+            case ' ':
+                vitals.updateDamage('/',
+                        Integer.parseInt(name.split(" ")[1]));
+                c.setText("/");
+                break;
+            case '/':
+            case '\\':
+                vitals.updateDamage('X',
+                        Integer.parseInt(name.split(" ")[1]));
+                c.setText("X");
+                break;
+            case 'x':
+            case 'X':
+                vitals.updateDamage('*',
+                        Integer.parseInt(name.split(" ")[1]));
+                c.setText("*");
+                break;
+            case '*':
+            default:
+                vitals.updateDamage(' ',
+                        Integer.parseInt(name.split(" ")[1]));
+                c.setText(" ");
+                break;
 
-                    }
+        }
     }
 }
