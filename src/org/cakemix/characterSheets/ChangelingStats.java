@@ -258,7 +258,8 @@ public class ChangelingStats {
                 + "concept," + concept + ";"
                 + "seeming," + seeming + ";"
                 + "kith," + kith + ";"
-                + "court" + court + ";"
+                + "court," + court + ";"
+                
                 + "intelligence," + intelligence + ";"
                 + "wits," + wits + ";"
                 + "resolve," + resolve + ";"
@@ -300,7 +301,7 @@ public class ChangelingStats {
         for ( int i = 0; i < 10; i++ ) {
             val += "merit," + i + "," + merits[i] + ",level," + meritLevels[i] + ";"
                     + "contract," + i + "," + contracts[i] + ",level," + contractLevels[i] + ";"
-                    + "specialty," + i + "," + specialtiesStat[i] + ",description," + specialtiesDescription + ";"
+                    + "specialty," + i + "," + specialtiesStat[i] + ",description," + specialtiesDescription[i] + ";"
                     + "";
 
         }

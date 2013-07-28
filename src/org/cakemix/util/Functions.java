@@ -6,6 +6,7 @@ package org.cakemix.util;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
 import javax.swing.*;
 import javax.swing.GroupLayout.Group;
 import javax.swing.GroupLayout.ParallelGroup;
@@ -105,8 +106,19 @@ public class Functions {
     public static String parseAeName( ActionEvent ae ) {
         return ((Component) ae.getSource()).getName();
     }
+ public static String parseAeName( ItemEvent ae ) {
+        return ((Component) ae.getSource()).getName();
+    }
 
     public static int updateStatDots( boolean state, String name ) {
+        if ( state ) {
+            return Integer.parseInt(name.split(" ")[name.split(" ").length - 1]) + 1;
+        } else {
+            return Integer.parseInt(name.split(" ")[name.split(" ").length - 1]);
+        }
+    }
+    
+    public static int updateMeritDots( boolean state, String name ) {
         if ( state ) {
             return Integer.parseInt(name.split(" ")[name.split(" ").length - 1]) + 1;
         } else {

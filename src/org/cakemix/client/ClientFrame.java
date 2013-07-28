@@ -23,6 +23,7 @@ import org.cakemix.Network;
 import org.cakemix.Network.ChatConnection;
 import org.cakemix.Network.ChatMessage;
 import org.cakemix.Network.UpdateNames;
+import org.cakemix.characterSheets.Changeling;
 import org.cakemix.client.settings.ChatSettings;
 import org.cakemix.client.settings.ConfigIO;
 import org.cakemix.client.settings.StylePickerFrame;
@@ -219,6 +220,11 @@ public class ClientFrame extends JFrame implements ActionListener,
         menuItem = new JMenuItem("Set Colours");
         menuItem.addActionListener(this);
         tools.add(menuItem);
+        
+        // Character sheet
+        menuItem = new JMenuItem("Changeling Sheet");
+        menuItem.addActionListener(this);
+        tools.add(menuItem);
 
         // Checkbox for show/hiding user list
         JCheckBoxMenuItem menuChk = new JCheckBoxMenuItem("Show User List");
@@ -372,6 +378,10 @@ public class ClientFrame extends JFrame implements ActionListener,
                             ex);
                 }
                 return;
+                
+            case "Changeling Sheet":
+                new Changeling();
+                break;
 
             //Main UI
             // Send button/ sendText action
