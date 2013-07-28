@@ -1,0 +1,18 @@
+TODO::
+Server 
+- User account persistence (and login) as an optional setting
++ Extra Chat controls (player whisper etc) (done may add more)
++ GM game control commands (done ish)
+    + GM only chat options (scene description etc) (done but may add more if thought of)
+    + Promote and Demote (listeners, standard, player, GM) (done)
+- Chat Rooms
+    - Room Commands (open, enter, leave, rename, close)
+    - Persistence (users and levels on per room basis)
+- Game Map (linked with client development) (long term)
+
+Client
+- Chat display formatting (colours and fonts to be configurable) (done, fonts needed sorted)
+- Player List options
+    - Gui forms for some chat commands (alias, whisper, GM and Room Admin Commands)
+- Player Character sheets (editable images or forms? server side or client side?)
+- Game Map (linked with server development) (long term)
