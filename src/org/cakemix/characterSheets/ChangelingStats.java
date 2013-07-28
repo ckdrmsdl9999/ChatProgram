@@ -10,7 +10,8 @@ package org.cakemix.characterSheets;
  */
 public class ChangelingStats {
 
-    String name, player, chronicle, virtue, vice, concept, seeming, kith, court;
+    String name, player, chronicle, concept, kith;
+    int virtue, vice, seeming, court;
     int intelligence, wits, resolve,
             strength, dexterity, stamina,
             presence, manipulation, composure,
@@ -42,6 +43,12 @@ public class ChangelingStats {
             streetwise,
             subterfuge,
             size;
+    int[] specialtiesStat = new int[10],
+            merits = new int[10],
+            meritLevels = new int[10],
+            contracts = new int[10],
+            contractLevels = new int[10];
+    String[] specialtiesDescription = new String[10];
 
     public ChangelingStats() {
         intelligence = 1;
@@ -83,21 +90,55 @@ public class ChangelingStats {
         streetwise = 0;
         subterfuge = 0;
 
-        size = 5;
-    }
+        name = " ";
+        player = " ";
+        chronicle = " ";
+        concept = " ";
+        kith = " ";
 
-    public void setName( String n ) {
-        name = n;
-    }
+        for ( int i = 0; i < 10; i++ ) {
+            contractLevels[i] = 0;
+            contracts[i] = 0;
+            merits[i] = 0;
+            meritLevels[i] = 0;
+            specialtiesDescription[i] = " ";
+            specialtiesStat[i] = 0;
+        }
 
-    public void setPlayer( String p ) {
-        player = p;
     }
 
     public void fromString( String s ) {
         String[] split = s.split(";");
         for ( String stat : split ) {
             switch ( stat.split(",")[0] ) {
+                case "name":
+                    name = stat.split(",")[1];
+                    break;
+                case "player":
+                    player = stat.split(",")[1];
+                    break;
+                case "chronicle":
+                    chronicle = stat.split(",")[1];
+                    break;
+                case "virtue":
+                    virtue = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "vice":
+                    vice = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "concept":
+                    concept = stat.split(",")[1];
+                    break;
+                case "seeming":
+                    seeming = Integer.parseInt(stat.split(",")[1]);
+                    break;
+                case "kith":
+                    kith = stat.split(",")[1];
+                    break;
+                case "court":
+                    court = Integer.parseInt(stat.split(",")[1]);
+                    break;
+
                 case "intelligence":
                     intelligence = Integer.parseInt(stat.split(",")[1]);
                     break;
@@ -209,7 +250,16 @@ public class ChangelingStats {
 
     @Override
     public String toString() {
-        return "intelligence," + intelligence + ";"
+        String val = "name," + name + ";"
+                + "player," + player + ";"
+                + "chronicle," + chronicle + ";"
+                + "virtue," + virtue + ";"
+                + "vice," + vice + ";"
+                + "concept," + concept + ";"
+                + "seeming," + seeming + ";"
+                + "kith," + kith + ";"
+                + "court" + court + ";"
+                + "intelligence," + intelligence + ";"
                 + "wits," + wits + ";"
                 + "resolve," + resolve + ";"
                 + "strength," + strength + ";"
@@ -244,8 +294,17 @@ public class ChangelingStats {
                 + "persuasion," + persuasion + ";"
                 + "socialize," + socialize + ";"
                 + "streetwise," + streetwise + ";"
-                + "subterfuge," + subterfuge + ";"
-                //add merits, contracts... etc
-                + "size" + size + ";";
+                + "subterfuge," + subterfuge + ";" //add merits, contracts... etc
+                ;
+
+        for ( int i = 0; i < 10; i++ ) {
+            val += "merit," + i + "," + merits[i] + ",level," + meritLevels[i] + ";"
+                    + "contract," + i + "," + contracts[i] + ",level," + contractLevels[i] + ";"
+                    + "specialty," + i + "," + specialtiesStat[i] + ",description," + specialtiesDescription + ";"
+                    + "";
+
+        }
+
+        return val;
     }
 }

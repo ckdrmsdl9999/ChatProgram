@@ -10,16 +10,19 @@ package org.cakemix.util;
  */
 public class Vitals {
 
-    public int health, willpower, usedWill, power, powerLeft, afinity;
+    public int health, willpower, usedWill, power, powerLeft, afinity, clarity;
     public String damage;
+    // Derived Stats
+    public int speed, size, defense,  initiative, experience;
+    public String armor;
 
     public Vitals() {
 
-        this(6, "                ", 2, 0, 10, 5, 1);
+        this(6, "                ", 2, 0, 10, 5, 1, 7);
     }
 
     public Vitals( int hp, String cHp, int will, int uWill, int pow, int powL,
-            int af ) {
+            int af, int cl ) {
         health = hp;
         damage = cHp;
         willpower = will;
@@ -27,6 +30,9 @@ public class Vitals {
         power = pow;
         powerLeft = powL;
         afinity = af;
+        clarity = cl;
+        armor = "0/0";
+        experience = 0;
     }
 
     // What the fuck was i thinking when i wrote this?
@@ -35,9 +41,9 @@ public class Vitals {
     // *sigh*
     public void updateDamage( char val, int loc ) {
 
-            char[] dmg = damage.toCharArray();
-            dmg[loc] = val;
-            damage = new String(dmg);
+        char[] dmg = damage.toCharArray();
+        dmg[loc] = val;
+        damage = new String(dmg);
 
     }
 
@@ -66,6 +72,27 @@ public class Vitals {
                 case "afinity":
                     afinity = Integer.parseInt(stat.split(",")[1]);
                     break;
+                case "clarity":
+                    clarity = Integer.parseInt(stat.split(" ")[1]);
+                    break;
+                case "size":
+                    size = Integer.parseInt(stat.split(" ")[1]);
+                    break;
+                case "speed":
+                    speed = Integer.parseInt(stat.split(" ")[1]);
+                    break;
+                case "defense":
+                    defense = Integer.parseInt(stat.split(" ")[1]);
+                    break;
+                case "armor":
+                    armor = stat.split(" ")[1];
+                    break;
+                case "initiative":
+                    initiative = Integer.parseInt(stat.split(" ")[1]);
+                    break;
+                case "experience":
+                    experience = Integer.parseInt(stat.split(" ")[1]);
+                    break;
             }
         }
     }
@@ -79,7 +106,14 @@ public class Vitals {
                 + "usedwill," + usedWill + ";"
                 + "power," + power + ";"
                 + "powerleft," + powerLeft + ";"
-                + "afinity," + afinity + ";";
+                + "afinity," + afinity + ";"
+                + "clarity," + clarity + ";"
+                + "size," + size + ";"
+                + "speed," + speed + ";"
+                + "defense," + defense + ";"
+                + "armor," + armor + ";"
+                + "initiative," + initiative + ";"
+                + "experience," + experience + ";";
 
     }
 }
