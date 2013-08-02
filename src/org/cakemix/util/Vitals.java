@@ -31,6 +31,7 @@ public class Vitals {
         powerLeft = powL;
         afinity = af;
         clarity = cl;
+        size = 5;
         armor = "0/0";
         experience = 0;
     }
@@ -73,25 +74,25 @@ public class Vitals {
                     afinity = Integer.parseInt(stat.split(",")[1]);
                     break;
                 case "clarity":
-                    clarity = Integer.parseInt(stat.split(" ")[1]);
+                    clarity = Integer.parseInt(stat.split(",")[1]);
                     break;
                 case "size":
-                    size = Integer.parseInt(stat.split(" ")[1]);
+                    size = Integer.parseInt(stat.split(",")[1]);
                     break;
                 case "speed":
-                    speed = Integer.parseInt(stat.split(" ")[1]);
+                    speed = Integer.parseInt(stat.split(",")[1]);
                     break;
                 case "defense":
-                    defense = Integer.parseInt(stat.split(" ")[1]);
+                    defense = Integer.parseInt(stat.split(",")[1]);
                     break;
                 case "armor":
-                    armor = stat.split(" ")[1];
+                    armor = stat.split(",")[1];
                     break;
                 case "initiative":
-                    initiative = Integer.parseInt(stat.split(" ")[1]);
+                    initiative = Integer.parseInt(stat.split(",")[1]);
                     break;
                 case "experience":
-                    experience = Integer.parseInt(stat.split(" ")[1]);
+                    experience = Integer.parseInt(stat.split(",")[1]);
                     break;
             }
         }

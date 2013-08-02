@@ -209,7 +209,7 @@ public class StatTracker extends JPanel implements ActionListener {
         txtInitiative.setName("initiative ");
         txtInitiative.addActionListener(this);
         txtSize.setFont(new Font("Arial", 0, 16));
-        txtSize.setEditable(false);
+        //txtSize.setEditable(false);
         txtSize.setName("size ");
         txtSize.addActionListener(this);
         txtSpeed.setFont(new Font("Arial", 0, 16));
@@ -224,10 +224,10 @@ public class StatTracker extends JPanel implements ActionListener {
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
 
-        layout.setAutoCreateContainerGaps(true);
-        layout.setAutoCreateGaps(true);
+        //layout.setAutoCreateContainerGaps(true);
+        //layout.setAutoCreateGaps(true);
         layout.setHorizontalGroup(layout.createSequentialGroup()
-                //.addGap(10, 75, Short.MAX_VALUE)
+                .addGap(10, 30, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup()
                 .addGroup(sequentialPair(layout, lblSize, txtSize))
                 .addGroup(sequentialPair(layout, lblSpeed, txtSpeed))
@@ -235,7 +235,7 @@ public class StatTracker extends JPanel implements ActionListener {
                 .addGroup(sequentialPair(layout, lblArmor, txtArmor))
                 .addGroup(sequentialPair(layout, lblInitiative, txtInitiative))
                 .addGroup(sequentialPair(layout, lblExperience, txtExperience)))
-                //.addGap(10, 15, 50)
+                .addGap(10, 30, Short.MAX_VALUE)
                 .addGroup(
                 layout.createParallelGroup()
                 .addGroup(
@@ -257,11 +257,12 @@ public class StatTracker extends JPanel implements ActionListener {
                 sequentialPair(layout,
                 lblAfinity,
                 sequentialRadioArray(layout, rdoAfinity))))
-                //.addGap(10, 15, 50)
+                .addGap(10, 30, Short.MAX_VALUE)
                 .addGroup(
                 layout.createParallelGroup()
                 .addGroup(parallelPair(layout, lblClarity,
-                parallelRadioArray(layout, rdoClarity)))) //.addGap(10, 75, Short.MAX_VALUE)
+                parallelRadioArray(layout, rdoClarity))))
+                .addGap(10, 30, Short.MAX_VALUE)
                 );
 
         layout.setVerticalGroup(layout.createParallelGroup()
@@ -287,21 +288,21 @@ public class StatTracker extends JPanel implements ActionListener {
                 sequentialPair(layout,
                 parallelRadioArray(layout, rdoHealth),
                 parallelRadioArray(layout, txtHealth))))
-                //.addGap(5, 10, 15)
+                .addGap(5, 10, 15)
                 .addGroup(
                 parallelPair(layout,
                 lblWillpower,
                 sequentialPair(layout,
                 parallelRadioArray(layout, rdoWillpower),
                 parallelRadioArray(layout, txtWillpower))))
-                //.addGap(5, 10, 15)
+                .addGap(5, 10, 15)
                 .addGroup(
                 parallelPair(layout,
                 lblPower,
                 sequentialPair(layout,
                 parallelRadioArray(layout, chkPower[0]),
                 parallelRadioArray(layout, chkPower[1]))))
-                //.addGap(5, 10, 15)
+                .addGap(5, 10, 15)
                 .addGroup(
                 parallelPair(layout,
                 lblAfinity,
@@ -316,8 +317,7 @@ public class StatTracker extends JPanel implements ActionListener {
             if ( this.getComponents()[i] instanceof JRadioButton
                     || this.getComponent(i) instanceof JTextField
                     || this.getComponent(i) instanceof JCheckBox ) {
-                if ( !"armor".equals(
-                        this.getComponents()[i].getName().split(" ")[0])
+                if ( !"armor".equals(this.getComponents()[i].getName().split(" ")[0])
                         || !"defense".equals(this.getComponents()[i].getName().split(
                         " ")[0])
                         || !"experience".equals(this.getComponents()[i].getName().split(
@@ -409,6 +409,9 @@ public class StatTracker extends JPanel implements ActionListener {
                 vitals.experience = Integer.parseInt(
                         ((JTextField) ae.getSource()).getText());
                 break;
+            case "size":
+                vitals.size = Integer.parseInt(
+                        ((JTextField) ae.getSource()).getText());
         }
         update();
 

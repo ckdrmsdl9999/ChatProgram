@@ -241,9 +241,34 @@ public class ChangelingStats {
                 case "subterfuge":
                     subterfuge = Integer.parseInt(stat.split(",")[1]);
                     break;
-                //add merits, contracts... etc
-                case "size":
-                    size = Integer.parseInt(stat.split(",")[1]);
+
+                case "merit":
+                    if ( "level".equals(stat.split(",")[1]) ) {
+                    meritLevels[Integer.parseInt(stat.split(",")[2])] =
+                            Integer.parseInt(stat.split(",")[3]);
+                    } else {
+                        merits[Integer.parseInt(stat.split(",")[1])] =
+                            Integer.parseInt(stat.split(",")[2]);
+                    }
+                    break;
+                case "contract":
+                    if ( "level".equals(stat.split(",")[1]) ) {
+                        contractLevels[Integer.parseInt(stat.split(",")[2])] =
+                            Integer.parseInt(stat.split(",")[3]);
+                    } else {
+                        contracts[Integer.parseInt(stat.split(",")[1])] =
+                            Integer.parseInt(stat.split(",")[2]);
+                    }
+                    break;
+                case "specialty":
+                    if ( "description".equals(stat.split(",")[1]) ) {
+                        specialtiesDescription[Integer.parseInt(stat.split(",")[2])]
+                                = stat.split(",")[3];
+                    } else {
+                        specialtiesStat[Integer.parseInt(stat.split(",")[1])] =
+                            Integer.parseInt(stat.split(",")[2]);
+                    }
+                    break;
             }
         }
     }
@@ -259,7 +284,6 @@ public class ChangelingStats {
                 + "seeming," + seeming + ";"
                 + "kith," + kith + ";"
                 + "court," + court + ";"
-                
                 + "intelligence," + intelligence + ";"
                 + "wits," + wits + ";"
                 + "resolve," + resolve + ";"
@@ -295,13 +319,15 @@ public class ChangelingStats {
                 + "persuasion," + persuasion + ";"
                 + "socialize," + socialize + ";"
                 + "streetwise," + streetwise + ";"
-                + "subterfuge," + subterfuge + ";" //add merits, contracts... etc
-                ;
+                + "subterfuge," + subterfuge + ";";
 
         for ( int i = 0; i < 10; i++ ) {
-            val += "merit," + i + "," + merits[i] + ",level," + meritLevels[i] + ";"
-                    + "contract," + i + "," + contracts[i] + ",level," + contractLevels[i] + ";"
-                    + "specialty," + i + "," + specialtiesStat[i] + ",description," + specialtiesDescription[i] + ";"
+            val += "merit,"             + i + "," + merits[i] + ";"
+                    + "merit,level,"           + i + "," + meritLevels[i] + ";"
+                    + "contract,"       + i + "," + contracts[i] + ";"
+                    + "contract,level,"        + i + "," + contractLevels[i] + ";"
+                    + "specialty,"      + i + "," + specialtiesStat[i] + ";"
+                    + "specialty,description," + i + "," + specialtiesDescription[i] + ";"
                     + "";
 
         }
