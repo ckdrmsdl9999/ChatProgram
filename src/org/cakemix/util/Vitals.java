@@ -16,6 +16,10 @@ public class Vitals {
     public int speed, size, defense,  initiative, experience;
     public String armor;
 
+    // code got messy before this...
+    String midSplit = Character.toString((char) 888),
+            endSplit = Character.toString((char) 889);
+
     public Vitals() {
 
         this(6, "                ", 2, 0, 10, 5, 1, 7);
@@ -49,50 +53,50 @@ public class Vitals {
     }
 
     public void fromString( String s ) {
-        String[] split = s.split(";");
+        String[] split = s.split(endSplit);
         for ( String stat : split ) {
-            switch ( stat.split(",")[0] ) {
+            switch ( stat.split(midSplit)[0] ) {
                 case "health":
-                    health = Integer.parseInt(stat.split(",")[1]);
+                    health = Integer.parseInt(stat.split(midSplit)[1]);
                     break;
                 case "damage":
-                    damage = stat.split(",")[1];
+                    damage = stat.split(midSplit)[1];
                     break;
                 case "willpower":
-                    willpower = Integer.parseInt(stat.split(",")[1]);
+                    willpower = Integer.parseInt(stat.split(midSplit)[1]);
                     break;
                 case "usedwill":
-                    usedWill = Integer.parseInt(stat.split(",")[1]);
+                    usedWill = Integer.parseInt(stat.split(midSplit)[1]);
                     break;
                 case "power":
-                    power = Integer.parseInt(stat.split(",")[1]);
+                    power = Integer.parseInt(stat.split(midSplit)[1]);
                     break;
                 case "powerleft":
-                    powerLeft = Integer.parseInt(stat.split(",")[1]);
+                    powerLeft = Integer.parseInt(stat.split(midSplit)[1]);
                     break;
                 case "afinity":
-                    afinity = Integer.parseInt(stat.split(",")[1]);
+                    afinity = Integer.parseInt(stat.split(midSplit)[1]);
                     break;
                 case "clarity":
-                    clarity = Integer.parseInt(stat.split(",")[1]);
+                    clarity = Integer.parseInt(stat.split(midSplit)[1]);
                     break;
                 case "size":
-                    size = Integer.parseInt(stat.split(",")[1]);
+                    size = Integer.parseInt(stat.split(midSplit)[1]);
                     break;
                 case "speed":
-                    speed = Integer.parseInt(stat.split(",")[1]);
+                    speed = Integer.parseInt(stat.split(midSplit)[1]);
                     break;
                 case "defense":
-                    defense = Integer.parseInt(stat.split(",")[1]);
+                    defense = Integer.parseInt(stat.split(midSplit)[1]);
                     break;
                 case "armor":
-                    armor = stat.split(",")[1];
+                    armor = stat.split(midSplit)[1];
                     break;
                 case "initiative":
-                    initiative = Integer.parseInt(stat.split(",")[1]);
+                    initiative = Integer.parseInt(stat.split(midSplit)[1]);
                     break;
                 case "experience":
-                    experience = Integer.parseInt(stat.split(",")[1]);
+                    experience = Integer.parseInt(stat.split(midSplit)[1]);
                     break;
             }
         }
@@ -101,20 +105,20 @@ public class Vitals {
     @Override
     public String toString() {
         return ""
-                + "health," + health + ";"
-                + "damage," + damage + ";"
-                + "willpower," + willpower + ";"
-                + "usedwill," + usedWill + ";"
-                + "power," + power + ";"
-                + "powerleft," + powerLeft + ";"
-                + "afinity," + afinity + ";"
-                + "clarity," + clarity + ";"
-                + "size," + size + ";"
-                + "speed," + speed + ";"
-                + "defense," + defense + ";"
-                + "armor," + armor + ";"
-                + "initiative," + initiative + ";"
-                + "experience," + experience + ";";
+                + "health" + midSplit + health + endSplit
+                + "damage" + midSplit + damage + endSplit
+                + "willpower" + midSplit + willpower + endSplit
+                + "usedwill" + midSplit + usedWill + endSplit
+                + "power" + midSplit + power + endSplit
+                + "powerleft" + midSplit + powerLeft + endSplit
+                + "afinity" + midSplit + afinity + endSplit
+                + "clarity" + midSplit + clarity + endSplit
+                + "size" + midSplit + size + endSplit
+                + "speed" + midSplit + speed + endSplit
+                + "defense" + midSplit + defense + endSplit
+                + "armor" + midSplit + armor + endSplit
+                + "initiative" + midSplit + initiative + endSplit
+                + "experience" + midSplit + experience + endSplit;
 
     }
 }

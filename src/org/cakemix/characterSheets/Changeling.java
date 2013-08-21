@@ -4,19 +4,19 @@
  */
 package org.cakemix.characterSheets;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
-import javax.swing.GroupLayout.*;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.GroupLayout.Group;
+import javax.swing.GroupLayout.ParallelGroup;
+import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
@@ -25,6 +25,7 @@ import javax.swing.text.BadLocationException;
 import org.cakemix.util.ScrollAlert;
 import org.cakemix.util.StatTracker;
 import org.cakemix.util.Vitals;
+
 import static org.cakemix.util.Functions.*;
 
 /**
@@ -33,6 +34,7 @@ import static org.cakemix.util.Functions.*;
  */
 public class Changeling extends JFrame implements ActionListener {
 
+    //<editor-fold desc="Variables" defaultstate="collapsed">
     JTextField txtName = new JTextField(),
             txtPlayer = new JTextField(),
             txtChronicle = new JTextField(),
@@ -83,8 +85,7 @@ public class Changeling extends JFrame implements ActionListener {
     /**
      * 5 "dots" (ie, radio buttons) per stat (hope to HELL this works) can
      * always try checkboxes another time (tho not round : /) start by creating
-     * all te
-     * arrays
+     * all the arrays
      */
     JRadioButton[] rdoIntelligence = new JRadioButton[5],
             rdoWits = new JRadioButton[5],
@@ -132,14 +133,45 @@ public class Changeling extends JFrame implements ActionListener {
     // 5 dots for each merit, thus 2d array
     JRadioButton[][] rdoMerits = new JRadioButton[10][5];
     // same again for the contracts
-    // Text feilds to put the contracts in
+    // combos to put the contracts in
     JComboBox[] cboContracts = new JComboBox[10];
-    // 5 dots for each merit, thus 2d array
     JRadioButton[][] rdoContracts = new JRadioButton[10][5];
+    // Text field for goblin contract names
+    JLabel[] lblGoblin = new JLabel[10];
+    JTextField[] txtGoblin = new JTextField[10];
+    // Pledges
+    JLabel lblPledge = new JLabel("Pledges ");
+    JTextArea txaPledge = new JTextArea(10, 50);
+    // Details
+    JLabel lblBackgroud = new JLabel("Background "),
+            lblDescription = new JLabel("Description "),
+            lblAge = new JLabel("Age "),
+            lblApparent = new JLabel("Apparent Age "),
+            lblHair = new JLabel("Hair "),
+            lblEyes = new JLabel("Eyes "),
+            lblHeight = new JLabel("Height "),
+            lblWeight = new JLabel("Weight "),
+            lblRace = new JLabel("Race "),
+            lblSex = new JLabel("Sex ");
+    //scroll panes for the text areas
+    JScrollPane scrBackground = new JScrollPane(),
+            scrDescription = new JScrollPane();
+    JTextArea txaBackground = new JTextArea(10, 25),
+            txaDescription = new JTextArea(10, 25);
+    JSpinner spnAge = new JSpinner(),
+            spnApparent = new JSpinner();
+    JTextField txtHair = new JTextField(),
+            txtEyes = new JTextField(25),
+            txtHeight = new JTextField(25),
+            txtWeight = new JTextField(25),
+            txtRace = new JTextField(25),
+            txtSex = new JTextField(25);
     // add a stat tracker (to be linked into the gms overall one)
     StatTracker vitals = new StatTracker();
     // character sheet stat storage
-    ChangelingStats stats = new ChangelingStats();
+    ChangelingStats stats = new ChangelingStats(),
+            oldStats = new ChangelingStats();
+    //</editor-fold>
 
     public Changeling() {
         super("Changeling - The Lost");
@@ -180,7 +212,7 @@ public class Changeling extends JFrame implements ActionListener {
         // Create a string[] to hold the options for each one
         // Start off with the virtues
         String[] s = { "Charity", "Faith", "Fortitude", "Hope", "Justice", "Prudence", "Temperance" };
-        cboVirtue = new JComboBox<String>(s);
+        cboVirtue = new JComboBox<>(s);
         // Fill for vice
         s = new String[]{ "Envy", "Gluttony", "Greed", "Lust", "Pride", "Sloth", "Wrath" };
         cboVice = new JComboBox(s);
@@ -406,6 +438,356 @@ public class Changeling extends JFrame implements ActionListener {
         cboCourt.addActionListener(this);
 //</editor-fold>
 
+        //<editor-fold desc="Descriptions" defaultstate="collapsed">
+
+        txaBackground.setName("background ");
+        txaBackground.setToolTipText("Characters Background");
+        txaBackground.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate( DocumentEvent de ) {
+                try {
+                    stats.background = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+
+            @Override
+            public void removeUpdate( DocumentEvent de ) {
+                try {
+                    stats.background = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+
+            @Override
+            public void changedUpdate( DocumentEvent de ) {
+                try {
+                    stats.background = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+        });
+        // create the scrol pane for the text area
+        scrBackground = new JScrollPane(txaBackground);
+        scrBackground.setName("background ");
+
+        txaDescription.setName("description ");
+        txaDescription.setToolTipText("Character Description");
+        txaDescription.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate( DocumentEvent de ) {
+                try {
+                    stats.description = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+
+            @Override
+            public void removeUpdate( DocumentEvent de ) {
+                try {
+                    stats.description = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+
+            @Override
+            public void changedUpdate( DocumentEvent de ) {
+                try {
+                    stats.description = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+        });
+        scrDescription = new JScrollPane(txaDescription);
+        scrDescription.setName("description ");
+
+        spnAge.setName("age ");
+        spnAge.setToolTipText("Characters Actual Age");
+        spnAge.setModel(new SpinnerNumberModel(25, 0, 3000, 1));
+        spnAge.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged( ChangeEvent ce ) {
+                stats.age = (int) spnAge.getValue();
+            }
+        });
+
+        spnApparent.setName("apparent ");
+        spnApparent.setToolTipText("Age the character appears");
+        spnApparent.setModel(new SpinnerNumberModel(25, 0, 1500, 1));
+        spnApparent.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged( ChangeEvent ce ) {
+                stats.apparentAge = (int) spnApparent.getValue();
+            }
+        });
+
+        txtHair.setName("hair ");
+        txtHair.setToolTipText("Characters Hair: Colour, Style, etc");
+        txtHair.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate( DocumentEvent de ) {
+                try {
+                    stats.hair = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+
+            @Override
+            public void removeUpdate( DocumentEvent de ) {
+                try {
+                    stats.hair = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+
+            @Override
+            public void changedUpdate( DocumentEvent de ) {
+                try {
+                    stats.hair = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+        });
+
+        txtEyes.setName("eyes ");
+        txtEyes.setToolTipText("Characters Eye Colour");
+        txtEyes.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate( DocumentEvent de ) {
+                try {
+                    stats.eyes = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+
+            @Override
+            public void removeUpdate( DocumentEvent de ) {
+                try {
+                    stats.eyes = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+
+            @Override
+            public void changedUpdate( DocumentEvent de ) {
+                try {
+                    stats.eyes = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+        });
+
+        txtHeight.setName("height ");
+        txtHeight.setToolTipText("Characters Height");
+        txtHeight.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate( DocumentEvent de ) {
+                try {
+                    stats.height = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+
+            @Override
+            public void removeUpdate( DocumentEvent de ) {
+                try {
+                    stats.height = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+
+            @Override
+            public void changedUpdate( DocumentEvent de ) {
+                try {
+                    stats.height = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+        });
+
+        txtWeight.setName("weight ");
+        txtWeight.setToolTipText("Characters Weight");
+        txtWeight.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate( DocumentEvent de ) {
+                try {
+                    stats.weight = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+
+            @Override
+            public void removeUpdate( DocumentEvent de ) {
+                try {
+                    stats.weight = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+
+            @Override
+            public void changedUpdate( DocumentEvent de ) {
+                try {
+                    stats.weight = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+        });
+
+        txtRace.setName("race ");
+        txtRace.setToolTipText("Characters Race");
+        txtRace.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate( DocumentEvent de ) {
+                try {
+                    stats.race = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+
+            @Override
+            public void removeUpdate( DocumentEvent de ) {
+                try {
+                    stats.race = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+
+            @Override
+            public void changedUpdate( DocumentEvent de ) {
+                try {
+                    stats.race = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+        });
+
+        txtSex.setName("sex ");
+        txtSex.setToolTipText("Characters Sex");
+        txtSex.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate( DocumentEvent de ) {
+                try {
+                    stats.sex = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+
+            @Override
+            public void removeUpdate( DocumentEvent de ) {
+                try {
+                    stats.sex = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+
+            @Override
+            public void changedUpdate( DocumentEvent de ) {
+                try {
+                    stats.sex = de.getDocument().getText(0,
+                            de.getDocument().getLength());
+                } catch ( BadLocationException ex ) {
+                    Logger.getLogger(StatTracker.class.getName()).log(
+                            Level.SEVERE, null,
+                            ex);
+                }
+            }
+        });
+
+
+        //</editor-fold>
+
         //<editor-fold desc="Stat and skill Radio Creation (BIG)" defaultstate="collapsed">
 
         // loop and create ALL of the radios and name them (WOOPWOOP!)
@@ -629,6 +1011,7 @@ public class Changeling extends JFrame implements ActionListener {
                     int i = Integer.parseInt(((JTextField) fe.getSource())
                             .getName().split(" ")[2]);
                     stats.specialtiesDescription[i] = txtSpecialty[i].getText();
+                    update();
                 }
             });
             for ( int j = 0; j < 5; j++ ) {
@@ -641,6 +1024,27 @@ public class Changeling extends JFrame implements ActionListener {
                 rdoContracts[i][j].setToolTipText(ttContracts);
                 rdoContracts[i][j].addActionListener(this);
             }
+
+            // goblin contracts
+            lblGoblin[i] = new JLabel("Goblin Contract " + (i + 1) + " ");
+            txtGoblin[i] = new JTextField();
+            txtGoblin[i].setName("goblin " + i);
+            txtGoblin[i].setToolTipText(
+                    "Details of a goblin contract from the contracts section.");
+            txtGoblin[i].addFocusListener(new FocusListener() {
+                @Override
+                public void focusGained( FocusEvent fe ) {
+                }
+
+                @Override
+                public void focusLost( FocusEvent fe ) {
+                    stats.goblinContracts[Integer.parseInt(
+                            ((JTextField) fe.getSource()).getName().split(
+                            " ")[1])] = ((JTextField) fe.getSource()).getText();
+                    update();
+                }
+            });
+
         }
         //</editor-fold>
 
@@ -728,14 +1132,13 @@ public class Changeling extends JFrame implements ActionListener {
 
         JTabbedPane tabber = new JTabbedPane();
         tabber.addChangeListener(new ChangeListener() {
-
-                    @Override
-                    public void stateChanged(ChangeEvent e) {
-                        if (e.getSource() instanceof JTabbedPane) {
-                            update();
-                        }
-                    }
-                });
+            @Override
+            public void stateChanged( ChangeEvent e ) {
+                if ( e.getSource() instanceof JTabbedPane ) {
+                    update();
+                }
+            }
+        });
 
         // Create the layout for the form
         GroupLayout layout = new GroupLayout(contentPane);
@@ -778,12 +1181,24 @@ public class Changeling extends JFrame implements ActionListener {
         pnlContracts.setLayout(glContracts);
         tabber.addTab("Contracts", pnlContracts);
         glContracts.setAutoCreateContainerGaps(true);
-        // Pledges, Goblin Contracts, flaws etc
+        //Goblin Contracts
+        JPanel pnlGoblin = new JPanel();
+        GroupLayout glGoblin = new GroupLayout(pnlGoblin);
+        pnlGoblin.setLayout(glGoblin);
+        tabber.addTab("Goblin Contracts", pnlGoblin);
+        glGoblin.setAutoCreateContainerGaps(true);
+        // Pledges
         JPanel pnlPledges = new JPanel();
         GroupLayout glPledges = new GroupLayout(pnlPledges);
         pnlPledges.setLayout(glPledges);
-        tabber.addTab("Other", pnlPledges);
-        glContracts.setAutoCreateContainerGaps(true);
+        tabber.addTab("Pledges", pnlPledges);
+        glPledges.setAutoCreateContainerGaps(true);
+        //Details
+        JPanel pnlDetails = new JPanel();
+        GroupLayout glDetails = new GroupLayout(pnlDetails);
+        pnlDetails.setLayout(glDetails);
+        tabber.addTab("Details", pnlDetails);
+        glDetails.setAutoCreateContainerGaps(false);
         // Vitals
         tabber.addTab("Vitals", vitals);
 
@@ -836,7 +1251,8 @@ public class Changeling extends JFrame implements ActionListener {
         glSpec.setHorizontalGroup(buildSpecH(glSpec));
         glMerits.setHorizontalGroup(buildMeritsH(glMerits));
         glContracts.setHorizontalGroup(buildContractsH(glContracts));
-
+        glGoblin.setHorizontalGroup(buildGoblinContractsH(glGoblin));
+        glDetails.setHorizontalGroup(buildDetailsH(glDetails));
         //</editor-fold>
 
         //<editor-fold desc="Vertical Group" defaultstate="collapsed">
@@ -887,7 +1303,8 @@ public class Changeling extends JFrame implements ActionListener {
         glSpec.setVerticalGroup(buildSpecV(glSpec));
         glMerits.setVerticalGroup(buildMeritsV(glMerits));
         glContracts.setVerticalGroup(buildContractsV(glContracts));
-
+        glGoblin.setVerticalGroup(buildGoblinContractsV(glGoblin));
+        glDetails.setVerticalGroup(buildDetailsV(glDetails));
         //</editor-fold>
 
         //<editor-fold desc="Size Linking" defaultstate="collapsed">
@@ -914,14 +1331,26 @@ public class Changeling extends JFrame implements ActionListener {
                 lblAnimalKen, lblEmpathy, lblExpression, lblIntimidation,
                 lblPersuasion, lblSocialize, lblStreetwise, lblSubterfuge);
 
+        glGoblin.linkSize(lblGoblin);
+
+        glDetails.linkSize(lblAge, lblApparent, lblBackgroud, lblDescription,
+                lblEyes, lblHair, lblHeight, lblRace, lblSex, lblWeight);
+
         // link all editable items too
         layout.linkSize(txtName, txtPlayer, txtChronicle,
                 cboVirtue, cboVice, txtConcept,
                 cboSeeming, txtKith, cboCourt);
+
+        glDetails.linkSize(SwingConstants.HORIZONTAL, spnAge, spnApparent,
+                scrBackground,
+                scrDescription,
+                txtEyes, txtHair, txtHeight, txtRace, txtSex, txtWeight);
+        glDetails.linkSize(SwingConstants.VERTICAL, spnAge, spnApparent,
+                lblEyes,
+                txtEyes, txtHair, txtHeight, txtRace, txtSex, txtWeight);
         //</editor-fold>
     }
 
-    //<editor-fold desc="Build Menu" defaultstate="collapsed">
     private void buildMenu() {
         JMenuBar bar = new JMenuBar();
 
@@ -956,8 +1385,8 @@ public class Changeling extends JFrame implements ActionListener {
         this.setJMenuBar(bar);
 
     }
-    //</editor-fold>
 
+    //<editor-fold desc="Layout" defaultstate="collapsed">
     //<editor-fold desc="Stats Layout" defaultstate="collapsed">
     private Group buildAttributesH( GroupLayout layout ) {
 
@@ -1027,6 +1456,82 @@ public class Changeling extends JFrame implements ActionListener {
         return statsSectionV;
     }
     //</editor-fold>
+
+    //<editor-fold desc="Details Layout" defaultstate="collapsed">
+    private Group buildDetailsH( GroupLayout layout ) {
+
+        SequentialGroup skillsSectionH = layout.createSequentialGroup();
+
+        skillsSectionH.addGap(5, 15, Short.MAX_VALUE);
+
+        skillsSectionH.addGroup(
+                layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                .addGroup(
+                sequentialPair(layout,
+                sequentialPair(layout, lblBackgroud, scrBackground),
+                sequentialPair(layout, lblDescription, scrDescription)))
+                .addGap(5, 15, Short.MAX_VALUE)
+                .addGroup(
+                sequentialPair(layout,
+                sequentialPair(layout, lblAge, spnAge),
+                sequentialPair(layout, lblHeight, txtHeight)))
+                .addGap(5, 15, Short.MAX_VALUE)
+                .addGroup(
+                sequentialPair(layout,
+                sequentialPair(layout, lblApparent, spnApparent),
+                sequentialPair(layout, lblWeight, txtWeight)))
+                .addGap(5, 15, Short.MAX_VALUE)
+                .addGroup(
+                sequentialPair(layout,
+                sequentialPair(layout, lblHair, txtHair),
+                sequentialPair(layout, lblRace, txtRace)))
+                .addGap(5, 15, Short.MAX_VALUE)
+                .addGroup(
+                sequentialPair(layout,
+                sequentialPair(layout, lblEyes, txtEyes),
+                sequentialPair(layout, lblSex, txtSex))));
+
+        skillsSectionH.addGap(5, 15, Short.MAX_VALUE);
+        return skillsSectionH;
+    }
+
+    private Group buildDetailsV( GroupLayout layout ) {
+        ParallelGroup skillsSectionV = layout.createParallelGroup();
+
+        skillsSectionV.addGroup(
+                layout.createSequentialGroup()
+                .addGap(5, 10, 15)
+                .addGroup(
+                parallelPair(layout,
+                parallelPair(layout, lblBackgroud, scrBackground),
+                (parallelPair(layout, lblDescription, scrDescription))))
+                .addGap(5, 10, 15)
+                .addGroup(layout.createParallelGroup()
+                .addComponent(lblAge)
+                .addComponent(spnAge)
+                .addComponent(lblHeight)
+                .addComponent(txtHeight))
+                .addGap(5, 10, 15)
+                .addGroup(layout.createParallelGroup()
+                .addComponent(lblApparent)
+                .addComponent(spnApparent)
+                .addComponent(lblWeight)
+                .addComponent(txtWeight))
+                .addGap(5, 10, 15)
+                .addGroup(layout.createParallelGroup()
+                .addComponent(lblHair)
+                .addComponent(txtHair)
+                .addComponent(lblRace)
+                .addComponent(txtRace))
+                .addGap(5, 10, 15)
+                .addGroup(layout.createParallelGroup()
+                .addComponent(lblEyes)
+                .addComponent(txtEyes)
+                .addComponent(lblSex)
+                .addComponent(txtSex))
+                .addGap(5, 10, Short.MAX_VALUE));
+        return skillsSectionV;
+    }//</editor-fold>
 
     //<editor-fold desc="Skills Layout" defaultstate="collapsed">
     private Group buildSkillsH( GroupLayout layout ) {
@@ -1207,7 +1712,7 @@ public class Changeling extends JFrame implements ActionListener {
             specSectionV.addGroup(parallelPair(layout, cboSpecialty[i],
                     txtSpecialty[i]));
             if ( i == cboSpecialty.length - 1 ) {
-                specSectionV.addGap(10, 15, Short.MAX_VALUE);
+                specSectionV.addGap(5, 10, Short.MAX_VALUE);
             } else {
                 specSectionV.addGap(5, 10, 15);
             }
@@ -1236,7 +1741,7 @@ public class Changeling extends JFrame implements ActionListener {
             contractsSectionV.addGroup(parallelPair(layout, cboMerits[i],
                     parallelRadioArray(layout, rdoMerits[i])));
             if ( i == rdoContracts.length - 1 ) {
-                contractsSectionV.addGap(10, 15, Short.MAX_VALUE);
+                contractsSectionV.addGap(5, 10, Short.MAX_VALUE);
             } else {
                 contractsSectionV.addGap(5, 10, 15);
             }
@@ -1244,7 +1749,36 @@ public class Changeling extends JFrame implements ActionListener {
         }
         return contractsSectionV;
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Goblin Contracts Layout" defaultstate="collapsed">
+    private Group buildGoblinContractsH( GroupLayout layout ) {
+        ParallelGroup contractsSectionH = layout.createParallelGroup(
+                Alignment.CENTER);
+        for ( int i = 0; i < cboContracts.length; i++ ) {
+            contractsSectionH.addGroup(sequentialPair(layout, lblGoblin[i],
+                    txtGoblin[i]));
+
+        }
+        return contractsSectionH;
+    }
+
+    private Group buildGoblinContractsV( GroupLayout layout ) {
+        SequentialGroup contractsSectionV = layout.createSequentialGroup();
+
+        contractsSectionV.addGap(5, 10, 15);
+        for ( int i = 0; i < cboContracts.length; i++ ) {
+            contractsSectionV.addGroup(parallelPair(layout, lblGoblin[i],
+                    txtGoblin[i]));
+            if ( i == rdoContracts.length - 1 ) {
+                contractsSectionV.addGap(5, 10, Short.MAX_VALUE);
+            } else {
+                contractsSectionV.addGap(5, 10, 15);
+            }
+
+        }
+        return contractsSectionV;
+    }
     //</editor-fold>
 
     //<editor-fold desc="Contracts Layout" defaultstate="collapsed">
@@ -1267,7 +1801,7 @@ public class Changeling extends JFrame implements ActionListener {
             contractsSectionV.addGroup(parallelPair(layout, cboContracts[i],
                     parallelRadioArray(layout, rdoContracts[i])));
             if ( i == rdoContracts.length - 1 ) {
-                contractsSectionV.addGap(10, 15, Short.MAX_VALUE);
+                contractsSectionV.addGap(5, 10, Short.MAX_VALUE);
             } else {
                 contractsSectionV.addGap(5, 10, 15);
             }
@@ -1277,22 +1811,7 @@ public class Changeling extends JFrame implements ActionListener {
     }
     //</editor-fold>
 
-    @Override
-    public void actionPerformed( ActionEvent ae ) {
-        if ( ae.getSource() instanceof JMenuItem ) {
-            parseMenu(ae);
-        } else {
-            updateStats(ae);
-        }
-
-//        SwingUtilities.invokeLater(new Runnable() {
-//            public void run() {
-                update();
-//            }
-//        });
-
-    }
-
+    //</editor-fold>
     private void parseMenu( ActionEvent ae ) {
         String name = ae.getActionCommand().toLowerCase();
         switch ( name ) {
@@ -1309,7 +1828,6 @@ public class Changeling extends JFrame implements ActionListener {
                             "Saveing/Loading not currently implemented, "
                             + "copy output below, then use \"From String...\" function.");
                 } catch ( Exception e ) {
-                    e.printStackTrace();
                 }
                 break;
 
@@ -1321,7 +1839,8 @@ public class Changeling extends JFrame implements ActionListener {
             case "from string...":
                 String tmp = JOptionPane.showInputDialog("Enter the string that contains all "
                         + "character info." + '\n'
-                        + "Invalid strings will be silently ignored ;)");
+                        + "The function will try to load as best it can, invalid string included." + '\n'
+                        + "If your string is not valid, expect a mess ;)");
                 if ( tmp != null ) {
                     stats.fromString(tmp);
                     Vitals v = vitals.getVitals();
@@ -1337,49 +1856,24 @@ public class Changeling extends JFrame implements ActionListener {
         }
     }
 
-    protected void updateStats( ItemEvent ae ) {
+    private void updateStats( ActionEvent ae ) {
         String name = parseAeName(ae);
         switch ( name.split(" ")[0] ) {
 
-            case "merit":
-                if ( name.split(" ")[1].equals("level") ) {
-                    stats.meritLevels[Integer.parseInt(name.split(" ")[2])] =
-                            updateStatDots(
-                            ((JRadioButton) ae.getSource()).isSelected(), name);
-                }
-                if ( name.split(" ")[1].equals("name") ) {
-                    stats.merits[Integer.parseInt(name.split(" ")[2])] =
-                            ((JComboBox) ae.getSource()).getSelectedIndex();
-                }
+            case "virtue":
+                stats.virtue = cboVirtue.getSelectedIndex();
                 break;
-            case "contract":
-                if ( name.split(" ")[1].equals("level") ) {
-                    stats.contractLevels[Integer.parseInt(name.split(" ")[2])] =
-                            updateStatDots(
-                            ((JRadioButton) ae.getSource()).isSelected(), name);
-                }
-                if ( name.split(" ")[1].equals("name") ) {
-                    stats.contracts[Integer.parseInt(name.split(" ")[2])] =
-                            ((JComboBox) ae.getSource()).getSelectedIndex();
-                }
+            case "vice":
+                stats.vice= cboVice.getSelectedIndex();
                 break;
-            case "specialty":
-                if ( name.split(" ")[1].equals("name") ) {
-                    stats.specialtiesStat[Integer.parseInt(name.split(" ")[2])] =
-                            ((JComboBox) ae.getSource()).getSelectedIndex();
-                }
-                if ( name.split(" ")[1].equals("info") ) {
-                    stats.specialtiesDescription[Integer.parseInt(
-                            name.split(" ")[2])] =
-                            ((JTextField) ae.getSource()).getText();
-                }
+            case "seeming":
+                stats.seeming = cboSeeming.getSelectedIndex();
                 break;
-        }
-    }
+            case "court":
+                stats.court = cboCourt.getSelectedIndex();
+                break;
 
-    protected void updateStats( ActionEvent ae ) {
-        String name = parseAeName(ae);
-        switch ( name.split(" ")[0] ) {
+
             //<editor-fold desc="Stats" defaultstate="collapsed">
             case "intelligence":
                 stats.intelligence = updateStatDots(
@@ -1555,7 +2049,7 @@ public class Changeling extends JFrame implements ActionListener {
         }
     }
 
-    public void update() {
+    private void update() {
         for ( int root = 0; root < this.getContentPane().getComponentCount(); root++ ) {
             Component cmpt = this.getContentPane().getComponent(root);
             if ( cmpt instanceof JTabbedPane ) {
@@ -1567,13 +2061,27 @@ public class Changeling extends JFrame implements ActionListener {
                     switch ( name.split(" ")[0] ) {
 
                         case "name":
-                            ((JTextField) cmpt).setText(stats.name);
+                            if ( !"".equals(stats.name)
+                                    || !stats.name.equals("")
+                                    || !stats.name.equals("null") ) {
+                                ((JTextField) cmpt).setText(stats.name);
+                            } else {
+                                ((JTextField) cmpt).setText("hhg");
+                            }
                             break;
                         case "player":
-                            ((JTextField) cmpt).setText(stats.player);
+                            if ( !"".equals(stats.player) ) {
+                                ((JTextField) cmpt).setText(stats.player);
+                            } else {
+                                ((JTextField) cmpt).setText("");
+                            }
                             break;
                         case "chronicle":
-                            ((JTextField) cmpt).setText(stats.chronicle);
+                            if ( !"".equals(stats.chronicle) ) {
+                                ((JTextField) cmpt).setText(stats.chronicle);
+                            } else {
+                                ((JTextField) cmpt).setText("");
+                            }
                             break;
                         case "virtue":
                             if ( ((JComboBox) cmpt).getSelectedIndex() != stats.virtue ) {
@@ -1586,7 +2094,11 @@ public class Changeling extends JFrame implements ActionListener {
                             }
                             break;
                         case "concept":
-                            ((JTextField) cmpt).setText(stats.concept);
+                            if ( !"".equals(stats.concept) ) {
+                                ((JTextField) cmpt).setText(stats.concept);
+                            } else {
+                                ((JTextField) cmpt).setText("");
+                            }
                             break;
                         case "seeming":
                             if ( ((JComboBox) cmpt).getSelectedIndex() != stats.seeming ) {
@@ -1596,7 +2108,11 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         case "kith":
 
-                            ((JTextField) cmpt).setText(stats.kith);
+                            if ( !"".equals(stats.kith) ) {
+                                ((JTextField) cmpt).setText(stats.kith);
+                            } else {
+                                ((JTextField) cmpt).setText("");
+                            }
                             break;
                         case "court":
                             if ( ((JComboBox) cmpt).getSelectedIndex() != stats.court ) {
@@ -1610,7 +2126,7 @@ public class Changeling extends JFrame implements ActionListener {
         }
     }
 
-    public void updateGui( Container cont ) {
+    private void updateGui( Container cont ) {
         for ( int i = 0; i < cont.getComponentCount(); i++ ) {
             Component c = cont.getComponent(i);
 
@@ -1971,9 +2487,95 @@ public class Changeling extends JFrame implements ActionListener {
                             }
                         }
                         if ( name.split(" ")[1].equals("info") ) {
+                            if ( !"".equals(stats.specialtiesDescription[Integer.parseInt(name.split(
+                                    " ")[2])]) ) {
+                                ((JTextField) c).setText(
+                                        stats.specialtiesDescription[Integer.parseInt(name.split(
+                                        " ")[2])]);
+                            } else {
+                                ((JTextField) c).setText("");
+                            }
+                        }
+                        break;
+                    case "goblin":
+                        if ( !"".equals(stats.goblinContracts[Integer.parseInt(name.split(
+                                " ")[1])]) ) {
                             ((JTextField) c).setText(
-                                    stats.specialtiesDescription[Integer.parseInt(name.split(
-                                    " ")[2])]);
+                                    stats.goblinContracts[Integer.parseInt(name.split(
+                                    " ")[1])]);
+                        } else {
+                            ((JTextField) c).setText("");
+                        }
+
+                        break;
+                    case "background":
+                        if ( !"".equals(stats.background) ) {
+                            txaBackground.setText(stats.background);
+                        } else {
+                            txaBackground.setText("");
+                        }
+                        break;
+                    case "description":
+                        if ( !"".equals(stats.description) ) {
+                            txaDescription.setText(stats.description);
+                        } else {
+                            txaDescription.setText("");
+                        }
+                        break;
+                    case "age":
+                        if ( stats.age >= 0 ) {
+                            spnAge.setValue(stats.age);
+                        } else {
+                            spnAge.setValue(0);
+                        }
+                        break;
+                    case "apparent":
+                        if ( stats.apparentAge >= 0 ) {
+                            spnApparent.setValue(stats.apparentAge);
+                        } else {
+                            spnApparent.setValue(0);
+                        }
+                        break;
+                    case "hair":
+                        if ( !"".equals(stats.hair) ) {
+                            txtHair.setText(stats.hair);
+                        } else {
+                            txtHair.setText("");
+                        }
+                        break;
+                    case "eyes":
+                        if ( !"".equals(stats.eyes) ) {
+                            txtEyes.setText(stats.eyes);
+                        } else {
+                            txtEyes.setText("");
+                        }
+                        break;
+                    case "height":
+                        if ( !"".equals(stats.height) ) {
+                            txtHeight.setText(stats.height);
+                        } else {
+                            txtHeight.setText("");
+                        }
+                        break;
+                    case "weight":
+                        if ( !"".equals(stats.weight) ) {
+                            txtWeight.setText(stats.weight);
+                        } else {
+                            txtWeight.setText("");
+                        }
+                        break;
+                    case "race":
+                        if ( !"".equals(stats.race) ) {
+                            txtRace.setText(stats.race);
+                        } else {
+                            txtRace.setText("");
+                        }
+                        break;
+                    case "sex":
+                        if ( !"".equals(stats.sex) ) {
+                            txtSex.setText(stats.sex);
+                        } else {
+                            txtSex.setText("");
                         }
                         break;
                 }
@@ -1986,5 +2588,37 @@ public class Changeling extends JFrame implements ActionListener {
         v.speed = stats.strength + stats.dexterity + 5;
         v.defense = (stats.wits > stats.dexterity) ? stats.wits : stats.dexterity;
         vitals.setVitals(v);
+    }
+
+    /*
+     * Used to check if vitals have been changed,
+     * stops sending useless data via the net
+     */
+    public boolean updatedVitals() {
+        if ( stats == oldStats ) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /*
+     * gets the vitals string to send to the GM in a message
+     */
+    public String getVitalString() {
+        oldStats = stats;
+        return stats.toString();
+    }
+
+    @Override
+    public void actionPerformed( ActionEvent ae ) {
+        if ( ae.getSource() instanceof JMenuItem ) {
+            parseMenu(ae);
+        } else {
+            updateStats(ae);
+        }
+
+        update();
+
     }
 }
