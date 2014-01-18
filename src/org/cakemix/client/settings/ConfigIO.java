@@ -31,7 +31,7 @@ public class ConfigIO {
     public void loadSettings( FileReader file ) throws IOException {
         // try to open the file
         BufferedReader reader = new BufferedReader(file);
-
+        
         // create a string to hold the current line
         String cur;
         // create a temporary array list to hold all the settings
@@ -124,7 +124,7 @@ public class ConfigIO {
      * Save the settings to a file
      */
     public void saveSettings( ChatSettings settings ) throws IOException {
-        saveSettings(settings, new File("chatConfig.ini"));
+        saveSettings(settings, "chatConfig.ini");
     }
 
     /**
@@ -132,20 +132,24 @@ public class ConfigIO {
      *
      * @param file File to save to
      */
-    public void saveSettings( ChatSettings settings, File file ) throws
+    public void saveSettings( ChatSettings settings, String file ) throws
             IOException {
 
-        FileWriter configWriter = new FileWriter(file);
+        BufferedWriter configWriter = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(file),"utf-8"));
 
         // First off write the chat settings
-        configWriter.write("[chat]" + '\n');
+        configWriter.write("[chat]");
+        configWriter.newLine();
         // Write out the background color
         configWriter.write(
-                "background=" + settings.getBackgroundColorString() + '\n');
+                "background=" + settings.getBackgroundColorString());
+        configWriter.newLine();
         for ( int i = 0; i < ChatMessage.NUM_TYPE; i++ ) {
             configWriter.write(
                     ChatMessage.getMessageTypeName(i) + "="
-                    + settings.getMessageAttributes()[i].toString() + '\n');
+                    + settings.getMessageAttributes()[i].toString());
+            configWriter.newLine();
         }
 
         //flush the buffers and close the file

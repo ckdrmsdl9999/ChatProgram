@@ -20,8 +20,8 @@ import org.cakemix.Network.ChatMessage;
 public class ChatSettings {
 
     /**
-     * Attributes for the different message types
-     * Array of message styles with enough to hold the number of different chat
+     * Attributes for the different message types Array of message styles with
+     * enough to hold the number of different chat
      *
      * message types
      */
@@ -46,8 +46,7 @@ public class ChatSettings {
     /**
      * Set the styles used in the chat log
      *
-     * Look at setting up a settings specific class
-     * keep everything neat
+     * Look at setting up a settings specific class keep everything neat
      */
     public void setStyle(ConfigIO configIO) {
 
@@ -55,25 +54,13 @@ public class ChatSettings {
         msgAttr = MessageAttributes.setToDefalts();
         // first try and load from file
 
-                    backgroundColor = configIO.getBackgroundColor();
-            String[] chat = configIO.getChatSettings();
-            // loop through the chat array and load settings
-            for ( int i = 0; i < ChatMessage.NUM_TYPE; i++ ) {
-                if ( chat[i] != null ) {
-                    msgAttr[i].fromString(chat[i]);
-                }
+        backgroundColor = configIO.getBackgroundColor();
+        String[] chat = configIO.getChatSettings();
+        // loop through the chat array and load settings
+        for (int i = 0; i < ChatMessage.NUM_TYPE; i++) {
+            if (chat[i] != null) {
+                msgAttr[i].fromString(chat[i]);
             }
-    }
-
-    public void saveStyle(ConfigIO configIO) {
-        try {
-            configIO.saveSettings(this);
-        } catch ( IOException ex ) {
-            new JOptionPane("Problem writing config file." + '\n'
-                    + "Defaults will be loaded at next run if no file exists.",
-                    JOptionPane.OK_OPTION);
-            Logger.getLogger(ConfigIO.class.getName()).log(Level.SEVERE, null,
-                    ex);
         }
     }
 
@@ -97,11 +84,11 @@ public class ChatSettings {
         return settings;
     }
 
-    void setBackgroundColor( Color c ) {
+    void setBackgroundColor(Color c) {
         backgroundColor = c;
     }
 
-    void updateAttributes( MessageAttributes[] msgAttr ) {
+    void updateAttributes(MessageAttributes[] msgAttr) {
         this.msgAttr = msgAttr;
     }
 }

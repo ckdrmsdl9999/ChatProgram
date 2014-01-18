@@ -142,6 +142,7 @@ public class Changeling extends JFrame implements ActionListener {
     // Pledges
     JLabel lblPledge = new JLabel("Pledges ");
     JTextArea txaPledge = new JTextArea(10, 50);
+    JScrollPane scrPledge = new JScrollPane();
     // Details
     JLabel lblBackgroud = new JLabel("Background "),
             lblDescription = new JLabel("Description "),
@@ -188,7 +189,7 @@ public class Changeling extends JFrame implements ActionListener {
     /**
      * Build the UI
      */
-    private void buildUI( Container contentPane ) {
+    private void buildUI(Container contentPane) {
 
         //<editor-fold desc="Header Labels" defaultstate="collapsed">
         JLabel lblGame = new JLabel("Changeling - The Lost");
@@ -211,16 +212,16 @@ public class Changeling extends JFrame implements ActionListener {
         // Create drop downs
         // Create a string[] to hold the options for each one
         // Start off with the virtues
-        String[] s = { "Charity", "Faith", "Fortitude", "Hope", "Justice", "Prudence", "Temperance" };
+        String[] s = {"Charity", "Faith", "Fortitude", "Hope", "Justice", "Prudence", "Temperance"};
         cboVirtue = new JComboBox<>(s);
         // Fill for vice
-        s = new String[]{ "Envy", "Gluttony", "Greed", "Lust", "Pride", "Sloth", "Wrath" };
+        s = new String[]{"Envy", "Gluttony", "Greed", "Lust", "Pride", "Sloth", "Wrath"};
         cboVice = new JComboBox(s);
         // Fill for seeming
-        s = new String[]{ "Beast", "Darkling", "Elemental", "Fairest", "Ogre", "Wizend" };
+        s = new String[]{"Beast", "Darkling", "Elemental", "Fairest", "Ogre", "Wizend"};
         cboSeeming = new JComboBox(s);
         //Fill for court
-        s = new String[]{ "Courtless", "Spring", "Summer", "Autumn", "Winter" };
+        s = new String[]{"Courtless", "Spring", "Summer", "Autumn", "Winter"};
         cboCourt = new JComboBox(s);
 
         // Set input box names
@@ -228,11 +229,11 @@ public class Changeling extends JFrame implements ActionListener {
         txtName.setToolTipText("Characters name.");
         txtName.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate( DocumentEvent de ) {
+            public void insertUpdate(DocumentEvent de) {
                 try {
                     stats.name = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -240,11 +241,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void removeUpdate( DocumentEvent de ) {
+            public void removeUpdate(DocumentEvent de) {
                 try {
                     stats.name = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -252,11 +253,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void changedUpdate( DocumentEvent de ) {
+            public void changedUpdate(DocumentEvent de) {
                 try {
                     stats.name = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -267,11 +268,11 @@ public class Changeling extends JFrame implements ActionListener {
         txtPlayer.setToolTipText("Your (real) name.");
         txtPlayer.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate( DocumentEvent de ) {
+            public void insertUpdate(DocumentEvent de) {
                 try {
                     stats.player = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -279,11 +280,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void removeUpdate( DocumentEvent de ) {
+            public void removeUpdate(DocumentEvent de) {
                 try {
                     stats.player = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -291,11 +292,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void changedUpdate( DocumentEvent de ) {
+            public void changedUpdate(DocumentEvent de) {
                 try {
                     stats.player = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -307,11 +308,11 @@ public class Changeling extends JFrame implements ActionListener {
                 "Chronicle the character is part of, may be left blank at Storytellers Descretion");
         txtChronicle.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate( DocumentEvent de ) {
+            public void insertUpdate(DocumentEvent de) {
                 try {
                     stats.chronicle = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -319,11 +320,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void removeUpdate( DocumentEvent de ) {
+            public void removeUpdate(DocumentEvent de) {
                 try {
                     stats.chronicle = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -331,11 +332,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void changedUpdate( DocumentEvent de ) {
+            public void changedUpdate(DocumentEvent de) {
                 try {
                     stats.chronicle = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -347,11 +348,11 @@ public class Changeling extends JFrame implements ActionListener {
         txtConcept.setToolTipText("Short description of the character");
         txtConcept.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate( DocumentEvent de ) {
+            public void insertUpdate(DocumentEvent de) {
                 try {
                     stats.concept = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -359,11 +360,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void removeUpdate( DocumentEvent de ) {
+            public void removeUpdate(DocumentEvent de) {
                 try {
                     stats.concept = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -371,11 +372,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void changedUpdate( DocumentEvent de ) {
+            public void changedUpdate(DocumentEvent de) {
                 try {
                     stats.concept = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -386,11 +387,11 @@ public class Changeling extends JFrame implements ActionListener {
         txtKith.setToolTipText("Characters Kith (optional)");
         txtKith.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate( DocumentEvent de ) {
+            public void insertUpdate(DocumentEvent de) {
                 try {
                     stats.kith = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -398,11 +399,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void removeUpdate( DocumentEvent de ) {
+            public void removeUpdate(DocumentEvent de) {
                 try {
                     stats.kith = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -410,11 +411,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void changedUpdate( DocumentEvent de ) {
+            public void changedUpdate(DocumentEvent de) {
                 try {
                     stats.kith = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -444,11 +445,11 @@ public class Changeling extends JFrame implements ActionListener {
         txaBackground.setToolTipText("Characters Background");
         txaBackground.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate( DocumentEvent de ) {
+            public void insertUpdate(DocumentEvent de) {
                 try {
                     stats.background = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -456,11 +457,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void removeUpdate( DocumentEvent de ) {
+            public void removeUpdate(DocumentEvent de) {
                 try {
                     stats.background = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -468,11 +469,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void changedUpdate( DocumentEvent de ) {
+            public void changedUpdate(DocumentEvent de) {
                 try {
                     stats.background = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -487,11 +488,11 @@ public class Changeling extends JFrame implements ActionListener {
         txaDescription.setToolTipText("Character Description");
         txaDescription.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate( DocumentEvent de ) {
+            public void insertUpdate(DocumentEvent de) {
                 try {
                     stats.description = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -499,11 +500,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void removeUpdate( DocumentEvent de ) {
+            public void removeUpdate(DocumentEvent de) {
                 try {
                     stats.description = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -511,11 +512,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void changedUpdate( DocumentEvent de ) {
+            public void changedUpdate(DocumentEvent de) {
                 try {
                     stats.description = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -530,7 +531,7 @@ public class Changeling extends JFrame implements ActionListener {
         spnAge.setModel(new SpinnerNumberModel(25, 0, 3000, 1));
         spnAge.addChangeListener(new ChangeListener() {
             @Override
-            public void stateChanged( ChangeEvent ce ) {
+            public void stateChanged(ChangeEvent ce) {
                 stats.age = (int) spnAge.getValue();
             }
         });
@@ -540,7 +541,7 @@ public class Changeling extends JFrame implements ActionListener {
         spnApparent.setModel(new SpinnerNumberModel(25, 0, 1500, 1));
         spnApparent.addChangeListener(new ChangeListener() {
             @Override
-            public void stateChanged( ChangeEvent ce ) {
+            public void stateChanged(ChangeEvent ce) {
                 stats.apparentAge = (int) spnApparent.getValue();
             }
         });
@@ -549,11 +550,11 @@ public class Changeling extends JFrame implements ActionListener {
         txtHair.setToolTipText("Characters Hair: Colour, Style, etc");
         txtHair.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate( DocumentEvent de ) {
+            public void insertUpdate(DocumentEvent de) {
                 try {
                     stats.hair = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -561,11 +562,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void removeUpdate( DocumentEvent de ) {
+            public void removeUpdate(DocumentEvent de) {
                 try {
                     stats.hair = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -573,11 +574,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void changedUpdate( DocumentEvent de ) {
+            public void changedUpdate(DocumentEvent de) {
                 try {
                     stats.hair = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -589,11 +590,11 @@ public class Changeling extends JFrame implements ActionListener {
         txtEyes.setToolTipText("Characters Eye Colour");
         txtEyes.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate( DocumentEvent de ) {
+            public void insertUpdate(DocumentEvent de) {
                 try {
                     stats.eyes = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -601,11 +602,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void removeUpdate( DocumentEvent de ) {
+            public void removeUpdate(DocumentEvent de) {
                 try {
                     stats.eyes = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -613,11 +614,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void changedUpdate( DocumentEvent de ) {
+            public void changedUpdate(DocumentEvent de) {
                 try {
                     stats.eyes = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -629,11 +630,11 @@ public class Changeling extends JFrame implements ActionListener {
         txtHeight.setToolTipText("Characters Height");
         txtHeight.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate( DocumentEvent de ) {
+            public void insertUpdate(DocumentEvent de) {
                 try {
                     stats.height = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -641,11 +642,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void removeUpdate( DocumentEvent de ) {
+            public void removeUpdate(DocumentEvent de) {
                 try {
                     stats.height = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -653,11 +654,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void changedUpdate( DocumentEvent de ) {
+            public void changedUpdate(DocumentEvent de) {
                 try {
                     stats.height = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -669,11 +670,11 @@ public class Changeling extends JFrame implements ActionListener {
         txtWeight.setToolTipText("Characters Weight");
         txtWeight.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate( DocumentEvent de ) {
+            public void insertUpdate(DocumentEvent de) {
                 try {
                     stats.weight = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -681,11 +682,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void removeUpdate( DocumentEvent de ) {
+            public void removeUpdate(DocumentEvent de) {
                 try {
                     stats.weight = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -693,11 +694,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void changedUpdate( DocumentEvent de ) {
+            public void changedUpdate(DocumentEvent de) {
                 try {
                     stats.weight = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -709,11 +710,11 @@ public class Changeling extends JFrame implements ActionListener {
         txtRace.setToolTipText("Characters Race");
         txtRace.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate( DocumentEvent de ) {
+            public void insertUpdate(DocumentEvent de) {
                 try {
                     stats.race = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -721,11 +722,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void removeUpdate( DocumentEvent de ) {
+            public void removeUpdate(DocumentEvent de) {
                 try {
                     stats.race = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -733,11 +734,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void changedUpdate( DocumentEvent de ) {
+            public void changedUpdate(DocumentEvent de) {
                 try {
                     stats.race = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -749,11 +750,11 @@ public class Changeling extends JFrame implements ActionListener {
         txtSex.setToolTipText("Characters Sex");
         txtSex.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate( DocumentEvent de ) {
+            public void insertUpdate(DocumentEvent de) {
                 try {
                     stats.sex = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -761,11 +762,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void removeUpdate( DocumentEvent de ) {
+            public void removeUpdate(DocumentEvent de) {
                 try {
                     stats.sex = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -773,11 +774,11 @@ public class Changeling extends JFrame implements ActionListener {
             }
 
             @Override
-            public void changedUpdate( DocumentEvent de ) {
+            public void changedUpdate(DocumentEvent de) {
                 try {
                     stats.sex = de.getDocument().getText(0,
                             de.getDocument().getLength());
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(StatTracker.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
@@ -792,7 +793,7 @@ public class Changeling extends JFrame implements ActionListener {
 
         // loop and create ALL of the radios and name them (WOOPWOOP!)
         // Im gonna wish i didn't type all of this later, aint i?
-        for ( int i = 0; i < 5; i++ ) {
+        for (int i = 0; i < 5; i++) {
             rdoIntelligence[i] = new JRadioButton();
             rdoWits[i] = new JRadioButton();
             rdoResolve[i] = new JRadioButton();
@@ -834,7 +835,7 @@ public class Changeling extends JFrame implements ActionListener {
 
             // since these are the Stats and you get a free dot
             // if this is the first loop, set all of them to checked
-            if ( i == 0 ) {
+            if (i == 0) {
                 rdoIntelligence[i].setSelected(true);
                 rdoWits[i].setSelected(true);
                 rdoResolve[i].setSelected(true);
@@ -968,21 +969,21 @@ public class Changeling extends JFrame implements ActionListener {
             "--Social Merits--", "Allies", "Barfly", "Contacts", "Fame", "Inspiring", "Mentor",
             "Resources", "Retainer", "Status", "Striking Looks",
             "--Changeling--", "Court Goodwill: Spring", "Court Goodwill: Summer", "Court Goodwill: Autumn",
-            "Court Goodwill: Winter", "Harvest", "Hollow", "Mantle: Spring", "Mantle: Summer", "Mantle: Autumn", "Mantle: Winter", "New Identity", "Token" },
-                contract = { "--Seeming--", "Artifice", "Darkness", "Elements", "Fang and Talon", "Stone", "Vainglory",
+            "Court Goodwill: Winter", "Harvest", "Hollow", "Mantle: Spring", "Mantle: Summer", "Mantle: Autumn", "Mantle: Winter", "New Identity", "Token"},
+                contract = {"--Seeming--", "Artifice", "Darkness", "Elements", "Fang and Talon", "Stone", "Vainglory",
             "--General--", "Dream", "Hearth", "Mirror", "Smoke",
             "--Court--", "Eternal Spring", "Fleeting Spring", "Eternal Summer", "Fleeting Summer",
             "Eternal Autumn", "Fleeting Autumn", "Eternal Winter", "Fleeting Winter",
-            "--Goblin--" },
-                speciality = { "--Mental--", "Academics", "Computer", "Crafts", "Investigation", "Medicine",
+            "--Goblin--"},
+                speciality = {"--Mental--", "Academics", "Computer", "Crafts", "Investigation", "Medicine",
             "Occult", "Politics", "Science",
             "--Physical--", "Athletics", "Brawl", "Drive", "Firearms", "Larceny", "Stealth",
             "Survival", "Weaponry",
             "--Social--", "Animal Ken", "Empathy", "Intimidation", "Persuasion", "Socialize",
-            "Streetwise", "Subterfuge" };
+            "Streetwise", "Subterfuge"};
         String ttContracts = "<html>Experience Cost:  <br />(Affinity)New Dots x4 <br />(Non-Affinity)New Dots x6 <br />(Goblin)New Dots x3</html>";
-        for ( int i = 0;
-                i < 10; i++ ) {
+        for (int i = 0;
+                i < 10; i++) {
             cboMerits[i] = new JComboBox<>(merit);
             cboMerits[i].setToolTipText("Experience Cost: New Dots x2");
             cboMerits[i].setName("merit name " + i);
@@ -1003,18 +1004,18 @@ public class Changeling extends JFrame implements ActionListener {
             txtSpecialty[i].setToolTipText("Skill Specialty Details");
             txtSpecialty[i].addFocusListener(new FocusListener() {
                 @Override
-                public void focusGained( FocusEvent fe ) {
+                public void focusGained(FocusEvent fe) {
                 }
 
                 @Override
-                public void focusLost( FocusEvent fe ) {
+                public void focusLost(FocusEvent fe) {
                     int i = Integer.parseInt(((JTextField) fe.getSource())
                             .getName().split(" ")[2]);
                     stats.specialtiesDescription[i] = txtSpecialty[i].getText();
                     update();
                 }
             });
-            for ( int j = 0; j < 5; j++ ) {
+            for (int j = 0; j < 5; j++) {
                 rdoMerits[i][j] = new JRadioButton();
                 rdoMerits[i][j].setName("merit level " + i + " " + j);
                 rdoMerits[i][j].setToolTipText("Experience Cost: New Dots x2");
@@ -1033,11 +1034,11 @@ public class Changeling extends JFrame implements ActionListener {
                     "Details of a goblin contract from the contracts section.");
             txtGoblin[i].addFocusListener(new FocusListener() {
                 @Override
-                public void focusGained( FocusEvent fe ) {
+                public void focusGained(FocusEvent fe) {
                 }
 
                 @Override
-                public void focusLost( FocusEvent fe ) {
+                public void focusLost(FocusEvent fe) {
                     stats.goblinContracts[Integer.parseInt(
                             ((JTextField) fe.getSource()).getName().split(
                             " ")[1])] = ((JTextField) fe.getSource()).getText();
@@ -1133,8 +1134,8 @@ public class Changeling extends JFrame implements ActionListener {
         JTabbedPane tabber = new JTabbedPane();
         tabber.addChangeListener(new ChangeListener() {
             @Override
-            public void stateChanged( ChangeEvent e ) {
-                if ( e.getSource() instanceof JTabbedPane ) {
+            public void stateChanged(ChangeEvent e) {
+                if (e.getSource() instanceof JTabbedPane) {
                     update();
                 }
             }
@@ -1253,6 +1254,7 @@ public class Changeling extends JFrame implements ActionListener {
         glContracts.setHorizontalGroup(buildContractsH(glContracts));
         glGoblin.setHorizontalGroup(buildGoblinContractsH(glGoblin));
         glDetails.setHorizontalGroup(buildDetailsH(glDetails));
+        glPledges.setHorizontalGroup(buildPledgesH(glPledges));
         //</editor-fold>
 
         //<editor-fold desc="Vertical Group" defaultstate="collapsed">
@@ -1305,6 +1307,7 @@ public class Changeling extends JFrame implements ActionListener {
         glContracts.setVerticalGroup(buildContractsV(glContracts));
         glGoblin.setVerticalGroup(buildGoblinContractsV(glGoblin));
         glDetails.setVerticalGroup(buildDetailsV(glDetails));
+        glPledges.setVerticalGroup(buildPledgesV(layout));
         //</editor-fold>
 
         //<editor-fold desc="Size Linking" defaultstate="collapsed">
@@ -1388,7 +1391,7 @@ public class Changeling extends JFrame implements ActionListener {
 
     //<editor-fold desc="Layout" defaultstate="collapsed">
     //<editor-fold desc="Stats Layout" defaultstate="collapsed">
-    private Group buildAttributesH( GroupLayout layout ) {
+    private Group buildAttributesH(GroupLayout layout) {
 
         SequentialGroup statsSectionH = layout.createSequentialGroup();
 
@@ -1427,7 +1430,7 @@ public class Changeling extends JFrame implements ActionListener {
         return statsSectionH;
     }
 
-    private Group buildAttributesV( GroupLayout layout ) {
+    private Group buildAttributesV(GroupLayout layout) {
         ParallelGroup statsSectionV = layout.createParallelGroup();
 
         statsSectionV.addGroup(layout.createSequentialGroup().addGroup(parallelPair(
@@ -1458,7 +1461,7 @@ public class Changeling extends JFrame implements ActionListener {
     //</editor-fold>
 
     //<editor-fold desc="Details Layout" defaultstate="collapsed">
-    private Group buildDetailsH( GroupLayout layout ) {
+    private Group buildDetailsH(GroupLayout layout) {
 
         SequentialGroup skillsSectionH = layout.createSequentialGroup();
 
@@ -1495,7 +1498,7 @@ public class Changeling extends JFrame implements ActionListener {
         return skillsSectionH;
     }
 
-    private Group buildDetailsV( GroupLayout layout ) {
+    private Group buildDetailsV(GroupLayout layout) {
         ParallelGroup skillsSectionV = layout.createParallelGroup();
 
         skillsSectionV.addGroup(
@@ -1534,7 +1537,7 @@ public class Changeling extends JFrame implements ActionListener {
     }//</editor-fold>
 
     //<editor-fold desc="Skills Layout" defaultstate="collapsed">
-    private Group buildSkillsH( GroupLayout layout ) {
+    private Group buildSkillsH(GroupLayout layout) {
 
         SequentialGroup skillsSectionH = layout.createSequentialGroup();
         // Mental
@@ -1621,7 +1624,7 @@ public class Changeling extends JFrame implements ActionListener {
         return skillsSectionH;
     }
 
-    private Group buildSkillsV( GroupLayout layout ) {
+    private Group buildSkillsV(GroupLayout layout) {
         ParallelGroup skillsSectionV = layout.createParallelGroup(
                 GroupLayout.Alignment.CENTER);
 
@@ -1694,24 +1697,24 @@ public class Changeling extends JFrame implements ActionListener {
     }//</editor-fold>
 
     //<editor-fold desc="Speciality Layout" defaultstate="collapsed">
-    private Group buildSpecH( GroupLayout layout ) {
+    private Group buildSpecH(GroupLayout layout) {
         ParallelGroup specSectionH = layout.createParallelGroup(
                 Alignment.CENTER);
-        for ( int i = 0; i < cboSpecialty.length; i++ ) {
+        for (int i = 0; i < cboSpecialty.length; i++) {
             specSectionH.addGroup(sequentialPair(layout, cboSpecialty[i],
                     txtSpecialty[i]));
         }
         return specSectionH;
     }
 
-    private Group buildSpecV( GroupLayout layout ) {
+    private Group buildSpecV(GroupLayout layout) {
         SequentialGroup specSectionV = layout.createSequentialGroup();
 
         specSectionV.addGap(5, 10, 15);
-        for ( int i = 0; i < cboSpecialty.length; i++ ) {
+        for (int i = 0; i < cboSpecialty.length; i++) {
             specSectionV.addGroup(parallelPair(layout, cboSpecialty[i],
                     txtSpecialty[i]));
-            if ( i == cboSpecialty.length - 1 ) {
+            if (i == cboSpecialty.length - 1) {
                 specSectionV.addGap(5, 10, Short.MAX_VALUE);
             } else {
                 specSectionV.addGap(5, 10, 15);
@@ -1723,24 +1726,24 @@ public class Changeling extends JFrame implements ActionListener {
     //</editor-fold>
 
     //<editor-fold desc="Merits Layout" defaultstate="collapsed">
-    private Group buildMeritsH( GroupLayout layout ) {
+    private Group buildMeritsH(GroupLayout layout) {
         ParallelGroup contractsSectionH = layout.createParallelGroup(
                 Alignment.CENTER);
-        for ( int i = 0; i < cboMerits.length; i++ ) {
+        for (int i = 0; i < cboMerits.length; i++) {
             contractsSectionH.addGroup(sequentialPair(layout, cboMerits[i],
                     sequentialRadioArray(layout, rdoMerits[i])));
         }
         return contractsSectionH;
     }
 
-    private Group buildMeritsV( GroupLayout layout ) {
+    private Group buildMeritsV(GroupLayout layout) {
         SequentialGroup contractsSectionV = layout.createSequentialGroup();
 
         contractsSectionV.addGap(5, 10, 15);
-        for ( int i = 0; i < cboMerits.length; i++ ) {
+        for (int i = 0; i < cboMerits.length; i++) {
             contractsSectionV.addGroup(parallelPair(layout, cboMerits[i],
                     parallelRadioArray(layout, rdoMerits[i])));
-            if ( i == rdoContracts.length - 1 ) {
+            if (i == rdoContracts.length - 1) {
                 contractsSectionV.addGap(5, 10, Short.MAX_VALUE);
             } else {
                 contractsSectionV.addGap(5, 10, 15);
@@ -1752,10 +1755,10 @@ public class Changeling extends JFrame implements ActionListener {
     //</editor-fold>
 
     //<editor-fold desc="Goblin Contracts Layout" defaultstate="collapsed">
-    private Group buildGoblinContractsH( GroupLayout layout ) {
+    private Group buildGoblinContractsH(GroupLayout layout) {
         ParallelGroup contractsSectionH = layout.createParallelGroup(
                 Alignment.CENTER);
-        for ( int i = 0; i < cboContracts.length; i++ ) {
+        for (int i = 0; i < cboContracts.length; i++) {
             contractsSectionH.addGroup(sequentialPair(layout, lblGoblin[i],
                     txtGoblin[i]));
 
@@ -1763,14 +1766,14 @@ public class Changeling extends JFrame implements ActionListener {
         return contractsSectionH;
     }
 
-    private Group buildGoblinContractsV( GroupLayout layout ) {
+    private Group buildGoblinContractsV(GroupLayout layout) {
         SequentialGroup contractsSectionV = layout.createSequentialGroup();
 
         contractsSectionV.addGap(5, 10, 15);
-        for ( int i = 0; i < cboContracts.length; i++ ) {
+        for (int i = 0; i < cboContracts.length; i++) {
             contractsSectionV.addGroup(parallelPair(layout, lblGoblin[i],
                     txtGoblin[i]));
-            if ( i == rdoContracts.length - 1 ) {
+            if (i == rdoContracts.length - 1) {
                 contractsSectionV.addGap(5, 10, Short.MAX_VALUE);
             } else {
                 contractsSectionV.addGap(5, 10, 15);
@@ -1782,10 +1785,30 @@ public class Changeling extends JFrame implements ActionListener {
     //</editor-fold>
 
     //<editor-fold desc="Contracts Layout" defaultstate="collapsed">
-    private Group buildContractsH( GroupLayout layout ) {
+    private Group buildPledgesH(GroupLayout layout) {
         ParallelGroup contractsSectionH = layout.createParallelGroup(
                 Alignment.CENTER);
-        for ( int i = 0; i < cboContracts.length; i++ ) {
+        contractsSectionH.addComponent(scrPledge);
+
+        return contractsSectionH;
+    }
+
+    private Group buildPledgesV(GroupLayout layout) {
+        SequentialGroup contractsSectionV = layout.createSequentialGroup();
+
+        contractsSectionV.addGap(5, 10, 15);
+        contractsSectionV.addComponent(scrPledge);
+        contractsSectionV.addGap(5, 10, 15);
+
+        return contractsSectionV;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Contracts Layout" defaultstate="collapsed">
+    private Group buildContractsH(GroupLayout layout) {
+        ParallelGroup contractsSectionH = layout.createParallelGroup(
+                Alignment.CENTER);
+        for (int i = 0; i < cboContracts.length; i++) {
             contractsSectionH.addGroup(sequentialPair(layout, cboContracts[i],
                     sequentialRadioArray(layout, rdoContracts[i])));
 
@@ -1793,14 +1816,14 @@ public class Changeling extends JFrame implements ActionListener {
         return contractsSectionH;
     }
 
-    private Group buildContractsV( GroupLayout layout ) {
+    private Group buildContractsV(GroupLayout layout) {
         SequentialGroup contractsSectionV = layout.createSequentialGroup();
 
         contractsSectionV.addGap(5, 10, 15);
-        for ( int i = 0; i < cboContracts.length; i++ ) {
+        for (int i = 0; i < cboContracts.length; i++) {
             contractsSectionV.addGroup(parallelPair(layout, cboContracts[i],
                     parallelRadioArray(layout, rdoContracts[i])));
-            if ( i == rdoContracts.length - 1 ) {
+            if (i == rdoContracts.length - 1) {
                 contractsSectionV.addGap(5, 10, Short.MAX_VALUE);
             } else {
                 contractsSectionV.addGap(5, 10, 15);
@@ -1812,9 +1835,9 @@ public class Changeling extends JFrame implements ActionListener {
     //</editor-fold>
 
     //</editor-fold>
-    private void parseMenu( ActionEvent ae ) {
+    private void parseMenu(ActionEvent ae) {
         String name = ae.getActionCommand().toLowerCase();
-        switch ( name ) {
+        switch (name) {
             case "new":
                 stats = new ChangelingStats();
                 vitals.setVitals(new Vitals());
@@ -1827,7 +1850,7 @@ public class Changeling extends JFrame implements ActionListener {
                             "Manual Save Function... Yup.",
                             "Saveing/Loading not currently implemented, "
                             + "copy output below, then use \"From String...\" function.");
-                } catch ( Exception e ) {
+                } catch (Exception e) {
                 }
                 break;
 
@@ -1841,7 +1864,7 @@ public class Changeling extends JFrame implements ActionListener {
                         + "character info." + '\n'
                         + "The function will try to load as best it can, invalid string included." + '\n'
                         + "If your string is not valid, expect a mess ;)");
-                if ( tmp != null ) {
+                if (tmp != null) {
                     stats.fromString(tmp);
                     Vitals v = vitals.getVitals();
                     v.fromString(tmp);
@@ -1856,15 +1879,15 @@ public class Changeling extends JFrame implements ActionListener {
         }
     }
 
-    private void updateStats( ActionEvent ae ) {
+    private void updateStats(ActionEvent ae) {
         String name = parseAeName(ae);
-        switch ( name.split(" ")[0] ) {
+        switch (name.split(" ")[0]) {
 
             case "virtue":
                 stats.virtue = cboVirtue.getSelectedIndex();
                 break;
             case "vice":
-                stats.vice= cboVice.getSelectedIndex();
+                stats.vice = cboVice.getSelectedIndex();
                 break;
             case "seeming":
                 stats.seeming = cboSeeming.getSelectedIndex();
@@ -2014,33 +2037,33 @@ public class Changeling extends JFrame implements ActionListener {
             //</editor-fold>
 
             case "merit":
-                if ( name.split(" ")[1].equals("level") ) {
+                if (name.split(" ")[1].equals("level")) {
                     stats.meritLevels[Integer.parseInt(name.split(" ")[2])] =
                             updateStatDots(
                             ((JRadioButton) ae.getSource()).isSelected(), name);
                 }
-                if ( name.split(" ")[1].equals("name") ) {
+                if (name.split(" ")[1].equals("name")) {
                     stats.merits[Integer.parseInt(name.split(" ")[2])] =
                             ((JComboBox) ae.getSource()).getSelectedIndex();
                 }
                 break;
             case "contract":
-                if ( name.split(" ")[1].equals("level") ) {
+                if (name.split(" ")[1].equals("level")) {
                     stats.contractLevels[Integer.parseInt(name.split(" ")[2])] =
                             updateStatDots(
                             ((JRadioButton) ae.getSource()).isSelected(), name);
                 }
-                if ( name.split(" ")[1].equals("name") ) {
+                if (name.split(" ")[1].equals("name")) {
                     stats.contracts[Integer.parseInt(name.split(" ")[2])] =
                             ((JComboBox) ae.getSource()).getSelectedIndex();
                 }
                 break;
             case "specialty":
-                if ( name.split(" ")[1].equals("name") ) {
+                if (name.split(" ")[1].equals("name")) {
                     stats.specialtiesStat[Integer.parseInt(name.split(" ")[2])] =
                             ((JComboBox) ae.getSource()).getSelectedIndex();
                 }
-                if ( name.split(" ")[1].equals("info") ) {
+                if (name.split(" ")[1].equals("info")) {
                     stats.specialtiesDescription[Integer.parseInt(
                             name.split(" ")[2])] =
                             ((JTextField) ae.getSource()).getText();
@@ -2050,72 +2073,72 @@ public class Changeling extends JFrame implements ActionListener {
     }
 
     private void update() {
-        for ( int root = 0; root < this.getContentPane().getComponentCount(); root++ ) {
+        for (int root = 0; root < this.getContentPane().getComponentCount(); root++) {
             Component cmpt = this.getContentPane().getComponent(root);
-            if ( cmpt instanceof JTabbedPane ) {
+            if (cmpt instanceof JTabbedPane) {
                 updateGui(
                         (Container) ((JTabbedPane) cmpt).getSelectedComponent());
             } else {
                 String name = cmpt.getName();
-                if ( name != null ) {
-                    switch ( name.split(" ")[0] ) {
+                if (name != null) {
+                    switch (name.split(" ")[0]) {
 
                         case "name":
-                            if ( !"".equals(stats.name)
+                            if (!"".equals(stats.name)
                                     || !stats.name.equals("")
-                                    || !stats.name.equals("null") ) {
+                                    || !stats.name.equals("null")) {
                                 ((JTextField) cmpt).setText(stats.name);
                             } else {
                                 ((JTextField) cmpt).setText("hhg");
                             }
                             break;
                         case "player":
-                            if ( !"".equals(stats.player) ) {
+                            if (!"".equals(stats.player)) {
                                 ((JTextField) cmpt).setText(stats.player);
                             } else {
                                 ((JTextField) cmpt).setText("");
                             }
                             break;
                         case "chronicle":
-                            if ( !"".equals(stats.chronicle) ) {
+                            if (!"".equals(stats.chronicle)) {
                                 ((JTextField) cmpt).setText(stats.chronicle);
                             } else {
                                 ((JTextField) cmpt).setText("");
                             }
                             break;
                         case "virtue":
-                            if ( ((JComboBox) cmpt).getSelectedIndex() != stats.virtue ) {
+                            if (((JComboBox) cmpt).getSelectedIndex() != stats.virtue) {
                                 ((JComboBox) cmpt).setSelectedIndex(stats.virtue);
                             }
                             break;
                         case "vice":
-                            if ( ((JComboBox) cmpt).getSelectedIndex() != stats.vice ) {
+                            if (((JComboBox) cmpt).getSelectedIndex() != stats.vice) {
                                 ((JComboBox) cmpt).setSelectedIndex(stats.vice);
                             }
                             break;
                         case "concept":
-                            if ( !"".equals(stats.concept) ) {
+                            if (!"".equals(stats.concept)) {
                                 ((JTextField) cmpt).setText(stats.concept);
                             } else {
                                 ((JTextField) cmpt).setText("");
                             }
                             break;
                         case "seeming":
-                            if ( ((JComboBox) cmpt).getSelectedIndex() != stats.seeming ) {
+                            if (((JComboBox) cmpt).getSelectedIndex() != stats.seeming) {
                                 ((JComboBox) cmpt).setSelectedIndex(
                                         stats.seeming);
                             }
                             break;
                         case "kith":
 
-                            if ( !"".equals(stats.kith) ) {
+                            if (!"".equals(stats.kith)) {
                                 ((JTextField) cmpt).setText(stats.kith);
                             } else {
                                 ((JTextField) cmpt).setText("");
                             }
                             break;
                         case "court":
-                            if ( ((JComboBox) cmpt).getSelectedIndex() != stats.court ) {
+                            if (((JComboBox) cmpt).getSelectedIndex() != stats.court) {
                                 ((JComboBox) cmpt).setSelectedIndex(stats.court);
                             }
                             break;
@@ -2126,17 +2149,17 @@ public class Changeling extends JFrame implements ActionListener {
         }
     }
 
-    private void updateGui( Container cont ) {
-        for ( int i = 0; i < cont.getComponentCount(); i++ ) {
+    private void updateGui(Container cont) {
+        for (int i = 0; i < cont.getComponentCount(); i++) {
             Component c = cont.getComponent(i);
 
             String name = c.getName();
-            if ( name != null ) {
-                switch ( name.split(" ")[0] ) {
+            if (name != null) {
+                switch (name.split(" ")[0]) {
                     //<editor-fold desc="Stats" defaultstate="collapsed">
                     case "intelligence":
-                        if ( stats.intelligence <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.intelligence <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2144,8 +2167,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "wits":
-                        if ( stats.wits <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.wits <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2153,8 +2176,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "resolve":
-                        if ( stats.resolve <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.resolve <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2162,8 +2185,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "strength":
-                        if ( stats.strength <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.strength <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2171,8 +2194,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "dexterity":
-                        if ( stats.dexterity <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.dexterity <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2180,8 +2203,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "stamina":
-                        if ( stats.stamina <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.stamina <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2189,8 +2212,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "presence":
-                        if ( stats.presence <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.presence <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2198,8 +2221,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "manipulation":
-                        if ( stats.manipulation <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.manipulation <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2207,8 +2230,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "composure":
-                        if ( stats.composure <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.composure <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2218,8 +2241,8 @@ public class Changeling extends JFrame implements ActionListener {
                     //</editor-fold>
                     //<editor-fold desc="Skills" defaultstate="collapsed">
                     case "academics":
-                        if ( stats.academics <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.academics <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2227,8 +2250,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "computer":
-                        if ( stats.computer <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.computer <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2236,8 +2259,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "crafts":
-                        if ( stats.crafts <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.crafts <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2245,8 +2268,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "investigation":
-                        if ( stats.investigation <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.investigation <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2254,8 +2277,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "medicine":
-                        if ( stats.medicine <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.medicine <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2263,8 +2286,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "occult":
-                        if ( stats.occult <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.occult <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2272,8 +2295,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "politics":
-                        if ( stats.politics <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.politics <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2281,8 +2304,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "science":
-                        if ( stats.science <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.science <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2291,8 +2314,8 @@ public class Changeling extends JFrame implements ActionListener {
                         }
 
                     case "athletics":
-                        if ( stats.athletics <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.athletics <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2300,8 +2323,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "brawl":
-                        if ( stats.brawl <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.brawl <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2309,8 +2332,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "drive":
-                        if ( stats.drive <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.drive <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2318,8 +2341,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "firearms":
-                        if ( stats.firearms <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.firearms <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2327,8 +2350,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "larceny":
-                        if ( stats.larceny <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.larceny <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2336,8 +2359,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "stealth":
-                        if ( stats.stealth <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.stealth <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2345,8 +2368,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "survival":
-                        if ( stats.survival <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.survival <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2354,8 +2377,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "weaponry":
-                        if ( stats.weaponry <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.weaponry <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2364,8 +2387,8 @@ public class Changeling extends JFrame implements ActionListener {
                         }
 
                     case "animal":
-                        if ( stats.animalKen <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.animalKen <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2373,8 +2396,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "empathy":
-                        if ( stats.empathy <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.empathy <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2382,8 +2405,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "expression":
-                        if ( stats.expression <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.expression <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2391,8 +2414,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "intimidation":
-                        if ( stats.intimidation <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.intimidation <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2400,8 +2423,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "persuasion":
-                        if ( stats.persuasion <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.persuasion <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2409,8 +2432,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "socialize":
-                        if ( stats.socialize <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.socialize <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2418,8 +2441,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "streetwise":
-                        if ( stats.streetwise <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.streetwise <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2427,8 +2450,8 @@ public class Changeling extends JFrame implements ActionListener {
                             break;
                         }
                     case "subterfuge":
-                        if ( stats.subterfuge <= Integer.parseInt(name.split(
-                                " ")[1]) ) {
+                        if (stats.subterfuge <= Integer.parseInt(name.split(
+                                " ")[1])) {
                             ((JRadioButton) c).setSelected(false);
                             break;
                         } else {
@@ -2437,20 +2460,20 @@ public class Changeling extends JFrame implements ActionListener {
                         }
                     //</editor-fold>
                     case "merit":
-                        if ( name.split(" ")[1].equals("level") ) {
-                            if ( stats.meritLevels[Integer.parseInt(name.split(
+                        if (name.split(" ")[1].equals("level")) {
+                            if (stats.meritLevels[Integer.parseInt(name.split(
                                     " ")[2])]
                                     <= Integer.parseInt(name.split(" ")[name.split(
-                                    " ").length - 1]) ) {
+                                    " ").length - 1])) {
                                 ((JRadioButton) c).setSelected(false);
                             } else {
                                 ((JRadioButton) c).setSelected(true);
                             }
                             break;
                         }
-                        if ( name.split(" ")[1].equals("name") ) {
-                            if ( ((JComboBox) c).getSelectedIndex() != stats.merits[Integer.parseInt(name.split(
-                                    " ")[2])] ) {
+                        if (name.split(" ")[1].equals("name")) {
+                            if (((JComboBox) c).getSelectedIndex() != stats.merits[Integer.parseInt(name.split(
+                                    " ")[2])]) {
                                 ((JComboBox) c).setSelectedIndex(stats.merits[Integer.parseInt(name.split(
                                         " ")[2])]);
                             }
@@ -2458,37 +2481,37 @@ public class Changeling extends JFrame implements ActionListener {
                         }
                         break;
                     case "contract":
-                        if ( name.split(" ")[1].equals("level") ) {
-                            if ( stats.contractLevels[Integer.parseInt(name.split(
+                        if (name.split(" ")[1].equals("level")) {
+                            if (stats.contractLevels[Integer.parseInt(name.split(
                                     " ")[2])]
                                     <= Integer.parseInt(name.split(
-                                    " ")[3]) ) {
+                                    " ")[3])) {
                                 ((JRadioButton) c).setSelected(false);
                             } else {
                                 ((JRadioButton) c).setSelected(true);
                             }
                             break;
                         }
-                        if ( name.split(" ")[1].equals("name") ) {
-                            if ( ((JComboBox) c).getSelectedIndex() != stats.contracts[Integer.parseInt(name.split(
-                                    " ")[2])] ) {
+                        if (name.split(" ")[1].equals("name")) {
+                            if (((JComboBox) c).getSelectedIndex() != stats.contracts[Integer.parseInt(name.split(
+                                    " ")[2])]) {
                                 ((JComboBox) c).setSelectedIndex(stats.contracts[Integer.parseInt(name.split(
                                         " ")[2])]);
                             }
                         }
                         break;
                     case "specialty":
-                        if ( name.split(" ")[1].equals("name") ) {
-                            if ( ((JComboBox) c).getSelectedIndex() != stats.specialtiesStat[Integer.parseInt(name.split(
-                                    " ")[2])] ) {
+                        if (name.split(" ")[1].equals("name")) {
+                            if (((JComboBox) c).getSelectedIndex() != stats.specialtiesStat[Integer.parseInt(name.split(
+                                    " ")[2])]) {
                                 ((JComboBox) c).setSelectedIndex(stats.specialtiesStat[Integer.parseInt(name.split(
                                         " ")[2])]);
                                 break;
                             }
                         }
-                        if ( name.split(" ")[1].equals("info") ) {
-                            if ( !"".equals(stats.specialtiesDescription[Integer.parseInt(name.split(
-                                    " ")[2])]) ) {
+                        if (name.split(" ")[1].equals("info")) {
+                            if (!"".equals(stats.specialtiesDescription[Integer.parseInt(name.split(
+                                    " ")[2])])) {
                                 ((JTextField) c).setText(
                                         stats.specialtiesDescription[Integer.parseInt(name.split(
                                         " ")[2])]);
@@ -2498,8 +2521,8 @@ public class Changeling extends JFrame implements ActionListener {
                         }
                         break;
                     case "goblin":
-                        if ( !"".equals(stats.goblinContracts[Integer.parseInt(name.split(
-                                " ")[1])]) ) {
+                        if (!"".equals(stats.goblinContracts[Integer.parseInt(name.split(
+                                " ")[1])])) {
                             ((JTextField) c).setText(
                                     stats.goblinContracts[Integer.parseInt(name.split(
                                     " ")[1])]);
@@ -2509,70 +2532,70 @@ public class Changeling extends JFrame implements ActionListener {
 
                         break;
                     case "background":
-                        if ( !"".equals(stats.background) ) {
+                        if (!"".equals(stats.background)) {
                             txaBackground.setText(stats.background);
                         } else {
                             txaBackground.setText("");
                         }
                         break;
                     case "description":
-                        if ( !"".equals(stats.description) ) {
+                        if (!"".equals(stats.description)) {
                             txaDescription.setText(stats.description);
                         } else {
                             txaDescription.setText("");
                         }
                         break;
                     case "age":
-                        if ( stats.age >= 0 ) {
+                        if (stats.age >= 0) {
                             spnAge.setValue(stats.age);
                         } else {
                             spnAge.setValue(0);
                         }
                         break;
                     case "apparent":
-                        if ( stats.apparentAge >= 0 ) {
+                        if (stats.apparentAge >= 0) {
                             spnApparent.setValue(stats.apparentAge);
                         } else {
                             spnApparent.setValue(0);
                         }
                         break;
                     case "hair":
-                        if ( !"".equals(stats.hair) ) {
+                        if (!"".equals(stats.hair)) {
                             txtHair.setText(stats.hair);
                         } else {
                             txtHair.setText("");
                         }
                         break;
                     case "eyes":
-                        if ( !"".equals(stats.eyes) ) {
+                        if (!"".equals(stats.eyes)) {
                             txtEyes.setText(stats.eyes);
                         } else {
                             txtEyes.setText("");
                         }
                         break;
                     case "height":
-                        if ( !"".equals(stats.height) ) {
+                        if (!"".equals(stats.height)) {
                             txtHeight.setText(stats.height);
                         } else {
                             txtHeight.setText("");
                         }
                         break;
                     case "weight":
-                        if ( !"".equals(stats.weight) ) {
+                        if (!"".equals(stats.weight)) {
                             txtWeight.setText(stats.weight);
                         } else {
                             txtWeight.setText("");
                         }
                         break;
                     case "race":
-                        if ( !"".equals(stats.race) ) {
+                        if (!"".equals(stats.race)) {
                             txtRace.setText(stats.race);
                         } else {
                             txtRace.setText("");
                         }
                         break;
                     case "sex":
-                        if ( !"".equals(stats.sex) ) {
+                        if (!"".equals(stats.sex)) {
                             txtSex.setText(stats.sex);
                         } else {
                             txtSex.setText("");
@@ -2595,7 +2618,7 @@ public class Changeling extends JFrame implements ActionListener {
      * stops sending useless data via the net
      */
     public boolean updatedVitals() {
-        if ( stats == oldStats ) {
+        if (stats == oldStats) {
             return false;
         } else {
             return true;
@@ -2611,8 +2634,8 @@ public class Changeling extends JFrame implements ActionListener {
     }
 
     @Override
-    public void actionPerformed( ActionEvent ae ) {
-        if ( ae.getSource() instanceof JMenuItem ) {
+    public void actionPerformed(ActionEvent ae) {
+        if (ae.getSource() instanceof JMenuItem) {
             parseMenu(ae);
         } else {
             updateStats(ae);

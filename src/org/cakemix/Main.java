@@ -29,8 +29,8 @@ public class Main {
     public static void main(String[] args) {
         // set the ui look and feel
         try {
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-            //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            //UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -38,13 +38,14 @@ public class Main {
         Log.set(Log.LEVEL_DEBUG);
 
         // parse server args
+        //set up the bools to hold the results, with logical defaults
+        boolean client = true, //default to client
+                server = false, //with no server
+                nogui = false, //default to the server using gui
+                sheetOnly = false; //for debugging character sheet
         // check first if there are any to be parsed
         if (args.length > 0) {
-            //set up the bools to hold the results, with logical defaults
-            boolean client = true, //default to client
-                    server = false, //with no server
-                    nogui = false, //default to the server using gui
-                    sheetOnly = false; //for debugging character sheet
+
 
             for (int i = 0; i < args.length; i++) {
                 switch (args[i].toLowerCase()) {

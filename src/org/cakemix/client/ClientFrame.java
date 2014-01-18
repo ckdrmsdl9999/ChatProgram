@@ -87,8 +87,11 @@ public class ClientFrame extends JFrame implements ActionListener,
     public void dispose() {
         //disconnect the chat connection
         client.disconnect();
-
-        settings.saveStyle(configIO);
+        try {
+            configIO.saveSettings(settings);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         // call dispose from above
         super.dispose();
@@ -96,23 +99,22 @@ public class ClientFrame extends JFrame implements ActionListener,
     }
 
     private void loadSettings() {
+        settings = new ChatSettings();
         try {
             configIO.loadSettings(new FileReader("chatConfig.ini"));
-        } catch ( IOException ex ) {
-            Logger.getLogger(ClientFrame.class.getName()).log(Level.SEVERE,
+            settings.setStyle(configIO);
+        } catch (IOException ex) {
+            Logger.getLogger(ClientFrame.class.getName()).log(Level.WARNING,
                     "ERROR: Loading config file, Reverting to defaults", ex);
+
+            settings = ChatSettings.setToDefalts();
         }
     }
 
     /**
      * Create the form
      */
-    private void buildUI( Container contentPane ) {
-
-        // for a start, set all the message styling
-        // this is also needed for the background colour
-        settings = new ChatSettings();
-        settings.setStyle(configIO);
+    private void buildUI(Container contentPane) {
 
         // Create the layout for the form
         GroupLayout layout = new GroupLayout(contentPane);
@@ -145,7 +147,7 @@ public class ClientFrame extends JFrame implements ActionListener,
         // tells it to act like the send button
         sendText.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed( ActionEvent e ) {
+            public void actionPerformed(ActionEvent e) {
                 sendButton.doClick();
             }
         });
@@ -220,7 +222,7 @@ public class ClientFrame extends JFrame implements ActionListener,
         menuItem = new JMenuItem("Set Colours");
         menuItem.addActionListener(this);
         tools.add(menuItem);
-        
+
         // Character sheet
         menuItem = new JMenuItem("Changeling Sheet");
         menuItem.addActionListener(this);
@@ -247,7 +249,7 @@ public class ClientFrame extends JFrame implements ActionListener,
     /**
      * Update the userlist
      */
-    public void setNames( final UpdateNames updateNames ) {
+    public void setNames(final UpdateNames updateNames) {
         // This listener is run on the client's update thread,
         // which was started by client.start().
         // We must be careful to only interact with Swing
@@ -257,9 +259,9 @@ public class ClientFrame extends JFrame implements ActionListener,
             public void run() {
                 DefaultListModel model = (DefaultListModel) userList.getModel();
                 model.removeAllElements();
-                for ( int i = 0; i < updateNames.names.length; i++ ) {
+                for (int i = 0; i < updateNames.names.length; i++) {
                     String rank = null;
-                    switch ( updateNames.rank[i] ) {
+                    switch (updateNames.rank[i]) {
                         case ChatConnection.RANK_GM:
                             rank = "GM";
                             break;
@@ -270,7 +272,7 @@ public class ClientFrame extends JFrame implements ActionListener,
                             rank = "Player";
                             break;
                     }
-                    if ( updateNames.displays[i] != null ) {
+                    if (updateNames.displays[i] != null) {
                         model.addElement(updateNames.displays[i] + "("
                                 + updateNames.names[i] + ") - " + rank);
                     } else {
@@ -282,7 +284,7 @@ public class ClientFrame extends JFrame implements ActionListener,
         });
     }
 
-    public void setSettings( ChatSettings settings ) {
+    public void setSettings(ChatSettings settings) {
         // update the settings
         this.settings = settings;
         applySettings();
@@ -309,7 +311,7 @@ public class ClientFrame extends JFrame implements ActionListener,
     /**
      * Add a new message to the list
      */
-    public void addMessage( final ChatMessage message ) {
+    public void addMessage(final ChatMessage message) {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -334,7 +336,7 @@ public class ClientFrame extends JFrame implements ActionListener,
                             true);
                     return;
 
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(ChatClient.class.getName()).log(
                             Level.SEVERE, null, ex);
                 }
@@ -352,9 +354,9 @@ public class ClientFrame extends JFrame implements ActionListener,
     }
 
     @Override
-    public void actionPerformed( ActionEvent ae ) {
+    public void actionPerformed(ActionEvent ae) {
         // Decide what to do based on the Action Command
-        switch ( ae.getActionCommand() ) {
+        switch (ae.getActionCommand()) {
 
             // Menu Actions
             // Exit button in File Menu
@@ -372,13 +374,13 @@ public class ClientFrame extends JFrame implements ActionListener,
             case "Set Colours":
                 try {
                     new StylePickerFrame(settings, this);
-                } catch ( BadLocationException ex ) {
+                } catch (BadLocationException ex) {
                     Logger.getLogger(ClientFrame.class.getName()).log(
                             Level.SEVERE, null,
                             ex);
                 }
                 return;
-                
+
             case "Changeling Sheet":
                 new Changeling();
                 break;
@@ -387,7 +389,7 @@ public class ClientFrame extends JFrame implements ActionListener,
             // Send button/ sendText action
             case "Send":
                 // Check that there is text to send
-                if ( getSendText().length() == 0 ) {
+                if (getSendText().length() == 0) {
                     return;
                 }
                 // Create the runnable object that sends the text
@@ -418,13 +420,13 @@ public class ClientFrame extends JFrame implements ActionListener,
     }
 
     @Override
-    public void itemStateChanged( ItemEvent ie ) {
+    public void itemStateChanged(ItemEvent ie) {
         // check what type of object is sent via ie.getItem()
         // then do as above based on output of that command
         Object object = ie.getItem();
-        if ( object instanceof JCheckBoxMenuItem ) {
+        if (object instanceof JCheckBoxMenuItem) {
             JCheckBoxMenuItem menuChk = (JCheckBoxMenuItem) object;
-            switch ( menuChk.getName() ) {
+            switch (menuChk.getName()) {
                 case "Users":
                     // set the users panel to be visible only if the checkbox
                     // is checked, and hide it otherwise
